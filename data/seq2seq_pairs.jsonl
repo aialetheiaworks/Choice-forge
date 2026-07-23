@@ -1,0 +1,629 @@
+{"id": "choice_001", "role": "actor", "input": "normalize actor: Our field sales team", "target": "field sales team", "gold_status": "explicit"}
+{"id": "choice_001", "role": "object", "input": "normalize object: kirana stores", "target": "kirana stores", "gold_status": "explicit"}
+{"id": "choice_001", "role": "intent", "input": "normalize intent: onboard", "target": "onboard onto B2B ordering app", "gold_status": "explicit"}
+{"id": "choice_001", "role": "scope", "input": "normalize scope: in Pune", "target": "Pune", "gold_status": "explicit"}
+{"id": "choice_001", "role": "measure", "input": "normalize measure: onboard 1,200 kirana stores", "target": "number of kirana stores onboarded", "gold_status": "inferred"}
+{"id": "choice_001", "role": "magnitude", "input": "normalize magnitude: 1,200", "target": "1200", "gold_status": "explicit"}
+{"id": "choice_001", "role": "time", "input": "normalize time: by the end of Q3", "target": "end of Q3", "gold_status": "explicit"}
+{"id": "choice_001", "role": "constraints", "input": "normalize constraints: using only the existing incentive budget", "target": "existing incentive budget only; no additional spend", "gold_status": "explicit"}
+{"id": "choice_002", "role": "object", "input": "normalize object: the SMB tier", "target": "SMB-tier customer base", "gold_status": "inferred"}
+{"id": "choice_002", "role": "intent", "input": "normalize intent: Get monthly logo churn under 2%", "target": "reduce churn", "gold_status": "explicit"}
+{"id": "choice_002", "role": "scope", "input": "normalize scope: for the SMB tier", "target": "SMB tier", "gold_status": "explicit"}
+{"id": "choice_002", "role": "measure", "input": "normalize measure: monthly logo churn", "target": "monthly logo churn rate", "gold_status": "explicit"}
+{"id": "choice_002", "role": "magnitude", "input": "normalize magnitude: under 2%", "target": "under 2% monthly", "gold_status": "explicit"}
+{"id": "choice_002", "role": "time", "input": "normalize time: before the board meeting in November", "target": "before the November board meeting", "gold_status": "explicit"}
+{"id": "choice_002", "role": "context", "input": "normalize context: Churn is killing us", "target": "churn is currently at crisis levels", "gold_status": "explicit"}
+{"id": "choice_003", "role": "object", "input": "normalize object: revenue", "target": "revenue", "gold_status": "explicit"}
+{"id": "choice_003", "role": "intent", "input": "normalize intent: grow revenue", "target": "grow", "gold_status": "explicit"}
+{"id": "choice_003", "role": "measure", "input": "normalize measure: grow revenue", "target": "revenue growth", "gold_status": "explicit"}
+{"id": "choice_003", "role": "time", "input": "normalize time: next year", "target": "next year", "gold_status": "explicit"}
+{"id": "choice_004", "role": "object", "input": "normalize object: the premium plan", "target": "premium plan pricing", "gold_status": "explicit"}
+{"id": "choice_004", "role": "intent", "input": "normalize intent: Test a 10% price increase", "target": "test a price increase", "gold_status": "explicit"}
+{"id": "choice_004", "role": "scope", "input": "normalize scope: on the premium plan in the US market", "target": "US market; premium plan", "gold_status": "explicit"}
+{"id": "choice_004", "role": "magnitude", "input": "normalize magnitude: 10%", "target": "10% price increase", "gold_status": "explicit"}
+{"id": "choice_004", "role": "time", "input": "normalize time: within two quarters", "target": "within two quarters", "gold_status": "explicit"}
+{"id": "choice_004", "role": "constraints", "input": "normalize constraints: without pushing overall churn above current levels", "target": "overall churn must not exceed current levels", "gold_status": "explicit"}
+{"id": "choice_005", "role": "object", "input": "normalize object: the Tier-2 city quick-commerce market", "target": "Tier-2 city quick-commerce market", "gold_status": "explicit"}
+{"id": "choice_005", "role": "intent", "input": "normalize intent: we want double-digit share", "target": "capture market share", "gold_status": "explicit"}
+{"id": "choice_005", "role": "scope", "input": "normalize scope: Tier-2 city quick-commerce market", "target": "Tier-2 cities; quick-commerce category", "gold_status": "explicit"}
+{"id": "choice_005", "role": "measure", "input": "normalize measure: share", "target": "market share", "gold_status": "explicit"}
+{"id": "choice_005", "role": "magnitude", "input": "normalize magnitude: double-digit", "target": "double-digit share (>=10%)", "gold_status": "explicit"}
+{"id": "choice_005", "role": "time", "input": "normalize time: before rivals consolidate", "target": "before rivals consolidate (event-based, no fixed date)", "gold_status": "explicit"}
+{"id": "choice_005", "role": "context", "input": "normalize context: Land-grab time", "target": "competitive land-grab window before market consolidation", "gold_status": "explicit"}
+{"id": "choice_006", "role": "actor", "input": "normalize actor: As CEO", "target": "CEO", "gold_status": "explicit"}
+{"id": "choice_006", "role": "object", "input": "normalize object: a $15M Series B", "target": "Series B funding round", "gold_status": "explicit"}
+{"id": "choice_006", "role": "intent", "input": "normalize intent: close", "target": "close/raise the round", "gold_status": "explicit"}
+{"id": "choice_006", "role": "scope", "input": "normalize scope: from climate-focused funds", "target": "climate-focused funds (investor segment)", "gold_status": "explicit"}
+{"id": "choice_006", "role": "measure", "input": "normalize measure: $15M", "target": "capital raised", "gold_status": "inferred"}
+{"id": "choice_006", "role": "magnitude", "input": "normalize magnitude: $15M", "target": "$15M", "gold_status": "explicit"}
+{"id": "choice_006", "role": "time", "input": "normalize time: by March 2027", "target": "by March 2027", "gold_status": "explicit"}
+{"id": "choice_006", "role": "context", "input": "normalize context: to extend runway to 30 months while we scale the battery-swap network", "target": "extend runway to 30 months while scaling the battery-swap network", "gold_status": "explicit"}
+{"id": "choice_007", "role": "object", "input": "normalize object: Warehouse picking errors", "target": "warehouse picking errors", "gold_status": "explicit"}
+{"id": "choice_007", "role": "intent", "input": "normalize intent: fix it", "target": "reduce/fix errors", "gold_status": "explicit"}
+{"id": "choice_007", "role": "scope", "input": "normalize scope: Warehouse", "target": "warehouse operations", "gold_status": "explicit"}
+{"id": "choice_007", "role": "measure", "input": "normalize measure: picking errors", "target": "picking error rate", "gold_status": "inferred"}
+{"id": "choice_007", "role": "context", "input": "normalize context: through the roof", "target": "error rate has spiked sharply", "gold_status": "explicit"}
+{"id": "choice_008", "role": "actor", "input": "normalize actor: Recruiting", "target": "recruiting team", "gold_status": "explicit"}
+{"id": "choice_008", "role": "object", "input": "normalize object: senior backend engineers", "target": "senior backend engineers", "gold_status": "explicit"}
+{"id": "choice_008", "role": "intent", "input": "normalize intent: hire", "target": "hire", "gold_status": "explicit"}
+{"id": "choice_008", "role": "scope", "input": "normalize scope: across Bengaluru and Warsaw", "target": "Bengaluru and Warsaw", "gold_status": "explicit"}
+{"id": "choice_008", "role": "measure", "input": "normalize measure: hire 40 senior backend engineers", "target": "number of engineers hired", "gold_status": "inferred"}
+{"id": "choice_008", "role": "magnitude", "input": "normalize magnitude: 40", "target": "40", "gold_status": "explicit"}
+{"id": "choice_008", "role": "time", "input": "normalize time: by June", "target": "by June", "gold_status": "explicit"}
+{"id": "choice_008", "role": "constraints", "input": "normalize constraints: without using external agencies", "target": "no external recruitment agencies", "gold_status": "explicit"}
+{"id": "choice_008", "role": "context", "input": "normalize context: agency fees blew last year's budget", "target": "agency fees exceeded last year's budget", "gold_status": "explicit"}
+{"id": "choice_009", "role": "object", "input": "normalize object: the loyalty app", "target": "loyalty app", "gold_status": "explicit"}
+{"id": "choice_009", "role": "intent", "input": "normalize intent: Launch", "target": "launch", "gold_status": "explicit"}
+{"id": "choice_009", "role": "measure", "input": "normalize measure: adoption", "target": "user adoption (metric undefined)", "gold_status": "explicit"}
+{"id": "choice_009", "role": "time", "input": "normalize time: before Diwali", "target": "before Diwali", "gold_status": "explicit"}
+{"id": "choice_009", "role": "context", "input": "normalize context: this time", "target": "a previous launch saw poor adoption", "gold_status": "inferred"}
+{"id": "choice_010", "role": "object", "input": "normalize object: inbound freight costs", "target": "inbound freight costs", "gold_status": "explicit"}
+{"id": "choice_010", "role": "intent", "input": "normalize intent: Cut", "target": "reduce", "gold_status": "explicit"}
+{"id": "choice_010", "role": "scope", "input": "normalize scope: for the EU distribution network", "target": "EU distribution network", "gold_status": "explicit"}
+{"id": "choice_010", "role": "measure", "input": "normalize measure: inbound freight costs", "target": "inbound freight cost", "gold_status": "explicit"}
+{"id": "choice_010", "role": "magnitude", "input": "normalize magnitude: 15%", "target": "15% reduction", "gold_status": "explicit"}
+{"id": "choice_010", "role": "time", "input": "normalize time: this fiscal year", "target": "this fiscal year", "gold_status": "explicit"}
+{"id": "choice_010", "role": "constraints", "input": "normalize constraints: without switching away from our two contracted carriers", "target": "must retain the two contracted carriers", "gold_status": "explicit"}
+{"id": "choice_011", "role": "object", "input": "normalize object: co-selling partnerships with the big cloud providers", "target": "co-selling partnerships with major cloud providers", "gold_status": "explicit"}
+{"id": "choice_011", "role": "intent", "input": "normalize intent: exploring", "target": "explore/establish partnerships", "gold_status": "explicit"}
+{"id": "choice_011", "role": "scope", "input": "normalize scope: enterprise", "target": "enterprise segment", "gold_status": "explicit"}
+{"id": "choice_011", "role": "context", "input": "normalize context: to open enterprise doors", "target": "seeking enterprise market access via partners", "gold_status": "explicit"}
+{"id": "choice_012", "role": "object", "input": "normalize object: the food delivery vertical", "target": "food delivery vertical", "gold_status": "explicit"}
+{"id": "choice_012", "role": "intent", "input": "normalize intent: to contribution-margin breakeven", "target": "reach contribution-margin breakeven", "gold_status": "explicit"}
+{"id": "choice_012", "role": "scope", "input": "normalize scope: the food delivery vertical", "target": "food delivery vertical (business line)", "gold_status": "explicit"}
+{"id": "choice_012", "role": "measure", "input": "normalize measure: contribution-margin", "target": "contribution margin", "gold_status": "explicit"}
+{"id": "choice_012", "role": "magnitude", "input": "normalize magnitude: breakeven", "target": "breakeven (0)", "gold_status": "explicit"}
+{"id": "choice_012", "role": "time", "input": "normalize time: by Q2 next year", "target": "Q2 next year", "gold_status": "explicit"}
+{"id": "choice_012", "role": "constraints", "input": "normalize constraints: leadership won't fund losses beyond that", "target": "no further loss funding from leadership beyond deadline", "gold_status": "explicit"}
+{"id": "choice_012", "role": "context", "input": "normalize context: leadership won't fund losses beyond that", "target": "vertical is currently loss-making", "gold_status": "inferred"}
+{"id": "choice_013", "role": "actor", "input": "normalize actor: the sales org", "target": "sales organization", "gold_status": "inferred"}
+{"id": "choice_013", "role": "object", "input": "normalize object: Pipeline", "target": "sales pipeline", "gold_status": "explicit"}
+{"id": "choice_013", "role": "intent", "input": "normalize intent: needs to hit 4x", "target": "build pipeline coverage", "gold_status": "explicit"}
+{"id": "choice_013", "role": "scope", "input": "normalize scope: FY27 new-ARR target", "target": "FY27 new-business ARR", "gold_status": "explicit"}
+{"id": "choice_013", "role": "measure", "input": "normalize measure: Pipeline coverage", "target": "pipeline coverage ratio vs new-ARR target", "gold_status": "explicit"}
+{"id": "choice_013", "role": "magnitude", "input": "normalize magnitude: 4x", "target": "4x coverage", "gold_status": "explicit"}
+{"id": "choice_013", "role": "time", "input": "normalize time: by end of January", "target": "end of January", "gold_status": "explicit"}
+{"id": "choice_013", "role": "context", "input": "normalize context: so the sales org isn't scrambling in H2", "target": "avoid a second-half pipeline shortfall", "gold_status": "explicit"}
+{"id": "choice_014", "role": "object", "input": "normalize object: the brand", "target": "brand market presence", "gold_status": "explicit"}
+{"id": "choice_014", "role": "intent", "input": "normalize intent: taking the brand into the Gulf", "target": "expand into a new region", "gold_status": "explicit"}
+{"id": "choice_014", "role": "scope", "input": "normalize scope: into the Gulf", "target": "Gulf region", "gold_status": "explicit"}
+{"id": "choice_014", "role": "context", "input": "normalize context: Thinking about", "target": "early exploratory stage", "gold_status": "inferred"}
+{"id": "choice_015", "role": "object", "input": "normalize object: first-time customers for the skincare line", "target": "first-time customers (skincare line)", "gold_status": "explicit"}
+{"id": "choice_015", "role": "intent", "input": "normalize intent: Acquire", "target": "acquire new customers", "gold_status": "explicit"}
+{"id": "choice_015", "role": "scope", "input": "normalize scope: for the skincare line via Instagram and YouTube", "target": "skincare product line; Instagram and YouTube channels", "gold_status": "explicit"}
+{"id": "choice_015", "role": "measure", "input": "normalize measure: first-time customers; blended CAC", "target": "['new customers acquired', 'blended CAC']", "gold_status": "explicit"}
+{"id": "choice_015", "role": "magnitude", "input": "normalize magnitude: 25,000; under \u20b9350", "target": "[25000, 'under \u20b9350']", "gold_status": "explicit"}
+{"id": "choice_015", "role": "time", "input": "normalize time: in the next 90 days", "target": "next 90 days", "gold_status": "explicit"}
+{"id": "choice_016", "role": "object", "input": "normalize object: churned enterprise logos from last quarter", "target": "enterprise customers churned last quarter", "gold_status": "explicit"}
+{"id": "choice_016", "role": "intent", "input": "normalize intent: win at least a third of them back", "target": "win back churned accounts", "gold_status": "explicit"}
+{"id": "choice_016", "role": "scope", "input": "normalize scope: enterprise", "target": "enterprise segment", "gold_status": "explicit"}
+{"id": "choice_016", "role": "measure", "input": "normalize measure: a third of them back", "target": "share of churned logos recovered", "gold_status": "inferred"}
+{"id": "choice_016", "role": "magnitude", "input": "normalize magnitude: at least a third", "target": "at least one-third (~33%)", "gold_status": "explicit"}
+{"id": "choice_016", "role": "time", "input": "normalize time: before renewals season", "target": "before renewals season", "gold_status": "explicit"}
+{"id": "choice_016", "role": "context", "input": "normalize context: churned enterprise logos from last quarter", "target": "notable enterprise churn occurred last quarter", "gold_status": "explicit"}
+{"id": "choice_017", "role": "actor", "input": "normalize actor: Marketing and sales", "target": "marketing and sales teams", "gold_status": "explicit"}
+{"id": "choice_017", "role": "object", "input": "normalize object: the analytics suite", "target": "analytics suite", "gold_status": "explicit"}
+{"id": "choice_017", "role": "intent", "input": "normalize intent: relaunch the analytics suite as a self-serve product", "target": "relaunch as a self-serve product", "gold_status": "explicit"}
+{"id": "choice_017", "role": "scope", "input": "normalize scope: for mid-market SaaS companies in North America", "target": "mid-market SaaS companies; North America", "gold_status": "explicit"}
+{"id": "choice_017", "role": "measure", "input": "normalize measure: paying workspaces; ARR", "target": "['paying workspaces', 'ARR']", "gold_status": "explicit"}
+{"id": "choice_017", "role": "magnitude", "input": "normalize magnitude: 400; $1.2M", "target": "[400, '$1.2M']", "gold_status": "explicit"}
+{"id": "choice_017", "role": "time", "input": "normalize time: within nine months of launch", "target": "within nine months of launch", "gold_status": "explicit"}
+{"id": "choice_017", "role": "context", "input": "normalize context: assuming the freemium tier ships on schedule", "target": "assumes the freemium tier ships on schedule", "gold_status": "explicit"}
+{"id": "choice_018", "role": "object", "input": "normalize object: invoice processing", "target": "invoice processing", "gold_status": "explicit"}
+{"id": "choice_018", "role": "intent", "input": "normalize intent: Automate", "target": "automate", "gold_status": "explicit"}
+{"id": "choice_018", "role": "scope", "input": "normalize scope: for the shared-services center", "target": "shared-services center", "gold_status": "explicit"}
+{"id": "choice_018", "role": "measure", "input": "normalize measure: headcount; order volume", "target": "['headcount', 'order volume']", "gold_status": "explicit"}
+{"id": "choice_018", "role": "magnitude", "input": "normalize magnitude: stays flat; doubles", "target": "['remain flat', 'double']", "gold_status": "explicit"}
+{"id": "choice_018", "role": "time", "input": "normalize time: next year", "target": "next year", "gold_status": "explicit"}
+{"id": "choice_018", "role": "constraints", "input": "normalize constraints: finance won't approve new ERP spend", "target": "no new ERP spend approved by finance", "gold_status": "explicit"}
+{"id": "choice_019", "role": "intent", "input": "normalize intent: become the obvious choice", "target": "become the preferred provider", "gold_status": "explicit"}
+{"id": "choice_019", "role": "scope", "input": "normalize scope: for millennial homebuyers", "target": "millennial homebuyer segment", "gold_status": "explicit"}
+{"id": "choice_020", "role": "object", "input": "normalize object: the API tiers", "target": "API pricing tiers", "gold_status": "explicit"}
+{"id": "choice_020", "role": "intent", "input": "normalize intent: Repackage", "target": "repackage pricing/packaging", "gold_status": "explicit"}
+{"id": "choice_020", "role": "scope", "input": "normalize scope: the API tiers", "target": "API product line; new bookings", "gold_status": "explicit"}
+{"id": "choice_020", "role": "measure", "input": "normalize measure: usage-based billing drives at least 30% of new bookings", "target": "share of new bookings on usage-based billing", "gold_status": "explicit"}
+{"id": "choice_020", "role": "magnitude", "input": "normalize magnitude: at least 30%", "target": "at least 30%", "gold_status": "explicit"}
+{"id": "choice_020", "role": "time", "input": "normalize time: by Q4", "target": "by Q4", "gold_status": "explicit"}
+{"id": "choice_021", "role": "object", "input": "normalize object: modern-trade share", "target": "modern-trade market share", "gold_status": "explicit"}
+{"id": "choice_021", "role": "intent", "input": "normalize intent: hold our modern-trade share above 35%", "target": "defend/hold share", "gold_status": "explicit"}
+{"id": "choice_021", "role": "scope", "input": "normalize scope: in Indonesia", "target": "Indonesia; modern trade channel", "gold_status": "explicit"}
+{"id": "choice_021", "role": "measure", "input": "normalize measure: modern-trade share", "target": "market share", "gold_status": "explicit"}
+{"id": "choice_021", "role": "magnitude", "input": "normalize magnitude: above 35%", "target": "above 35%", "gold_status": "explicit"}
+{"id": "choice_021", "role": "time", "input": "normalize time: through 2026", "target": "through 2026", "gold_status": "explicit"}
+{"id": "choice_021", "role": "constraints", "input": "normalize constraints: without deepening trade discounts", "target": "no deeper trade discounts", "gold_status": "explicit"}
+{"id": "choice_021", "role": "context", "input": "normalize context: Since the new entrant undercut us 20% in Indonesia", "target": "new entrant undercut pricing by 20% in Indonesia", "gold_status": "explicit"}
+{"id": "choice_022", "role": "actor", "input": "normalize actor: Founders", "target": "founders", "gold_status": "explicit"}
+{"id": "choice_022", "role": "object", "input": "normalize object: a bridge round", "target": "bridge funding round", "gold_status": "explicit"}
+{"id": "choice_022", "role": "intent", "input": "normalize intent: kick off a bridge round conversation", "target": "initiate fundraising conversations", "gold_status": "explicit"}
+{"id": "choice_022", "role": "scope", "input": "normalize scope: with existing investors", "target": "existing investors", "gold_status": "explicit"}
+{"id": "choice_023", "role": "actor", "input": "normalize actor: Ops", "target": "operations team", "gold_status": "explicit"}
+{"id": "choice_023", "role": "object", "input": "normalize object: the lithium cell supply for the two-wheeler line", "target": "lithium cell supply for the two-wheeler line", "gold_status": "explicit"}
+{"id": "choice_023", "role": "intent", "input": "normalize intent: dual-source", "target": "dual-source; qualify an alternate vendor", "gold_status": "explicit"}
+{"id": "choice_023", "role": "scope", "input": "normalize scope: for the two-wheeler line", "target": "two-wheeler product line; Indian vendor base", "gold_status": "explicit"}
+{"id": "choice_023", "role": "measure", "input": "normalize measure: qualifying at least one Indian vendor", "target": "qualified alternate Indian vendors", "gold_status": "inferred"}
+{"id": "choice_023", "role": "magnitude", "input": "normalize magnitude: at least one Indian vendor", "target": "at least 1 vendor", "gold_status": "explicit"}
+{"id": "choice_023", "role": "time", "input": "normalize time: by December", "target": "by December", "gold_status": "explicit"}
+{"id": "choice_023", "role": "constraints", "input": "normalize constraints: capped at a 3% landed-cost premium", "target": "landed-cost premium capped at 3%", "gold_status": "explicit"}
+{"id": "choice_023", "role": "context", "input": "normalize context: import dependence on a single Chinese supplier is a board-flagged risk", "target": "single Chinese supplier dependence flagged as board-level risk", "gold_status": "explicit"}
+{"id": "choice_024", "role": "actor", "input": "normalize actor: HR", "target": "HR", "gold_status": "explicit"}
+{"id": "choice_024", "role": "object", "input": "normalize object: at the offer stage", "target": "offer-stage hiring process", "gold_status": "explicit"}
+{"id": "choice_024", "role": "intent", "input": "normalize intent: tighten that up", "target": "reduce candidate drop-off at offer stage", "gold_status": "explicit"}
+{"id": "choice_024", "role": "scope", "input": "normalize scope: at the offer stage", "target": "recruitment funnel (offer stage)", "gold_status": "explicit"}
+{"id": "choice_024", "role": "measure", "input": "normalize measure: losing good candidates at the offer stage", "target": "offer acceptance rate", "gold_status": "inferred"}
+{"id": "choice_024", "role": "context", "input": "normalize context: HR keeps losing good candidates at the offer stage", "target": "currently losing strong candidates at the offer stage", "gold_status": "explicit"}
+{"id": "choice_025", "role": "actor", "input": "normalize actor: The board", "target": "board of directors", "gold_status": "explicit"}
+{"id": "choice_025", "role": "object", "input": "normalize object: the Middle East cluster", "target": "Middle East business cluster", "gold_status": "explicit"}
+{"id": "choice_025", "role": "intent", "input": "normalize intent: to deliver 18% EBITDA margin", "target": "achieve target profitability", "gold_status": "explicit"}
+{"id": "choice_025", "role": "scope", "input": "normalize scope: Middle East", "target": "Middle East region", "gold_status": "explicit"}
+{"id": "choice_025", "role": "measure", "input": "normalize measure: EBITDA margin", "target": "EBITDA margin", "gold_status": "explicit"}
+{"id": "choice_025", "role": "magnitude", "input": "normalize magnitude: 18%", "target": "18%", "gold_status": "explicit"}
+{"id": "choice_025", "role": "time", "input": "normalize time: within two years of entry", "target": "within two years of market entry", "gold_status": "explicit"}
+{"id": "choice_025", "role": "constraints", "input": "normalize constraints: funded entirely from regional cash flows", "target": "funded entirely from regional cash flows", "gold_status": "explicit"}
+{"id": "choice_026", "role": "actor", "input": "normalize actor: The growth pod", "target": "growth pod", "gold_status": "explicit"}
+{"id": "choice_026", "role": "object", "input": "normalize object: the payroll add-on", "target": "payroll add-on", "gold_status": "explicit"}
+{"id": "choice_026", "role": "intent", "input": "normalize intent: take the payroll add-on live", "target": "launch in new markets", "gold_status": "explicit"}
+{"id": "choice_026", "role": "scope", "input": "normalize scope: in Australia and New Zealand", "target": "Australia and New Zealand", "gold_status": "explicit"}
+{"id": "choice_026", "role": "measure", "input": "normalize measure: activated accounts", "target": "activated accounts", "gold_status": "explicit"}
+{"id": "choice_026", "role": "magnitude", "input": "normalize magnitude: 900", "target": "900", "gold_status": "explicit"}
+{"id": "choice_026", "role": "time", "input": "normalize time: in the first two quarters post-launch", "target": "first two quarters post-launch", "gold_status": "explicit"}
+{"id": "choice_027", "role": "object", "input": "normalize object: Users", "target": "free-trial users", "gold_status": "explicit"}
+{"id": "choice_027", "role": "intent", "input": "normalize intent: keep dropping off after the free trial ends", "target": "reduce post-trial drop-off", "gold_status": "inferred"}
+{"id": "choice_027", "role": "scope", "input": "normalize scope: after the free trial ends", "target": "post-trial stage", "gold_status": "explicit"}
+{"id": "choice_027", "role": "measure", "input": "normalize measure: dropping off", "target": "trial-to-paid drop-off rate", "gold_status": "inferred"}
+{"id": "choice_027", "role": "context", "input": "normalize context: it's getting embarrassing", "target": "drop-off is a recurring, worsening problem", "gold_status": "explicit"}
+{"id": "choice_028", "role": "actor", "input": "normalize actor: Finance", "target": "finance team", "gold_status": "explicit"}
+{"id": "choice_028", "role": "object", "input": "normalize object: the hardware bundle", "target": "hardware bundle pricing", "gold_status": "explicit"}
+{"id": "choice_028", "role": "intent", "input": "normalize intent: repriced", "target": "reprice to protect margin", "gold_status": "explicit"}
+{"id": "choice_028", "role": "scope", "input": "normalize scope: the hardware bundle", "target": "hardware bundle (product line)", "gold_status": "explicit"}
+{"id": "choice_028", "role": "measure", "input": "normalize measure: gross margin", "target": "gross margin", "gold_status": "explicit"}
+{"id": "choice_028", "role": "magnitude", "input": "normalize magnitude: 42%", "target": "42%", "gold_status": "explicit"}
+{"id": "choice_028", "role": "time", "input": "normalize time: effective from the October price list", "target": "October price list", "gold_status": "explicit"}
+{"id": "choice_028", "role": "context", "input": "normalize context: after the aluminium tariff hike", "target": "aluminium tariff hike raised input costs", "gold_status": "explicit"}
+{"id": "choice_029", "role": "object", "input": "normalize object: month-end close", "target": "month-end close process", "gold_status": "explicit"}
+{"id": "choice_029", "role": "intent", "input": "normalize intent: Something has to change about how long", "target": "shorten the close cycle", "gold_status": "explicit"}
+{"id": "choice_029", "role": "measure", "input": "normalize measure: how long our month-end close takes", "target": "close cycle duration", "gold_status": "inferred"}
+{"id": "choice_030", "role": "object", "input": "normalize object: the #2 spot in India's UPI payments", "target": "UPI payments market position", "gold_status": "explicit"}
+{"id": "choice_030", "role": "intent", "input": "normalize intent: Win back the #2 spot", "target": "regain market rank", "gold_status": "explicit"}
+{"id": "choice_030", "role": "scope", "input": "normalize scope: India's UPI payments", "target": "India; UPI payments", "gold_status": "explicit"}
+{"id": "choice_030", "role": "measure", "input": "normalize measure: by volume", "target": "market rank by transaction volume", "gold_status": "explicit"}
+{"id": "choice_030", "role": "magnitude", "input": "normalize magnitude: #2", "target": "rank #2", "gold_status": "explicit"}
+{"id": "choice_030", "role": "time", "input": "normalize time: before the festive quarter", "target": "before the festive quarter", "gold_status": "explicit"}
+{"id": "choice_030", "role": "constraints", "input": "normalize constraints: marketing spend stays capped at current run rate", "target": "marketing spend capped at current run rate", "gold_status": "explicit"}
+{"id": "choice_030", "role": "context", "input": "normalize context: Win back", "target": "previously held the #2 position and lost it", "gold_status": "inferred"}
+{"id": "choice_031", "role": "object", "input": "normalize object: a data science team", "target": "data science team", "gold_status": "explicit"}
+{"id": "choice_031", "role": "intent", "input": "normalize intent: start building", "target": "build/hire a team", "gold_status": "explicit"}
+{"id": "choice_031", "role": "context", "input": "normalize context: should probably", "target": "early, low-commitment consideration", "gold_status": "inferred"}
+{"id": "choice_032", "role": "actor", "input": "normalize actor: Logistics", "target": "logistics team", "gold_status": "explicit"}
+{"id": "choice_032", "role": "object", "input": "normalize object: on-time delivery", "target": "delivery operations (Texas routes)", "gold_status": "explicit"}
+{"id": "choice_032", "role": "intent", "input": "normalize intent: lift on-time delivery", "target": "improve delivery performance while controlling cost", "gold_status": "explicit"}
+{"id": "choice_032", "role": "scope", "input": "normalize scope: across the Texas routes", "target": "Texas routes", "gold_status": "explicit"}
+{"id": "choice_032", "role": "measure", "input": "normalize measure: on-time delivery; cost per shipment", "target": "['on-time delivery rate', 'cost per shipment']", "gold_status": "explicit"}
+{"id": "choice_032", "role": "magnitude", "input": "normalize magnitude: 96%; under $4.10", "target": "['96%', 'under $4.10']", "gold_status": "explicit"}
+{"id": "choice_032", "role": "time", "input": "normalize time: by end of H1", "target": "end of H1", "gold_status": "explicit"}
+{"id": "choice_033", "role": "object", "input": "normalize object: regional distribution partners", "target": "regional distribution partners", "gold_status": "explicit"}
+{"id": "choice_033", "role": "intent", "input": "normalize intent: Sign", "target": "sign partners", "gold_status": "explicit"}
+{"id": "choice_033", "role": "scope", "input": "normalize scope: for the solar inverter line in East Africa", "target": "East Africa; solar inverter line", "gold_status": "explicit"}
+{"id": "choice_033", "role": "measure", "input": "normalize measure: Sign three regional distribution partners", "target": "number of distribution partners signed", "gold_status": "inferred"}
+{"id": "choice_033", "role": "magnitude", "input": "normalize magnitude: three", "target": "3", "gold_status": "explicit"}
+{"id": "choice_033", "role": "time", "input": "normalize time: this year", "target": "this year", "gold_status": "explicit"}
+{"id": "choice_033", "role": "constraints", "input": "normalize constraints: keeping exclusivity terms under 24 months", "target": "exclusivity terms limited to under 24 months", "gold_status": "explicit"}
+{"id": "choice_034", "role": "object", "input": "normalize object: the data room", "target": "data room", "gold_status": "explicit"}
+{"id": "choice_034", "role": "intent", "input": "normalize intent: Get the data room ready", "target": "prepare the data room", "gold_status": "explicit"}
+{"id": "choice_034", "role": "time", "input": "normalize time: after the trade show", "target": "ready around the trade show", "gold_status": "inferred"}
+{"id": "choice_034", "role": "context", "input": "normalize context: a strategic acquirer might come knocking", "target": "possible inbound strategic acquisition interest", "gold_status": "explicit"}
+{"id": "choice_035", "role": "object", "input": "normalize object: the Berlin cloud kitchen sites", "target": "Berlin cloud kitchen sites", "gold_status": "explicit"}
+{"id": "choice_035", "role": "intent", "input": "normalize intent: Turn the Berlin cloud kitchen sites profitable", "target": "reach store-level profitability", "gold_status": "explicit"}
+{"id": "choice_035", "role": "scope", "input": "normalize scope: at the store level", "target": "Berlin; store level", "gold_status": "explicit"}
+{"id": "choice_035", "role": "measure", "input": "normalize measure: net margin per site", "target": "net margin per site", "gold_status": "explicit"}
+{"id": "choice_035", "role": "magnitude", "input": "normalize magnitude: at least 8%", "target": "at least 8%", "gold_status": "explicit"}
+{"id": "choice_035", "role": "time", "input": "normalize time: by Q1 2027", "target": "by Q1 2027", "gold_status": "explicit"}
+{"id": "choice_035", "role": "constraints", "input": "normalize constraints: without closing more than one location", "target": "close at most one location", "gold_status": "explicit"}
+{"id": "choice_035", "role": "context", "input": "normalize context: Turn the Berlin cloud kitchen sites profitable", "target": "sites are currently unprofitable", "gold_status": "inferred"}
+{"id": "choice_036", "role": "object", "input": "normalize object: signups from campus ambassadors", "target": "signups via campus ambassador channel", "gold_status": "explicit"}
+{"id": "choice_036", "role": "intent", "input": "normalize intent: need more signups", "target": "increase signups", "gold_status": "explicit"}
+{"id": "choice_036", "role": "scope", "input": "normalize scope: from campus ambassadors", "target": "campus ambassador channel", "gold_status": "explicit"}
+{"id": "choice_036", "role": "measure", "input": "normalize measure: signups", "target": "signups", "gold_status": "explicit"}
+{"id": "choice_036", "role": "context", "input": "normalize context: the current numbers are sad", "target": "current signup volume is poor", "gold_status": "explicit"}
+{"id": "choice_037", "role": "object", "input": "normalize object: the offline mode for the field-service app", "target": "offline mode (field-service app)", "gold_status": "explicit"}
+{"id": "choice_037", "role": "intent", "input": "normalize intent: Ship", "target": "ship/release the feature", "gold_status": "explicit"}
+{"id": "choice_037", "role": "scope", "input": "normalize scope: to all Latin American customers", "target": "Latin American customers", "gold_status": "explicit"}
+{"id": "choice_037", "role": "measure", "input": "normalize measure: support tickets", "target": "support tickets as share of MAU (quality guardrail)", "gold_status": "explicit"}
+{"id": "choice_037", "role": "magnitude", "input": "normalize magnitude: below 2% of MAU", "target": "below 2% of MAU", "gold_status": "explicit"}
+{"id": "choice_037", "role": "time", "input": "normalize time: by the March release train", "target": "March release train", "gold_status": "explicit"}
+{"id": "choice_038", "role": "object", "input": "normalize object: franchise gyms", "target": "franchise gyms", "gold_status": "explicit"}
+{"id": "choice_038", "role": "intent", "input": "normalize intent: Open", "target": "open new locations", "gold_status": "explicit"}
+{"id": "choice_038", "role": "scope", "input": "normalize scope: across Tier-3 Maharashtra towns", "target": "Tier-3 towns, Maharashtra", "gold_status": "explicit"}
+{"id": "choice_038", "role": "measure", "input": "normalize measure: Open 12 franchise gyms", "target": "number of gyms opened", "gold_status": "inferred"}
+{"id": "choice_038", "role": "magnitude", "input": "normalize magnitude: 12", "target": "12", "gold_status": "explicit"}
+{"id": "choice_038", "role": "time", "input": "normalize time: in FY27", "target": "FY27", "gold_status": "explicit"}
+{"id": "choice_038", "role": "constraints", "input": "normalize constraints: franchisees fund capex, we cap our exposure to brand and training costs", "target": "franchisee-funded capex; company exposure limited to brand and training costs", "gold_status": "explicit"}
+{"id": "choice_039", "role": "object", "input": "normalize object: discounting", "target": "discounting practices", "gold_status": "explicit"}
+{"id": "choice_039", "role": "intent", "input": "normalize intent: standardise discounting", "target": "standardise discounting", "gold_status": "explicit"}
+{"id": "choice_039", "role": "scope", "input": "normalize scope: The reps are quoting", "target": "sales quoting process", "gold_status": "explicit"}
+{"id": "choice_039", "role": "context", "input": "normalize context: quoting all over the place", "target": "inconsistent quoting is threatening deal margins", "gold_status": "explicit"}
+{"id": "choice_040", "role": "object", "input": "normalize object: the premium grocery subscribers", "target": "premium grocery subscribers", "gold_status": "explicit"}
+{"id": "choice_040", "role": "intent", "input": "normalize intent: Raise 90-day repeat purchase rate", "target": "improve retention and satisfaction", "gold_status": "explicit"}
+{"id": "choice_040", "role": "scope", "input": "normalize scope: for the premium grocery subscribers in the UAE", "target": "UAE; premium grocery subscriber segment", "gold_status": "explicit"}
+{"id": "choice_040", "role": "measure", "input": "normalize measure: 90-day repeat purchase rate; NPS", "target": "['90-day repeat purchase rate', 'NPS']", "gold_status": "explicit"}
+{"id": "choice_040", "role": "magnitude", "input": "normalize magnitude: 35%; past 60", "target": "['35%', 'above 60']", "gold_status": "explicit"}
+{"id": "choice_040", "role": "time", "input": "normalize time: by Ramadan", "target": "by Ramadan", "gold_status": "explicit"}
+{"id": "choice_041", "role": "actor", "input": "normalize actor: Legal", "target": "legal team", "gold_status": "explicit"}
+{"id": "choice_041", "role": "object", "input": "normalize object: every vendor contract", "target": "vendor contracts", "gold_status": "explicit"}
+{"id": "choice_041", "role": "intent", "input": "normalize intent: migrated to the new DPA template", "target": "migrate to new DPA template", "gold_status": "explicit"}
+{"id": "choice_041", "role": "scope", "input": "normalize scope: every vendor contract", "target": "entire vendor contract base", "gold_status": "explicit"}
+{"id": "choice_041", "role": "measure", "input": "normalize measure: every vendor contract migrated", "target": "share of contracts migrated", "gold_status": "inferred"}
+{"id": "choice_041", "role": "magnitude", "input": "normalize magnitude: zero exceptions", "target": "100% (zero exceptions)", "gold_status": "explicit"}
+{"id": "choice_041", "role": "time", "input": "normalize time: before the EU audit window opens in September", "target": "before the EU audit window opens in September", "gold_status": "explicit"}
+{"id": "choice_041", "role": "context", "input": "normalize context: the EU audit window", "target": "upcoming EU audit", "gold_status": "explicit"}
+{"id": "choice_042", "role": "object", "input": "normalize object: an ABM motion", "target": "account-based marketing program", "gold_status": "explicit"}
+{"id": "choice_042", "role": "intent", "input": "normalize intent: do an ABM motion", "target": "launch an ABM motion", "gold_status": "explicit"}
+{"id": "choice_042", "role": "scope", "input": "normalize scope: for the Fortune 500 logos", "target": "Fortune 500 accounts", "gold_status": "explicit"}
+{"id": "choice_042", "role": "time", "input": "normalize time: next fiscal", "target": "next fiscal year", "gold_status": "explicit"}
+{"id": "choice_042", "role": "constraints", "input": "normalize constraints: nothing spray-and-pray", "target": "targeted approach only; no broad-based campaigns", "gold_status": "explicit"}
+{"id": "choice_043", "role": "object", "input": "normalize object: Our packaging supplier", "target": "packaging supply relationship", "gold_status": "explicit"}
+{"id": "choice_043", "role": "intent", "input": "normalize intent: What's our exposure", "target": "assess supply exposure/risk", "gold_status": "explicit"}
+{"id": "choice_043", "role": "scope", "input": "normalize scope: packaging supplier", "target": "packaging supply chain", "gold_status": "explicit"}
+{"id": "choice_043", "role": "context", "input": "normalize context: packaging supplier just got acquired by a competitor", "target": "supplier was just acquired by a competitor", "gold_status": "explicit"}
+{"id": "choice_044", "role": "object", "input": "normalize object: unprofitable SKUs", "target": "unprofitable SKUs", "gold_status": "explicit"}
+{"id": "choice_044", "role": "intent", "input": "normalize intent: delist", "target": "delist/rationalise assortment", "gold_status": "explicit"}
+{"id": "choice_044", "role": "scope", "input": "normalize scope: from the modern-trade assortment", "target": "modern-trade assortment", "gold_status": "explicit"}
+{"id": "choice_044", "role": "measure", "input": "normalize measure: contribution margin", "target": "contribution margin per SKU", "gold_status": "explicit"}
+{"id": "choice_044", "role": "magnitude", "input": "normalize magnitude: below 12%", "target": "below 12% threshold", "gold_status": "explicit"}
+{"id": "choice_044", "role": "time", "input": "normalize time: by the next range review", "target": "by the next range review", "gold_status": "explicit"}
+{"id": "choice_044", "role": "constraints", "input": "normalize constraints: unless it drives basket size", "target": "retain SKUs that drive basket size", "gold_status": "explicit"}
+{"id": "choice_045", "role": "object", "input": "normalize object: warehouse associates", "target": "warehouse associate workforce", "gold_status": "explicit"}
+{"id": "choice_045", "role": "intent", "input": "normalize intent: Reduce first-year attrition", "target": "reduce attrition", "gold_status": "explicit"}
+{"id": "choice_045", "role": "scope", "input": "normalize scope: across the Gurgaon hubs", "target": "Gurgaon hubs", "gold_status": "explicit"}
+{"id": "choice_045", "role": "measure", "input": "normalize measure: first-year attrition", "target": "first-year attrition rate", "gold_status": "explicit"}
+{"id": "choice_045", "role": "magnitude", "input": "normalize magnitude: from 38% to under 25%", "target": "from 38% to under 25%", "gold_status": "explicit"}
+{"id": "choice_045", "role": "time", "input": "normalize time: by next December", "target": "by next December", "gold_status": "explicit"}
+{"id": "choice_045", "role": "constraints", "input": "normalize constraints: spending no more than \u20b940 lakh", "target": "programme budget capped at \u20b940 lakh", "gold_status": "explicit"}
+{"id": "choice_045", "role": "context", "input": "normalize context: from 38%", "target": "current first-year attrition is 38%", "gold_status": "explicit"}
+{"id": "choice_046", "role": "actor", "input": "normalize actor: CFO", "target": "CFO", "gold_status": "explicit"}
+{"id": "choice_046", "role": "object", "input": "normalize object: working-capital line", "target": "working-capital credit line", "gold_status": "explicit"}
+{"id": "choice_046", "role": "intent", "input": "normalize intent: negotiated", "target": "negotiate/secure financing", "gold_status": "explicit"}
+{"id": "choice_046", "role": "scope", "input": "normalize scope: with at least two banks", "target": "banking partners", "gold_status": "explicit"}
+{"id": "choice_046", "role": "measure", "input": "normalize measure: working-capital line; two banks", "target": "['credit line secured', 'participating banks']", "gold_status": "explicit"}
+{"id": "choice_046", "role": "magnitude", "input": "normalize magnitude: \u20b9120 crore; at least two", "target": "['\u20b9120 crore', 'at least 2']", "gold_status": "explicit"}
+{"id": "choice_046", "role": "time", "input": "normalize time: before the festive inventory build starts", "target": "before the festive inventory build starts", "gold_status": "explicit"}
+{"id": "choice_046", "role": "context", "input": "normalize context: the festive inventory build", "target": "festive inventory build ahead requires working capital", "gold_status": "explicit"}
+{"id": "choice_047", "role": "object", "input": "normalize object: relevant in the Gen Z skincare conversation", "target": "brand relevance", "gold_status": "explicit"}
+{"id": "choice_047", "role": "intent", "input": "normalize intent: Are we even relevant", "target": "assess brand relevance", "gold_status": "inferred"}
+{"id": "choice_047", "role": "scope", "input": "normalize scope: Gen Z skincare", "target": "Gen Z segment; skincare category", "gold_status": "explicit"}
+{"id": "choice_047", "role": "context", "input": "normalize context: anymore", "target": "brand was previously relevant; relevance now in doubt", "gold_status": "inferred"}
+{"id": "choice_048", "role": "object", "input": "normalize object: the loyalty database", "target": "loyalty database", "gold_status": "explicit"}
+{"id": "choice_048", "role": "intent", "input": "normalize intent: Migrate", "target": "migrate off legacy mainframe", "gold_status": "explicit"}
+{"id": "choice_048", "role": "scope", "input": "normalize scope: off the legacy mainframe", "target": "legacy mainframe system", "gold_status": "explicit"}
+{"id": "choice_048", "role": "measure", "input": "normalize measure: cumulative downtime", "target": "cumulative downtime (guardrail)", "gold_status": "explicit"}
+{"id": "choice_048", "role": "magnitude", "input": "normalize magnitude: under four hours", "target": "under four hours", "gold_status": "explicit"}
+{"id": "choice_048", "role": "time", "input": "normalize time: before the Black Friday code freeze", "target": "before the Black Friday code freeze", "gold_status": "explicit"}
+{"id": "choice_049", "role": "object", "input": "normalize object: the insurance cross-sell", "target": "insurance cross-sell offering", "gold_status": "explicit"}
+{"id": "choice_049", "role": "intent", "input": "normalize intent: get the insurance cross-sell live", "target": "launch with additional partners", "gold_status": "explicit"}
+{"id": "choice_049", "role": "scope", "input": "normalize scope: NBFC partners", "target": "NBFC partner channel", "gold_status": "explicit"}
+{"id": "choice_049", "role": "measure", "input": "normalize measure: two more NBFC partners", "target": "number of NBFC partners live", "gold_status": "inferred"}
+{"id": "choice_049", "role": "magnitude", "input": "normalize magnitude: two more", "target": "2 additional partners", "gold_status": "explicit"}
+{"id": "choice_049", "role": "time", "input": "normalize time: this quarter", "target": "this quarter", "gold_status": "explicit"}
+{"id": "choice_049", "role": "constraints", "input": "normalize constraints: without touching the core lending flow", "target": "no changes to the core lending flow", "gold_status": "explicit"}
+{"id": "choice_049", "role": "context", "input": "normalize context: two more", "target": "cross-sell already live with some partners", "gold_status": "inferred"}
+{"id": "choice_050", "role": "object", "input": "normalize object: path to profitability", "target": "path-to-profitability plan", "gold_status": "explicit"}
+{"id": "choice_050", "role": "intent", "input": "normalize intent: don't have a good answer yet", "target": "develop a credible profitability plan", "gold_status": "inferred"}
+{"id": "choice_050", "role": "context", "input": "normalize context: Investors keep asking about our path to profitability", "target": "recurring investor pressure on profitability; no plan in place", "gold_status": "explicit"}
+{"id": "choice_051", "role": "actor", "input": "normalize actor: The inside sales squad", "target": "inside sales squad", "gold_status": "explicit"}
+{"id": "choice_051", "role": "object", "input": "normalize object: inbound demo requests", "target": "inbound demo requests", "gold_status": "explicit"}
+{"id": "choice_051", "role": "intent", "input": "normalize intent: convert", "target": "convert to paid pilots", "gold_status": "explicit"}
+{"id": "choice_051", "role": "scope", "input": "normalize scope: inbound demo requests", "target": "inbound funnel", "gold_status": "explicit"}
+{"id": "choice_051", "role": "measure", "input": "normalize measure: convert 18% of inbound demo requests into paid pilots", "target": "demo-to-paid-pilot conversion rate", "gold_status": "explicit"}
+{"id": "choice_051", "role": "magnitude", "input": "normalize magnitude: 18%", "target": "18% (from 11%)", "gold_status": "explicit"}
+{"id": "choice_051", "role": "time", "input": "normalize time: this half", "target": "this half", "gold_status": "explicit"}
+{"id": "choice_051", "role": "constraints", "input": "normalize constraints: without adding headcount", "target": "no additional headcount", "gold_status": "explicit"}
+{"id": "choice_051", "role": "context", "input": "normalize context: up from 11%", "target": "current conversion rate is 11%", "gold_status": "explicit"}
+{"id": "choice_052", "role": "object", "input": "normalize object: the discharge process", "target": "patient discharge process", "gold_status": "explicit"}
+{"id": "choice_052", "role": "intent", "input": "normalize intent: drags on forever", "target": "speed up discharge", "gold_status": "inferred"}
+{"id": "choice_052", "role": "scope", "input": "normalize scope: at our Indiranagar clinic", "target": "Indiranagar clinic", "gold_status": "explicit"}
+{"id": "choice_052", "role": "measure", "input": "normalize measure: drags on forever", "target": "discharge turnaround time", "gold_status": "inferred"}
+{"id": "choice_052", "role": "context", "input": "normalize context: Patients complain", "target": "recurring patient complaints about discharge delays", "gold_status": "explicit"}
+{"id": "choice_053", "role": "object", "input": "normalize object: the podcast network", "target": "podcast network", "gold_status": "explicit"}
+{"id": "choice_053", "role": "intent", "input": "normalize intent: Grow", "target": "grow audience and monetisation", "gold_status": "explicit"}
+{"id": "choice_053", "role": "scope", "input": "normalize scope: the podcast network", "target": "podcast network (product line)", "gold_status": "explicit"}
+{"id": "choice_053", "role": "measure", "input": "normalize measure: monthly listens; ad fill rate", "target": "['monthly listens', 'ad fill rate']", "gold_status": "explicit"}
+{"id": "choice_053", "role": "magnitude", "input": "normalize magnitude: 4M; above 70%", "target": "['4M', 'above 70%']", "gold_status": "explicit"}
+{"id": "choice_053", "role": "time", "input": "normalize time: by the end of the fiscal year", "target": "end of the fiscal year", "gold_status": "explicit"}
+{"id": "choice_054", "role": "object", "input": "normalize object: smallholder farmers", "target": "smallholder farmers", "gold_status": "explicit"}
+{"id": "choice_054", "role": "intent", "input": "normalize intent: Onboard", "target": "onboard onto crop-advisory app", "gold_status": "explicit"}
+{"id": "choice_054", "role": "scope", "input": "normalize scope: across Vidarbha", "target": "Vidarbha region", "gold_status": "explicit"}
+{"id": "choice_054", "role": "measure", "input": "normalize measure: Onboard 30,000 smallholder farmers", "target": "farmers onboarded", "gold_status": "inferred"}
+{"id": "choice_054", "role": "magnitude", "input": "normalize magnitude: 30,000", "target": "30000", "gold_status": "explicit"}
+{"id": "choice_054", "role": "time", "input": "normalize time: before the kharif sowing window", "target": "before the kharif sowing window", "gold_status": "explicit"}
+{"id": "choice_054", "role": "constraints", "input": "normalize constraints: using village-level agents only", "target": "village-level agent channel only", "gold_status": "explicit"}
+{"id": "choice_055", "role": "object", "input": "normalize object: undercutting", "target": "pricing", "gold_status": "inferred"}
+{"id": "choice_055", "role": "intent", "input": "normalize intent: tempted to just match them", "target": "consider matching competitor prices", "gold_status": "explicit"}
+{"id": "choice_055", "role": "context", "input": "normalize context: Competitors keep undercutting us", "target": "sustained competitor price undercutting", "gold_status": "explicit"}
+{"id": "choice_056", "role": "object", "input": "normalize object: Claims NPS", "target": "claims experience", "gold_status": "explicit"}
+{"id": "choice_056", "role": "intent", "input": "normalize intent: get it back above 40", "target": "restore claims NPS", "gold_status": "explicit"}
+{"id": "choice_056", "role": "scope", "input": "normalize scope: Claims", "target": "claims function", "gold_status": "explicit"}
+{"id": "choice_056", "role": "measure", "input": "normalize measure: Claims NPS", "target": "claims NPS", "gold_status": "explicit"}
+{"id": "choice_056", "role": "magnitude", "input": "normalize magnitude: above 40", "target": "above 40 (from 12)", "gold_status": "explicit"}
+{"id": "choice_056", "role": "time", "input": "normalize time: within two quarters", "target": "within two quarters", "gold_status": "explicit"}
+{"id": "choice_056", "role": "constraints", "input": "normalize constraints: while clearing the pending claims queue", "target": "must also clear the pending claims queue", "gold_status": "explicit"}
+{"id": "choice_056", "role": "context", "input": "normalize context: tanked to 12 after the cyclone backlog", "target": "NPS fell to 12 after cyclone-driven claims backlog", "gold_status": "explicit"}
+{"id": "choice_057", "role": "object", "input": "normalize object: the stamping line", "target": "stamping line", "gold_status": "explicit"}
+{"id": "choice_057", "role": "intent", "input": "normalize intent: Bring unplanned downtime", "target": "reduce unplanned downtime", "gold_status": "explicit"}
+{"id": "choice_057", "role": "scope", "input": "normalize scope: on the stamping line", "target": "stamping line (production asset)", "gold_status": "explicit"}
+{"id": "choice_057", "role": "measure", "input": "normalize measure: unplanned downtime", "target": "unplanned downtime as share of scheduled hours", "gold_status": "explicit"}
+{"id": "choice_057", "role": "magnitude", "input": "normalize magnitude: below 3%", "target": "below 3%", "gold_status": "explicit"}
+{"id": "choice_057", "role": "time", "input": "normalize time: this quarter", "target": "this quarter", "gold_status": "explicit"}
+{"id": "choice_057", "role": "constraints", "input": "normalize constraints: maintenance can't take the line offline on weekdays", "target": "no weekday line-offline maintenance", "gold_status": "explicit"}
+{"id": "choice_058", "role": "object", "input": "normalize object: the production-linked incentive scheme money", "target": "production-linked incentive (PLI) funding", "gold_status": "explicit"}
+{"id": "choice_058", "role": "intent", "input": "normalize intent: look at whether", "target": "evaluate whether to pursue", "gold_status": "explicit"}
+{"id": "choice_058", "role": "scope", "input": "normalize scope: for the new plant", "target": "new plant", "gold_status": "explicit"}
+{"id": "choice_058", "role": "context", "input": "normalize context: the new plant", "target": "a new plant project exists or is planned", "gold_status": "inferred"}
+{"id": "choice_059", "role": "object", "input": "normalize object: SMB new-logo acquisition", "target": "SMB new-logo acquisition mix", "gold_status": "explicit"}
+{"id": "choice_059", "role": "intent", "input": "normalize intent: Shift", "target": "shift acquisition to PLG funnel", "gold_status": "explicit"}
+{"id": "choice_059", "role": "scope", "input": "normalize scope: SMB new-logo acquisition to the PLG funnel", "target": "SMB segment; PLG funnel", "gold_status": "explicit"}
+{"id": "choice_059", "role": "measure", "input": "normalize measure: 60% of SMB new-logo acquisition", "target": "share of new logos acquired via PLG", "gold_status": "explicit"}
+{"id": "choice_059", "role": "magnitude", "input": "normalize magnitude: 60%", "target": "60%", "gold_status": "explicit"}
+{"id": "choice_059", "role": "time", "input": "normalize time: by Q3", "target": "by Q3", "gold_status": "explicit"}
+{"id": "choice_059", "role": "context", "input": "normalize context: CAC stops eating our gross margin", "target": "high CAC is compressing gross margin", "gold_status": "explicit"}
+{"id": "choice_060", "role": "object", "input": "normalize object: Unsold inventory", "target": "unsold residential inventory", "gold_status": "explicit"}
+{"id": "choice_060", "role": "intent", "input": "normalize intent: brokers aren't moving units", "target": "accelerate unit sales", "gold_status": "inferred"}
+{"id": "choice_060", "role": "scope", "input": "normalize scope: in the Whitefield towers", "target": "Whitefield towers", "gold_status": "explicit"}
+{"id": "choice_060", "role": "measure", "input": "normalize measure: moving units", "target": "units sold / absorption rate", "gold_status": "inferred"}
+{"id": "choice_060", "role": "context", "input": "normalize context: is piling up, brokers aren't moving units", "target": "inventory accumulating; broker channel underperforming", "gold_status": "explicit"}
+{"id": "choice_061", "role": "actor", "input": "normalize actor: The board", "target": "board of directors", "gold_status": "explicit"}
+{"id": "choice_061", "role": "object", "input": "normalize object: a CRO", "target": "CRO role", "gold_status": "explicit"}
+{"id": "choice_061", "role": "intent", "input": "normalize intent: hired and onboarded", "target": "hire and onboard", "gold_status": "explicit"}
+{"id": "choice_061", "role": "measure", "input": "normalize measure: hired and onboarded", "target": "CRO hired and onboarded (binary)", "gold_status": "inferred"}
+{"id": "choice_061", "role": "magnitude", "input": "normalize magnitude: a CRO", "target": "1 hire", "gold_status": "inferred"}
+{"id": "choice_061", "role": "time", "input": "normalize time: before the annual sales kickoff in February", "target": "before the annual sales kickoff in February", "gold_status": "explicit"}
+{"id": "choice_061", "role": "constraints", "input": "normalize constraints: up to $90K", "target": "retained search budget capped at $90K", "gold_status": "explicit"}
+{"id": "choice_062", "role": "object", "input": "normalize object: finished-goods inventory", "target": "finished-goods inventory", "gold_status": "explicit"}
+{"id": "choice_062", "role": "intent", "input": "normalize intent: Cut", "target": "reduce inventory days", "gold_status": "explicit"}
+{"id": "choice_062", "role": "scope", "input": "normalize scope: across the appliance warehouses", "target": "appliance warehouses", "gold_status": "explicit"}
+{"id": "choice_062", "role": "measure", "input": "normalize measure: inventory days; stockouts", "target": "['inventory days', 'stockout rate']", "gold_status": "explicit"}
+{"id": "choice_062", "role": "magnitude", "input": "normalize magnitude: from 74 to 55; above 2%", "target": "['from 74 to 55', 'not above 2%']", "gold_status": "explicit"}
+{"id": "choice_062", "role": "time", "input": "normalize time: by fiscal year-end", "target": "fiscal year-end", "gold_status": "explicit"}
+{"id": "choice_062", "role": "context", "input": "normalize context: from 74", "target": "current inventory days are 74", "gold_status": "explicit"}
+{"id": "choice_063", "role": "object", "input": "normalize object: state education boards", "target": "state education board partnerships", "gold_status": "explicit"}
+{"id": "choice_063", "role": "intent", "input": "normalize intent: Partner", "target": "partner to embed curriculum", "gold_status": "explicit"}
+{"id": "choice_063", "role": "scope", "input": "normalize scope: in government schools", "target": "government schools", "gold_status": "explicit"}
+{"id": "choice_063", "role": "measure", "input": "normalize measure: Partner with three state education boards", "target": "state boards signed", "gold_status": "inferred"}
+{"id": "choice_063", "role": "magnitude", "input": "normalize magnitude: three", "target": "3", "gold_status": "explicit"}
+{"id": "choice_063", "role": "time", "input": "normalize time: starting next academic year", "target": "starting next academic year", "gold_status": "explicit"}
+{"id": "choice_064", "role": "object", "input": "normalize object: the 10-minute delivery pilot", "target": "10-minute delivery pilot", "gold_status": "explicit"}
+{"id": "choice_064", "role": "intent", "input": "normalize intent: fixing them", "target": "improve unit economics", "gold_status": "explicit"}
+{"id": "choice_064", "role": "scope", "input": "normalize scope: on the 10-minute delivery pilot", "target": "10-minute delivery pilot (business line)", "gold_status": "explicit"}
+{"id": "choice_064", "role": "measure", "input": "normalize measure: Unit economics", "target": "unit economics (metrics unspecified)", "gold_status": "explicit"}
+{"id": "choice_064", "role": "context", "input": "normalize context: look ugly", "target": "pilot unit economics are currently poor", "gold_status": "explicit"}
+{"id": "choice_065", "role": "object", "input": "normalize object: test rides for the electric scooter", "target": "test rides (electric scooter)", "gold_status": "explicit"}
+{"id": "choice_065", "role": "intent", "input": "normalize intent: Book", "target": "book test rides", "gold_status": "explicit"}
+{"id": "choice_065", "role": "scope", "input": "normalize scope: across Chennai and Coimbatore dealerships", "target": "Chennai and Coimbatore dealerships", "gold_status": "explicit"}
+{"id": "choice_065", "role": "measure", "input": "normalize measure: test rides; cost per test ride", "target": "['test rides booked', 'cost per test ride']", "gold_status": "explicit"}
+{"id": "choice_065", "role": "magnitude", "input": "normalize magnitude: 5,000; under \u20b9280", "target": "[5000, 'under \u20b9280']", "gold_status": "explicit"}
+{"id": "choice_065", "role": "time", "input": "normalize time: during the launch quarter", "target": "launch quarter", "gold_status": "explicit"}
+{"id": "choice_065", "role": "context", "input": "normalize context: the launch quarter", "target": "product launching this quarter", "gold_status": "inferred"}
+{"id": "choice_066", "role": "object", "input": "normalize object: Support backlog", "target": "support ticket backlog", "gold_status": "explicit"}
+{"id": "choice_066", "role": "intent", "input": "normalize intent: get under 24 hours first-response", "target": "reduce first-response time", "gold_status": "explicit"}
+{"id": "choice_066", "role": "scope", "input": "normalize scope: for enterprise tickets", "target": "enterprise tickets", "gold_status": "explicit"}
+{"id": "choice_066", "role": "measure", "input": "normalize measure: first-response", "target": "first-response time", "gold_status": "explicit"}
+{"id": "choice_066", "role": "magnitude", "input": "normalize magnitude: under 24 hours", "target": "under 24 hours", "gold_status": "explicit"}
+{"id": "choice_066", "role": "constraints", "input": "normalize constraints: stay inside the $60K quarterly budget", "target": "spend within $60K quarterly budget; contractors allowed", "gold_status": "explicit"}
+{"id": "choice_066", "role": "context", "input": "normalize context: Support backlog has to get under", "target": "response times currently above target", "gold_status": "inferred"}
+{"id": "choice_067", "role": "object", "input": "normalize object: the boutique hostel brand", "target": "boutique hostel brand", "gold_status": "explicit"}
+{"id": "choice_067", "role": "intent", "input": "normalize intent: Take the boutique hostel brand to Sri Lanka and Nepal", "target": "expand into new countries", "gold_status": "explicit"}
+{"id": "choice_067", "role": "scope", "input": "normalize scope: to Sri Lanka and Nepal", "target": "Sri Lanka and Nepal", "gold_status": "explicit"}
+{"id": "choice_067", "role": "measure", "input": "normalize measure: two properties each", "target": "properties opened per country", "gold_status": "inferred"}
+{"id": "choice_067", "role": "magnitude", "input": "normalize magnitude: two properties each", "target": "2 per country (4 total)", "gold_status": "explicit"}
+{"id": "choice_067", "role": "time", "input": "normalize time: by December 2027", "target": "by December 2027", "gold_status": "explicit"}
+{"id": "choice_067", "role": "constraints", "input": "normalize constraints: leased not owned", "target": "leased properties only", "gold_status": "explicit"}
+{"id": "choice_068", "role": "actor", "input": "normalize actor: Renewals team", "target": "renewals team", "gold_status": "explicit"}
+{"id": "choice_068", "role": "object", "input": "normalize object: the top 15 at-risk accounts", "target": "top 15 at-risk accounts", "gold_status": "explicit"}
+{"id": "choice_068", "role": "intent", "input": "normalize intent: save", "target": "retain/save accounts", "gold_status": "explicit"}
+{"id": "choice_068", "role": "scope", "input": "normalize scope: flagged in the health dashboard", "target": "accounts flagged in health dashboard", "gold_status": "explicit"}
+{"id": "choice_068", "role": "measure", "input": "normalize measure: save the top 15 at-risk accounts", "target": "at-risk accounts renewed", "gold_status": "inferred"}
+{"id": "choice_068", "role": "magnitude", "input": "normalize magnitude: 15", "target": "15", "gold_status": "explicit"}
+{"id": "choice_068", "role": "time", "input": "normalize time: before their contracts lapse in Q1", "target": "before contracts lapse in Q1", "gold_status": "explicit"}
+{"id": "choice_068", "role": "context", "input": "normalize context: at-risk accounts flagged in the health dashboard", "target": "accounts flagged at-risk on health dashboard", "gold_status": "explicit"}
+{"id": "choice_069", "role": "object", "input": "normalize object: Gen X buyers ghost", "target": "Gen X buyer drop-off behaviour", "gold_status": "explicit"}
+{"id": "choice_069", "role": "intent", "input": "normalize intent: Do we know why", "target": "understand drop-off causes", "gold_status": "explicit"}
+{"id": "choice_069", "role": "scope", "input": "normalize scope: after requesting the brochure", "target": "Gen X buyer segment; post-brochure stage", "gold_status": "explicit"}
+{"id": "choice_069", "role": "context", "input": "normalize context: ghost after requesting the brochure", "target": "buyers disengage after brochure request", "gold_status": "explicit"}
+{"id": "choice_070", "role": "object", "input": "normalize object: diesel generator runtime", "target": "diesel generator runtime", "gold_status": "explicit"}
+{"id": "choice_070", "role": "intent", "input": "normalize intent: Cut", "target": "reduce runtime via solar-battery hybrids", "gold_status": "explicit"}
+{"id": "choice_070", "role": "scope", "input": "normalize scope: at the telecom tower sites in Bihar", "target": "telecom tower sites in Bihar", "gold_status": "explicit"}
+{"id": "choice_070", "role": "measure", "input": "normalize measure: diesel generator runtime", "target": "generator runtime reduction", "gold_status": "explicit"}
+{"id": "choice_070", "role": "magnitude", "input": "normalize magnitude: by 40%", "target": "40% reduction", "gold_status": "explicit"}
+{"id": "choice_070", "role": "time", "input": "normalize time: within a year", "target": "within a year", "gold_status": "explicit"}
+{"id": "choice_070", "role": "constraints", "input": "normalize constraints: capex capped at \u20b99 lakh per site", "target": "capex capped at \u20b99 lakh per site; solution must use solar-battery hybrids", "gold_status": "explicit"}
+{"id": "choice_071", "role": "object", "input": "normalize object: the battle pass", "target": "battle pass feature", "gold_status": "explicit"}
+{"id": "choice_071", "role": "intent", "input": "normalize intent: Soft-launch", "target": "soft-launch and validate", "gold_status": "explicit"}
+{"id": "choice_071", "role": "scope", "input": "normalize scope: in the Philippines", "target": "Philippines (test market)", "gold_status": "explicit"}
+{"id": "choice_071", "role": "measure", "input": "normalize measure: D30 retention", "target": "D30 retention", "gold_status": "explicit"}
+{"id": "choice_071", "role": "magnitude", "input": "normalize magnitude: holds", "target": "no decline vs current baseline", "gold_status": "explicit"}
+{"id": "choice_071", "role": "context", "input": "normalize context: before we push it global", "target": "global rollout planned after validation", "gold_status": "explicit"}
+{"id": "choice_072", "role": "object", "input": "normalize object: Fortune 100 logos", "target": "Fortune 100 client logos", "gold_status": "explicit"}
+{"id": "choice_072", "role": "intent", "input": "normalize intent: Land", "target": "acquire marquee clients", "gold_status": "explicit"}
+{"id": "choice_072", "role": "scope", "input": "normalize scope: for the managed-payroll offering", "target": "Fortune 100 segment; managed-payroll offering", "gold_status": "explicit"}
+{"id": "choice_072", "role": "measure", "input": "normalize measure: Land two Fortune 100 logos", "target": "Fortune 100 logos signed", "gold_status": "inferred"}
+{"id": "choice_072", "role": "magnitude", "input": "normalize magnitude: two", "target": "2", "gold_status": "explicit"}
+{"id": "choice_072", "role": "time", "input": "normalize time: in the next two quarters", "target": "next two quarters", "gold_status": "explicit"}
+{"id": "choice_072", "role": "context", "input": "normalize context: deal size doesn't matter, references do", "target": "goal is referenceability, not revenue", "gold_status": "explicit"}
+{"id": "choice_073", "role": "object", "input": "normalize object: the marketplace take rate", "target": "marketplace take rate", "gold_status": "explicit"}
+{"id": "choice_073", "role": "intent", "input": "normalize intent: Move", "target": "increase take rate", "gold_status": "explicit"}
+{"id": "choice_073", "role": "scope", "input": "normalize scope: for electronics sellers", "target": "electronics seller category", "gold_status": "explicit"}
+{"id": "choice_073", "role": "measure", "input": "normalize measure: take rate", "target": "take rate", "gold_status": "explicit"}
+{"id": "choice_073", "role": "magnitude", "input": "normalize magnitude: from 12% to 15%", "target": "from 12% to 15%", "gold_status": "explicit"}
+{"id": "choice_073", "role": "time", "input": "normalize time: next April", "target": "next April", "gold_status": "explicit"}
+{"id": "choice_073", "role": "constraints", "input": "normalize constraints: grandfathering the top 50 sellers for six months", "target": "top 50 sellers grandfathered for six months", "gold_status": "explicit"}
+{"id": "choice_073", "role": "context", "input": "normalize context: from 12%", "target": "current take rate is 12%", "gold_status": "explicit"}
+{"id": "choice_074", "role": "object", "input": "normalize object: Corporate travel bookings", "target": "corporate travel bookings", "gold_status": "explicit"}
+{"id": "choice_074", "role": "intent", "input": "normalize intent: still haven't recovered", "target": "recover booking volumes", "gold_status": "inferred"}
+{"id": "choice_074", "role": "scope", "input": "normalize scope: Corporate travel", "target": "corporate travel segment", "gold_status": "explicit"}
+{"id": "choice_074", "role": "measure", "input": "normalize measure: bookings", "target": "booking volume", "gold_status": "inferred"}
+{"id": "choice_074", "role": "context", "input": "normalize context: the sales team blames our clunky booking tool", "target": "bookings below prior levels; booking tool blamed internally", "gold_status": "explicit"}
+{"id": "choice_075", "role": "actor", "input": "normalize actor: The CFO office", "target": "CFO office", "gold_status": "explicit"}
+{"id": "choice_075", "role": "object", "input": "normalize object: IPO-ready", "target": "IPO readiness", "gold_status": "explicit"}
+{"id": "choice_075", "role": "intent", "input": "normalize intent: must have the company IPO-ready", "target": "achieve IPO readiness", "gold_status": "explicit"}
+{"id": "choice_075", "role": "scope", "input": "normalize scope: the company", "target": "company-wide", "gold_status": "explicit"}
+{"id": "choice_075", "role": "measure", "input": "normalize measure: audited three-year financials, internal controls signed off, and the DRHP draft complete", "target": "readiness deliverables completed (audited financials, controls sign-off, DRHP draft)", "gold_status": "explicit"}
+{"id": "choice_075", "role": "magnitude", "input": "normalize magnitude: complete", "target": "all three deliverables complete", "gold_status": "inferred"}
+{"id": "choice_075", "role": "time", "input": "normalize time: by next June", "target": "by next June", "gold_status": "explicit"}
+{"id": "choice_075", "role": "constraints", "input": "normalize constraints: using our existing Big Four auditor", "target": "retain existing Big Four auditor", "gold_status": "explicit"}
+{"id": "choice_076", "role": "actor", "input": "normalize actor: Franchise ops", "target": "franchise operations team", "gold_status": "explicit"}
+{"id": "choice_076", "role": "object", "input": "normalize object: drive-thru outlets", "target": "drive-thru outlets", "gold_status": "explicit"}
+{"id": "choice_076", "role": "intent", "input": "normalize intent: new drive-thru outlets live", "target": "open new outlets", "gold_status": "explicit"}
+{"id": "choice_076", "role": "scope", "input": "normalize scope: across Punjab highways", "target": "Punjab highways", "gold_status": "explicit"}
+{"id": "choice_076", "role": "measure", "input": "normalize measure: 20 new drive-thru outlets; breaking even", "target": "['outlets opened', 'time to breakeven per outlet']", "gold_status": "explicit"}
+{"id": "choice_076", "role": "magnitude", "input": "normalize magnitude: 20; within nine months of opening", "target": "[20, 'within nine months of opening']", "gold_status": "explicit"}
+{"id": "choice_076", "role": "time", "input": "normalize time: by March 2028", "target": "by March 2028", "gold_status": "explicit"}
+{"id": "choice_077", "role": "object", "input": "normalize object: savings accounts", "target": "savings accounts", "gold_status": "explicit"}
+{"id": "choice_077", "role": "intent", "input": "normalize intent: Why are", "target": "understand dormancy causes", "gold_status": "explicit"}
+{"id": "choice_077", "role": "scope", "input": "normalize scope: within the first year", "target": "first-year account cohort", "gold_status": "explicit"}
+{"id": "choice_077", "role": "context", "input": "normalize context: so many savings accounts going dormant", "target": "high early dormancy observed", "gold_status": "explicit"}
+{"id": "choice_078", "role": "object", "input": "normalize object: the dermatology molecule", "target": "dermatology molecule", "gold_status": "explicit"}
+{"id": "choice_078", "role": "intent", "input": "normalize intent: License", "target": "out-license", "gold_status": "explicit"}
+{"id": "choice_078", "role": "scope", "input": "normalize scope: to a European partner", "target": "European partner", "gold_status": "explicit"}
+{"id": "choice_078", "role": "measure", "input": "normalize measure: closing the deal", "target": "licensing deal closed", "gold_status": "inferred"}
+{"id": "choice_078", "role": "time", "input": "normalize time: before the Phase III readout next autumn", "target": "before the Phase III readout next autumn", "gold_status": "explicit"}
+{"id": "choice_078", "role": "constraints", "input": "normalize constraints: with upfront plus royalties", "target": "deal structure: upfront plus royalties", "gold_status": "explicit"}
+{"id": "choice_078", "role": "context", "input": "normalize context: the Phase III readout", "target": "Phase III readout upcoming", "gold_status": "explicit"}
+{"id": "choice_079", "role": "object", "input": "normalize object: size-exchange returns", "target": "size-exchange returns", "gold_status": "explicit"}
+{"id": "choice_079", "role": "intent", "input": "normalize intent: Get that down", "target": "reduce return rate", "gold_status": "explicit"}
+{"id": "choice_079", "role": "measure", "input": "normalize measure: 28% of orders", "target": "size-exchange returns as share of orders", "gold_status": "explicit"}
+{"id": "choice_079", "role": "constraints", "input": "normalize constraints: without annoying customers", "target": "must not degrade customer experience", "gold_status": "explicit"}
+{"id": "choice_079", "role": "context", "input": "normalize context: 28% of orders!", "target": "returns currently at 28% of orders", "gold_status": "explicit"}
+{"id": "choice_080", "role": "object", "input": "normalize object: container dwell time", "target": "container dwell time", "gold_status": "explicit"}
+{"id": "choice_080", "role": "intent", "input": "normalize intent: Cut", "target": "reduce dwell time", "gold_status": "explicit"}
+{"id": "choice_080", "role": "scope", "input": "normalize scope: at the Mundra yard", "target": "Mundra yard", "gold_status": "explicit"}
+{"id": "choice_080", "role": "measure", "input": "normalize measure: average container dwell time", "target": "average container dwell time (days)", "gold_status": "explicit"}
+{"id": "choice_080", "role": "magnitude", "input": "normalize magnitude: from 3.4 to 2.2 days", "target": "from 3.4 to 2.2 days", "gold_status": "explicit"}
+{"id": "choice_080", "role": "time", "input": "normalize time: by Q2", "target": "by Q2", "gold_status": "explicit"}
+{"id": "choice_080", "role": "constraints", "input": "normalize constraints: coordinating only with the two anchor shipping lines", "target": "coordinate only with the two anchor shipping lines", "gold_status": "explicit"}
+{"id": "choice_080", "role": "context", "input": "normalize context: from 3.4", "target": "current dwell time is 3.4 days", "gold_status": "explicit"}
+{"id": "choice_081", "role": "actor", "input": "normalize actor: Security sales", "target": "security sales team", "gold_status": "explicit"}
+{"id": "choice_081", "role": "object", "input": "normalize object: SOC 2 Type II", "target": "SOC 2 Type II certification", "gold_status": "explicit"}
+{"id": "choice_081", "role": "intent", "input": "normalize intent: in hand", "target": "obtain certification", "gold_status": "explicit"}
+{"id": "choice_081", "role": "scope", "input": "normalize scope: mid-market deals", "target": "mid-market segment", "gold_status": "explicit"}
+{"id": "choice_081", "role": "measure", "input": "normalize measure: SOC 2 Type II in hand", "target": "certification obtained (binary)", "gold_status": "inferred"}
+{"id": "choice_081", "role": "time", "input": "normalize time: by January", "target": "by January", "gold_status": "explicit"}
+{"id": "choice_081", "role": "context", "input": "normalize context: losing mid-market deals at the vendor-review stage every week", "target": "losing mid-market deals weekly at vendor review", "gold_status": "explicit"}
+{"id": "choice_082", "role": "object", "input": "normalize object: the UHT milk range", "target": "UHT milk range", "gold_status": "explicit"}
+{"id": "choice_082", "role": "intent", "input": "normalize intent: Deepen rural distribution", "target": "expand outlet distribution", "gold_status": "explicit"}
+{"id": "choice_082", "role": "scope", "input": "normalize scope: across northern Karnataka", "target": "rural northern Karnataka", "gold_status": "explicit"}
+{"id": "choice_082", "role": "measure", "input": "normalize measure: 8,000 additional outlets", "target": "additional outlets stocking the range", "gold_status": "inferred"}
+{"id": "choice_082", "role": "magnitude", "input": "normalize magnitude: 8,000", "target": "8000", "gold_status": "explicit"}
+{"id": "choice_082", "role": "time", "input": "normalize time: by Sankranti", "target": "by Sankranti", "gold_status": "explicit"}
+{"id": "choice_082", "role": "constraints", "input": "normalize constraints: keeping distributor margins unchanged", "target": "distributor margins unchanged", "gold_status": "explicit"}
+{"id": "choice_083", "role": "object", "input": "normalize object: Driver cancellations", "target": "driver cancellations", "gold_status": "explicit"}
+{"id": "choice_083", "role": "intent", "input": "normalize intent: are wrecking", "target": "reduce rain-time cancellations", "gold_status": "inferred"}
+{"id": "choice_083", "role": "scope", "input": "normalize scope: the airport queue", "target": "airport queue; rainy conditions", "gold_status": "explicit"}
+{"id": "choice_083", "role": "measure", "input": "normalize measure: Driver cancellations", "target": "driver cancellation rate", "gold_status": "inferred"}
+{"id": "choice_083", "role": "context", "input": "normalize context: are wrecking the airport queue experience", "target": "rain-time cancellations degrading airport experience", "gold_status": "explicit"}
+{"id": "choice_084", "role": "actor", "input": "normalize actor: Procurement", "target": "procurement team", "gold_status": "explicit"}
+{"id": "choice_084", "role": "object", "input": "normalize object: rebar rates", "target": "rebar rates", "gold_status": "explicit"}
+{"id": "choice_084", "role": "intent", "input": "normalize intent: lock", "target": "lock rates with vetted mills", "gold_status": "explicit"}
+{"id": "choice_084", "role": "scope", "input": "normalize scope: for the Phase 2 towers", "target": "Phase 2 towers", "gold_status": "explicit"}
+{"id": "choice_084", "role": "measure", "input": "normalize measure: with two vetted mills", "target": "vetted mills contracted", "gold_status": "inferred"}
+{"id": "choice_084", "role": "magnitude", "input": "normalize magnitude: two", "target": "2", "gold_status": "explicit"}
+{"id": "choice_084", "role": "time", "input": "normalize time: before monsoon", "target": "before monsoon", "gold_status": "explicit"}
+{"id": "choice_084", "role": "constraints", "input": "normalize constraints: hedging at most 60% of the requirement", "target": "hedge at most 60% of the requirement", "gold_status": "explicit"}
+{"id": "choice_085", "role": "object", "input": "normalize object: the free webinar audience", "target": "free webinar audience", "gold_status": "explicit"}
+{"id": "choice_085", "role": "intent", "input": "normalize intent: monetise", "target": "monetise", "gold_status": "explicit"}
+{"id": "choice_085", "role": "scope", "input": "normalize scope: webinar audience", "target": "webinar audience segment", "gold_status": "explicit"}
+{"id": "choice_085", "role": "time", "input": "normalize time: next quarter", "target": "next quarter", "gold_status": "explicit"}
+{"id": "choice_085", "role": "context", "input": "normalize context: finally monetise", "target": "monetisation long-pending; audience currently free", "gold_status": "inferred"}
+{"id": "choice_086", "role": "actor", "input": "normalize actor: Enterprise team", "target": "enterprise team", "gold_status": "explicit"}
+{"id": "choice_086", "role": "object", "input": "normalize object: existing MPLS accounts", "target": "existing MPLS accounts", "gold_status": "explicit"}
+{"id": "choice_086", "role": "intent", "input": "normalize intent: upsell managed SD-WAN", "target": "upsell managed SD-WAN", "gold_status": "explicit"}
+{"id": "choice_086", "role": "scope", "input": "normalize scope: of our existing MPLS accounts", "target": "existing MPLS account base", "gold_status": "explicit"}
+{"id": "choice_086", "role": "measure", "input": "normalize measure: 120 of our existing MPLS accounts; logo churn", "target": "['accounts upsold', 'logo churn']", "gold_status": "explicit"}
+{"id": "choice_086", "role": "magnitude", "input": "normalize magnitude: 120; under 3%", "target": "[120, 'under 3%']", "gold_status": "explicit"}
+{"id": "choice_086", "role": "time", "input": "normalize time: this fiscal", "target": "this fiscal", "gold_status": "explicit"}
+{"id": "choice_087", "role": "object", "input": "normalize object: the detergent bottles", "target": "detergent bottle packaging", "gold_status": "explicit"}
+{"id": "choice_087", "role": "intent", "input": "normalize intent: Hit 65% post-consumer recycled content", "target": "increase recycled content", "gold_status": "explicit"}
+{"id": "choice_087", "role": "scope", "input": "normalize scope: in the detergent bottles", "target": "detergent bottles (packaging line)", "gold_status": "explicit"}
+{"id": "choice_087", "role": "measure", "input": "normalize measure: post-consumer recycled content", "target": "post-consumer recycled content share", "gold_status": "explicit"}
+{"id": "choice_087", "role": "magnitude", "input": "normalize magnitude: 65%", "target": "65%", "gold_status": "explicit"}
+{"id": "choice_087", "role": "time", "input": "normalize time: by 2027", "target": "by 2027", "gold_status": "explicit"}
+{"id": "choice_087", "role": "constraints", "input": "normalize constraints: without raising pack cost more than 4%", "target": "pack cost increase capped at 4%", "gold_status": "explicit"}
+{"id": "choice_088", "role": "actor", "input": "normalize actor: partners", "target": "partners", "gold_status": "explicit"}
+{"id": "choice_088", "role": "object", "input": "normalize object: lateral hires", "target": "lateral hires (disputes practice)", "gold_status": "explicit"}
+{"id": "choice_088", "role": "intent", "input": "normalize intent: talking about lateral hires", "target": "consider lateral hiring", "gold_status": "explicit"}
+{"id": "choice_088", "role": "scope", "input": "normalize scope: The disputes practice", "target": "disputes practice", "gold_status": "explicit"}
+{"id": "choice_088", "role": "context", "input": "normalize context: is stretched thin", "target": "practice capacity stretched; hiring previously discussed", "gold_status": "explicit"}
+{"id": "choice_089", "role": "object", "input": "normalize object: weekday occupancy", "target": "weekday occupancy", "gold_status": "explicit"}
+{"id": "choice_089", "role": "intent", "input": "normalize intent: Lift", "target": "increase occupancy via corporate tie-ups", "gold_status": "explicit"}
+{"id": "choice_089", "role": "scope", "input": "normalize scope: at the Jaipur property", "target": "Jaipur property; weekdays", "gold_status": "explicit"}
+{"id": "choice_089", "role": "measure", "input": "normalize measure: weekday occupancy", "target": "weekday occupancy rate", "gold_status": "explicit"}
+{"id": "choice_089", "role": "magnitude", "input": "normalize magnitude: from 52% to 70%", "target": "from 52% to 70%", "gold_status": "explicit"}
+{"id": "choice_089", "role": "time", "input": "normalize time: this winter season", "target": "this winter season", "gold_status": "explicit"}
+{"id": "choice_089", "role": "constraints", "input": "normalize constraints: without discounting weekend rates", "target": "no weekend rate discounting; channel = corporate tie-ups", "gold_status": "explicit"}
+{"id": "choice_089", "role": "context", "input": "normalize context: from 52%", "target": "current weekday occupancy is 52%", "gold_status": "explicit"}
+{"id": "choice_090", "role": "object", "input": "normalize object: the digital subscriptions bet", "target": "digital subscriptions business", "gold_status": "explicit"}
+{"id": "choice_090", "role": "intent", "input": "normalize intent: start paying for the newsroom", "target": "make subscriptions cover newsroom costs", "gold_status": "explicit"}
+{"id": "choice_090", "role": "scope", "input": "normalize scope: the newsroom", "target": "newsroom cost base", "gold_status": "explicit"}
+{"id": "choice_090", "role": "measure", "input": "normalize measure: paying for the newsroom", "target": "subscription revenue vs newsroom costs", "gold_status": "inferred"}
+{"id": "choice_090", "role": "magnitude", "input": "normalize magnitude: paying for the newsroom", "target": "revenue at or above newsroom costs", "gold_status": "inferred"}
+{"id": "choice_090", "role": "context", "input": "normalize context: Print ad revenue keeps sliding", "target": "print ad revenue in sustained decline", "gold_status": "explicit"}
+{"id": "choice_091", "role": "object", "input": "normalize object: pilot of the shelf-scanning robot", "target": "shelf-scanning robot pilot", "gold_status": "explicit"}
+{"id": "choice_091", "role": "intent", "input": "normalize intent: Demo-ready pilot", "target": "deploy demo-ready pilot", "gold_status": "explicit"}
+{"id": "choice_091", "role": "scope", "input": "normalize scope: Carrefour-type hypermarkets", "target": "hypermarket format stores", "gold_status": "explicit"}
+{"id": "choice_091", "role": "measure", "input": "normalize measure: in five Carrefour-type hypermarkets", "target": "pilot stores live", "gold_status": "inferred"}
+{"id": "choice_091", "role": "magnitude", "input": "normalize magnitude: five", "target": "5", "gold_status": "explicit"}
+{"id": "choice_091", "role": "time", "input": "normalize time: by CES", "target": "by CES", "gold_status": "explicit"}
+{"id": "choice_091", "role": "constraints", "input": "normalize constraints: capped at $250K total pilot spend", "target": "total pilot spend capped at $250K", "gold_status": "explicit"}
+{"id": "choice_092", "role": "object", "input": "normalize object: basmati export volumes", "target": "basmati export volumes", "gold_status": "explicit"}
+{"id": "choice_092", "role": "intent", "input": "normalize intent: Double", "target": "double exports", "gold_status": "explicit"}
+{"id": "choice_092", "role": "scope", "input": "normalize scope: to the GCC", "target": "GCC markets", "gold_status": "explicit"}
+{"id": "choice_092", "role": "measure", "input": "normalize measure: export volumes", "target": "export volume", "gold_status": "explicit"}
+{"id": "choice_092", "role": "magnitude", "input": "normalize magnitude: Double", "target": "2x (double)", "gold_status": "explicit"}
+{"id": "choice_092", "role": "time", "input": "normalize time: within 18 months", "target": "within 18 months", "gold_status": "explicit"}
+{"id": "choice_092", "role": "context", "input": "normalize context: freight contracts are already locked", "target": "freight contracts already locked", "gold_status": "explicit"}
+{"id": "choice_093", "role": "object", "input": "normalize object: Walk-ins at the salons", "target": "salon walk-in traffic", "gold_status": "explicit"}
+{"id": "choice_093", "role": "intent", "input": "normalize intent: have basically died", "target": "restore walk-in traffic", "gold_status": "inferred"}
+{"id": "choice_093", "role": "scope", "input": "normalize scope: the salons", "target": "salon locations (mall)", "gold_status": "explicit"}
+{"id": "choice_093", "role": "measure", "input": "normalize measure: Walk-ins", "target": "walk-in volume", "gold_status": "inferred"}
+{"id": "choice_093", "role": "context", "input": "normalize context: since the mall renovation started", "target": "mall renovation collapsed walk-in traffic", "gold_status": "explicit"}
+{"id": "choice_094", "role": "object", "input": "normalize object: the data-pipeline product", "target": "data-pipeline product", "gold_status": "explicit"}
+{"id": "choice_094", "role": "intent", "input": "normalize intent: Grow consumption revenue", "target": "grow consumption revenue", "gold_status": "explicit"}
+{"id": "choice_094", "role": "scope", "input": "normalize scope: from the data-pipeline product", "target": "data-pipeline product line", "gold_status": "explicit"}
+{"id": "choice_094", "role": "measure", "input": "normalize measure: MRR; net revenue retention", "target": "['consumption MRR', 'net revenue retention']", "gold_status": "explicit"}
+{"id": "choice_094", "role": "magnitude", "input": "normalize magnitude: $700K; above 118%", "target": "['$700K', 'above 118%']", "gold_status": "explicit"}
+{"id": "choice_094", "role": "time", "input": "normalize time: by end of FY", "target": "end of FY", "gold_status": "explicit"}
+{"id": "choice_095", "role": "actor", "input": "normalize actor: Corp dev", "target": "corporate development team", "gold_status": "explicit"}
+{"id": "choice_095", "role": "object", "input": "normalize object: the two smaller regional rivals", "target": "two smaller regional rivals", "gold_status": "explicit"}
+{"id": "choice_095", "role": "intent", "input": "normalize intent: sound out", "target": "explore roll-up acquisition", "gold_status": "explicit"}
+{"id": "choice_095", "role": "scope", "input": "normalize scope: regional rivals", "target": "regional competitor set", "gold_status": "explicit"}
+{"id": "choice_095", "role": "magnitude", "input": "normalize magnitude: two", "target": "2 targets", "gold_status": "explicit"}
+{"id": "choice_095", "role": "time", "input": "normalize time: before PE firms get there first", "target": "before PE firms engage (event-based)", "gold_status": "explicit"}
+{"id": "choice_095", "role": "constraints", "input": "normalize constraints: quietly", "target": "discreet outreach", "gold_status": "explicit"}
+{"id": "choice_095", "role": "context", "input": "normalize context: before PE firms get there first", "target": "PE firms may pursue the same targets", "gold_status": "explicit"}
+{"id": "choice_096", "role": "object", "input": "normalize object: the modest activewear line", "target": "modest activewear line", "gold_status": "explicit"}
+{"id": "choice_096", "role": "intent", "input": "normalize intent: Take the modest activewear line viral", "target": "drive viral sales", "gold_status": "explicit"}
+{"id": "choice_096", "role": "scope", "input": "normalize scope: on TikTok Shop Indonesia", "target": "TikTok Shop Indonesia", "gold_status": "explicit"}
+{"id": "choice_096", "role": "measure", "input": "normalize measure: 50K units", "target": "units sold", "gold_status": "explicit"}
+{"id": "choice_096", "role": "magnitude", "input": "normalize magnitude: 50K", "target": "50K units", "gold_status": "explicit"}
+{"id": "choice_096", "role": "time", "input": "normalize time: in the first 60 days", "target": "first 60 days", "gold_status": "explicit"}
+{"id": "choice_096", "role": "constraints", "input": "normalize constraints: influencer budget capped at 8% of GMV", "target": "influencer budget capped at 8% of GMV", "gold_status": "explicit"}
+{"id": "choice_097", "role": "object", "input": "normalize object: trade credit", "target": "trade credit terms", "gold_status": "explicit"}
+{"id": "choice_097", "role": "intent", "input": "normalize intent: bring days sales outstanding down", "target": "reduce DSO", "gold_status": "explicit"}
+{"id": "choice_097", "role": "scope", "input": "normalize scope: for the electronics distributors", "target": "electronics distributor accounts", "gold_status": "explicit"}
+{"id": "choice_097", "role": "measure", "input": "normalize measure: days sales outstanding", "target": "days sales outstanding (DSO)", "gold_status": "explicit"}
+{"id": "choice_097", "role": "magnitude", "input": "normalize magnitude: from 68 to 45", "target": "from 68 to 45 days", "gold_status": "explicit"}
+{"id": "choice_097", "role": "time", "input": "normalize time: by Q3", "target": "by Q3", "gold_status": "explicit"}
+{"id": "choice_097", "role": "constraints", "input": "normalize constraints: without losing the top ten accounts", "target": "retain the top ten accounts", "gold_status": "explicit"}
+{"id": "choice_097", "role": "context", "input": "normalize context: from 68", "target": "current DSO is 68 days", "gold_status": "explicit"}
+{"id": "choice_098", "role": "object", "input": "normalize object: a headline sponsor for the city marathon", "target": "headline sponsorship (city marathon)", "gold_status": "explicit"}
+{"id": "choice_098", "role": "intent", "input": "normalize intent: need a headline sponsor", "target": "secure a sponsor", "gold_status": "explicit"}
+{"id": "choice_098", "role": "scope", "input": "normalize scope: someone in fintech", "target": "fintech sector (preferred)", "gold_status": "explicit"}
+{"id": "choice_098", "role": "measure", "input": "normalize measure: a headline sponsor", "target": "headline sponsor signed", "gold_status": "inferred"}
+{"id": "choice_098", "role": "magnitude", "input": "normalize magnitude: a headline sponsor", "target": "1 sponsor", "gold_status": "inferred"}
+{"id": "choice_099", "role": "actor", "input": "normalize actor: Riders on the Hyderabad night shift", "target": "night-shift riders (Hyderabad)", "gold_status": "explicit"}
+{"id": "choice_099", "role": "object", "input": "normalize object: drops", "target": "parcel deliveries (drops)", "gold_status": "explicit"}
+{"id": "choice_099", "role": "intent", "input": "normalize intent: must average 22 drops per hour", "target": "raise drop rate while limiting damage", "gold_status": "explicit"}
+{"id": "choice_099", "role": "scope", "input": "normalize scope: on the Hyderabad night shift", "target": "Hyderabad night shift", "gold_status": "explicit"}
+{"id": "choice_099", "role": "measure", "input": "normalize measure: drops per hour; damage complaints", "target": "['drops per hour', 'damage complaints as share of parcels']", "gold_status": "explicit"}
+{"id": "choice_099", "role": "magnitude", "input": "normalize magnitude: 22; under 0.5%", "target": "['22 average', 'under 0.5%']", "gold_status": "explicit"}
+{"id": "choice_099", "role": "time", "input": "normalize time: by December", "target": "by December", "gold_status": "explicit"}
+{"id": "choice_100", "role": "object", "input": "normalize object: what business are we actually in", "target": "business definition", "gold_status": "explicit"}
+{"id": "choice_100", "role": "intent", "input": "normalize intent: what business are we actually in", "target": "define long-term strategic direction", "gold_status": "inferred"}
+{"id": "choice_100", "role": "time", "input": "normalize time: Five years from now", "target": "five-year horizon", "gold_status": "explicit"}
