@@ -1,0 +1,694 @@
+[
+  {
+    "id": "rw_003",
+    "input_query": "Target added around 1,500 new items and plans to refresh around 40% of its wellness assortment this year.",
+    "choice": {
+      "actor": {
+        "value": "Target",
+        "status": "explicit",
+        "confidence": 0.95,
+        "source_text": "Target"
+      },
+      "object": {
+        "value": "wellness assortment",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "wellness assortment"
+      },
+      "intent": {
+        "value": "refresh product assortment",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "refresh"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": [
+          "around 1,500",
+          "around 40%"
+        ],
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": [
+          "around 1,500",
+          "around 40%"
+        ]
+      },
+      "time": {
+        "value": "this year",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "this year"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/05/20/target-tgt-q1-2026-earnings-call-transcript/",
+    "_source_note": "Cara Sylvester (CMO), lightly trimmed"
+  },
+  {
+    "id": "rw_009",
+    "input_query": "PNC's operating target for its CET1 capital ratio is around 10%.",
+    "choice": {
+      "actor": {
+        "value": "PNC",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "PNC"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "CET1 capital ratio",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "CET1 capital ratio"
+      },
+      "magnitude": {
+        "value": "around 10%",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "around 10%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/22/pnc-pnc-q2-2026-earnings-call-transcript/",
+    "_source_note": "William Demchak (CEO), lightly trimmed"
+  },
+  {
+    "id": "rw_012",
+    "input_query": "FIS expects free cash flow to double by 2028 to more than $3 billion.",
+    "choice": {
+      "actor": {
+        "value": "FIS",
+        "status": "explicit",
+        "confidence": 0.95,
+        "source_text": "FIS"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": "double free cash flow",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "double"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "free cash flow",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "free cash flow"
+      },
+      "magnitude": {
+        "value": "more than $3 billion",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "more than $3 billion"
+      },
+      "time": {
+        "value": "by 2028",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "by 2028"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/06/01/fis-q1-2026-earnings-call-transcript/",
+    "_source_note": "James Kehoe (CFO), verbatim"
+  },
+  {
+    "id": "rw_016",
+    "input_query": "Wells Fargo expects to increase its third quarter common stock dividend by 11% to $0.50 per share, subject to board approval.",
+    "choice": {
+      "actor": {
+        "value": "Wells Fargo",
+        "status": "explicit",
+        "confidence": 0.95,
+        "source_text": "Wells Fargo"
+      },
+      "object": {
+        "value": "common stock dividend",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "common stock dividend"
+      },
+      "intent": {
+        "value": "increase the dividend",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "increase"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": [
+          "11%",
+          "$0.50 per share"
+        ],
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": [
+          "11%",
+          "$0.50 per share"
+        ]
+      },
+      "time": {
+        "value": "third quarter",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "third quarter"
+      },
+      "constraints": {
+        "value": "subject to board approval",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "subject to board approval"
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/21/wells-fargo-wfc-q2-2026-earnings-call-transcript/",
+    "_source_note": "Charles W. Scharf (CEO), verbatim"
+  },
+  {
+    "id": "rw_017",
+    "input_query": "Wells Fargo is maintaining its full-year guidance of about $50 billion in net interest income.",
+    "choice": {
+      "actor": {
+        "value": "Wells Fargo",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Wells Fargo"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": "maintain guidance",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "maintaining"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "net interest income",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "net interest income"
+      },
+      "magnitude": {
+        "value": "about $50 billion",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "about $50 billion"
+      },
+      "time": {
+        "value": "full-year",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "full-year"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/21/wells-fargo-wfc-q2-2026-earnings-call-transcript/",
+    "_source_note": "Michael Santomassimo (CFO), lightly trimmed"
+  },
+  {
+    "id": "rw_020",
+    "input_query": "D.R. Horton targets consolidated leverage of around 20% over the long term, down from 23% at the end of June.",
+    "choice": {
+      "actor": {
+        "value": "D.R. Horton",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "D.R. Horton"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "consolidated leverage",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "consolidated leverage"
+      },
+      "magnitude": {
+        "value": [
+          "around 20%",
+          "23%"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "around 20%",
+          "23%"
+        ]
+      },
+      "time": {
+        "value": [
+          "over the long term",
+          "at the end of June"
+        ],
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": [
+          "over the long term",
+          "at the end of June"
+        ]
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/22/dr-horton-dhi-q3-2026-earnings-call-transcript/",
+    "_source_note": "lightly trimmed"
+  },
+  {
+    "id": "rw_021",
+    "input_query": "D.R. Horton expects operating cash flow of at least $3 billion for fiscal 2026, while keeping rental inventory around $3 billion.",
+    "choice": {
+      "actor": {
+        "value": "D.R. Horton",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "D.R. Horton"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "operating cash flow",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "operating cash flow"
+      },
+      "magnitude": {
+        "value": "at least $3 billion",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "at least $3 billion"
+      },
+      "time": {
+        "value": "for fiscal 2026",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "for fiscal 2026"
+      },
+      "constraints": {
+        "value": "keep rental inventory around $3 billion",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "while keeping rental inventory around $3 billion"
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/22/dr-horton-dhi-q3-2026-earnings-call-transcript/",
+    "_source_note": "lightly trimmed"
+  },
+  {
+    "id": "rw_022",
+    "input_query": "Citizens expects to exit 2026 with about $100 million of annualized pre-tax benefit from its Reimagine the Bank program, and reaching about $450 million by 2028.",
+    "choice": {
+      "actor": {
+        "value": "Citizens",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Citizens"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "annualized pre-tax benefit",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "annualized pre-tax benefit"
+      },
+      "magnitude": {
+        "value": [
+          "about $100 million",
+          "about $450 million"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "about $100 million",
+          "about $450 million"
+        ]
+      },
+      "time": {
+        "value": [
+          "2026",
+          "by 2028"
+        ],
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": [
+          "2026",
+          "by 2028"
+        ]
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": "from its Reimagine the Bank program",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "from its Reimagine the Bank program"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/23/citizens-financial-cfg-q2-2026-earnings-call-transcript/",
+    "_source_note": "Aunoy Banerjee, lightly trimmed"
+  },
+  {
+    "id": "rw_027",
+    "input_query": "FactSet's organic ASV growth was 7.0% in the Americas, 10.0% in Asia Pacific, and 5.0% in EMEA.",
+    "choice": {
+      "actor": {
+        "value": "FactSet",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "FactSet"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": [
+          "Americas",
+          "Asia Pacific",
+          "EMEA"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "in the Americas",
+          "in Asia Pacific",
+          "in EMEA"
+        ]
+      },
+      "measure": {
+        "value": "organic ASV growth",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "organic ASV growth"
+      },
+      "magnitude": {
+        "value": [
+          "7.0%",
+          "10.0%",
+          "5.0%"
+        ],
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": [
+          "7.0%",
+          "10.0%",
+          "5.0%"
+        ]
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/01/factset-fds-q3-2026-earnings-call-transcript/",
+    "_source_note": "TAKEAWAYS section, lightly trimmed"
+  },
+  {
+    "id": "rw_029",
+    "input_query": "Citizens continues investing in Florida as a growth area for its private bank.",
+    "choice": {
+      "actor": {
+        "value": "Citizens",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Citizens"
+      },
+      "object": {
+        "value": "private bank",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "private bank"
+      },
+      "intent": {
+        "value": "invest in growth",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "investing"
+      },
+      "scope": {
+        "value": "Florida",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Florida"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/23/citizens-financial-cfg-q2-2026-earnings-call-transcript/",
+    "_source_note": "Bruce Van Saun, lightly trimmed"
+  }
+]

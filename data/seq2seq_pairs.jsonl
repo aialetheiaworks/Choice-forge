@@ -627,3 +627,95 @@
 {"id": "choice_100", "role": "object", "input": "normalize object: what business are we actually in", "target": "business definition", "gold_status": "explicit"}
 {"id": "choice_100", "role": "intent", "input": "normalize intent: what business are we actually in", "target": "define long-term strategic direction", "gold_status": "inferred"}
 {"id": "choice_100", "role": "time", "input": "normalize time: Five years from now", "target": "five-year horizon", "gold_status": "explicit"}
+{"id": "rw_001", "role": "actor", "input": "normalize actor: Target", "target": "Target", "gold_status": "explicit"}
+{"id": "rw_001", "role": "object", "input": "normalize object: stores", "target": "stores", "gold_status": "explicit"}
+{"id": "rw_001", "role": "intent", "input": "normalize intent: open", "target": "open new stores", "gold_status": "explicit"}
+{"id": "rw_001", "role": "magnitude", "input": "normalize magnitude: over thirty", "target": "over thirty", "gold_status": "explicit"}
+{"id": "rw_001", "role": "time", "input": "normalize time: in 2026", "target": "2026", "gold_status": "explicit"}
+{"id": "rw_002", "role": "actor", "input": "normalize actor: Target", "target": "Target", "gold_status": "explicit"}
+{"id": "rw_002", "role": "object", "input": "normalize object: store remodels", "target": "store remodels", "gold_status": "explicit"}
+{"id": "rw_002", "role": "magnitude", "input": "normalize magnitude: more than one hundred", "target": "more than one hundred", "gold_status": "explicit"}
+{"id": "rw_002", "role": "time", "input": "normalize time: in 2026", "target": "2026", "gold_status": "explicit"}
+{"id": "rw_004", "role": "actor", "input": "normalize actor: Target", "target": "Target", "gold_status": "explicit"}
+{"id": "rw_004", "role": "object", "input": "normalize object: team members and leaders", "target": "team members and leaders", "gold_status": "explicit"}
+{"id": "rw_004", "role": "intent", "input": "normalize intent: provided", "target": "provide guest experience training", "gold_status": "explicit"}
+{"id": "rw_004", "role": "magnitude", "input": "normalize magnitude: more than 300,000", "target": "more than 300,000", "gold_status": "explicit"}
+{"id": "rw_005", "role": "actor", "input": "normalize actor: Target", "target": "Target", "gold_status": "explicit"}
+{"id": "rw_005", "role": "object", "input": "normalize object: capital expenditures", "target": "capital expenditures", "gold_status": "explicit"}
+{"id": "rw_005", "role": "intent", "input": "normalize intent: deployed", "target": "deploy capital expenditures", "gold_status": "explicit"}
+{"id": "rw_005", "role": "magnitude", "input": "normalize magnitude: about $1 billion; about $5 billion", "target": "['about $1 billion', 'about $5 billion']", "gold_status": "explicit"}
+{"id": "rw_005", "role": "time", "input": "normalize time: in the first quarter; for the full year", "target": "['in the first quarter', 'for the full year']", "gold_status": "explicit"}
+{"id": "rw_006", "role": "actor", "input": "normalize actor: Target", "target": "Target", "gold_status": "explicit"}
+{"id": "rw_006", "role": "object", "input": "normalize object: quarterly dividend", "target": "quarterly dividend", "gold_status": "explicit"}
+{"id": "rw_006", "role": "intent", "input": "normalize intent: increase", "target": "increase the dividend", "gold_status": "explicit"}
+{"id": "rw_006", "role": "measure", "input": "normalize measure: payout ratio", "target": "payout ratio", "gold_status": "explicit"}
+{"id": "rw_006", "role": "magnitude", "input": "normalize magnitude: 40%", "target": "40%", "gold_status": "explicit"}
+{"id": "rw_006", "role": "time", "input": "normalize time: later this year", "target": "later this year", "gold_status": "explicit"}
+{"id": "rw_007", "role": "actor", "input": "normalize actor: PNC", "target": "PNC", "gold_status": "explicit"}
+{"id": "rw_007", "role": "object", "input": "normalize object: costs", "target": "costs", "gold_status": "explicit"}
+{"id": "rw_007", "role": "intent", "input": "normalize intent: reduce", "target": "reduce costs", "gold_status": "explicit"}
+{"id": "rw_007", "role": "magnitude", "input": "normalize magnitude: $350 million", "target": "$350 million", "gold_status": "explicit"}
+{"id": "rw_007", "role": "time", "input": "normalize time: in 2026", "target": "2026", "gold_status": "explicit"}
+{"id": "rw_007", "role": "context", "input": "normalize context: through its continuous improvement program", "target": "achieved via the continuous improvement program", "gold_status": "explicit"}
+{"id": "rw_008", "role": "actor", "input": "normalize actor: PNC", "target": "PNC", "gold_status": "explicit"}
+{"id": "rw_008", "role": "measure", "input": "normalize measure: net interest margin", "target": "net interest margin", "gold_status": "explicit"}
+{"id": "rw_008", "role": "magnitude", "input": "normalize magnitude: above 3%", "target": "above 3%", "gold_status": "explicit"}
+{"id": "rw_008", "role": "time", "input": "normalize time: by the end of the year", "target": "by the end of the year", "gold_status": "explicit"}
+{"id": "rw_010", "role": "actor", "input": "normalize actor: PNC", "target": "PNC", "gold_status": "explicit"}
+{"id": "rw_010", "role": "measure", "input": "normalize measure: total revenue", "target": "total revenue", "gold_status": "explicit"}
+{"id": "rw_010", "role": "magnitude", "input": "normalize magnitude: up approximately 13%", "target": "up approximately 13%", "gold_status": "explicit"}
+{"id": "rw_010", "role": "context", "input": "normalize context: compared to 2025", "target": "versus 2025", "gold_status": "explicit"}
+{"id": "rw_011", "role": "actor", "input": "normalize actor: PNC", "target": "PNC", "gold_status": "explicit"}
+{"id": "rw_011", "role": "object", "input": "normalize object: quarterly common stock dividend", "target": "quarterly common stock dividend", "gold_status": "explicit"}
+{"id": "rw_011", "role": "intent", "input": "normalize intent: increase", "target": "increase the dividend", "gold_status": "explicit"}
+{"id": "rw_011", "role": "magnitude", "input": "normalize magnitude: 18%; $2 per share", "target": "['18%', '$2 per share']", "gold_status": "explicit"}
+{"id": "rw_013", "role": "actor", "input": "normalize actor: FIS", "target": "FIS", "gold_status": "explicit"}
+{"id": "rw_013", "role": "object", "input": "normalize object: revenue synergies", "target": "revenue synergies", "gold_status": "explicit"}
+{"id": "rw_013", "role": "magnitude", "input": "normalize magnitude: $125 million; $45 million", "target": "['$125 million', '$45 million']", "gold_status": "explicit"}
+{"id": "rw_013", "role": "time", "input": "normalize time: by 2028", "target": "by 2028", "gold_status": "explicit"}
+{"id": "rw_013", "role": "context", "input": "normalize context: from the TSYS acquisition", "target": "from the TSYS acquisition", "gold_status": "explicit"}
+{"id": "rw_014", "role": "actor", "input": "normalize actor: FIS", "target": "FIS", "gold_status": "explicit"}
+{"id": "rw_014", "role": "object", "input": "normalize object: cost synergies", "target": "cost synergies", "gold_status": "explicit"}
+{"id": "rw_014", "role": "magnitude", "input": "normalize magnitude: $30 million to $40 million", "target": "$30 million to $40 million", "gold_status": "explicit"}
+{"id": "rw_014", "role": "time", "input": "normalize time: in 2026; in the second half of the year", "target": "['in 2026', 'in the second half of the year']", "gold_status": "explicit"}
+{"id": "rw_015", "role": "actor", "input": "normalize actor: FIS", "target": "FIS", "gold_status": "explicit"}
+{"id": "rw_015", "role": "intent", "input": "normalize intent: growth", "target": "grow adjusted EPS", "gold_status": "explicit"}
+{"id": "rw_015", "role": "measure", "input": "normalize measure: adjusted EPS", "target": "adjusted EPS", "gold_status": "explicit"}
+{"id": "rw_015", "role": "magnitude", "input": "normalize magnitude: 8% to 10%", "target": "8% to 10%", "gold_status": "explicit"}
+{"id": "rw_015", "role": "time", "input": "normalize time: for the full year", "target": "for the full year", "gold_status": "explicit"}
+{"id": "rw_018", "role": "actor", "input": "normalize actor: Wells Fargo", "target": "Wells Fargo", "gold_status": "explicit"}
+{"id": "rw_018", "role": "object", "input": "normalize object: headcount reductions", "target": "headcount reductions", "gold_status": "explicit"}
+{"id": "rw_018", "role": "magnitude", "input": "normalize magnitude: 24 consecutive quarters", "target": "24 consecutive quarters", "gold_status": "explicit"}
+{"id": "rw_018", "role": "constraints", "input": "normalize constraints: while continuing to invest in its businesses", "target": "must keep investing in the business while cutting headcount", "gold_status": "explicit"}
+{"id": "rw_019", "role": "actor", "input": "normalize actor: D.R. Horton", "target": "D.R. Horton", "gold_status": "explicit"}
+{"id": "rw_019", "role": "intent", "input": "normalize intent: increase", "target": "increase inventory turn", "gold_status": "explicit"}
+{"id": "rw_019", "role": "measure", "input": "normalize measure: inventory turn", "target": "inventory turn", "gold_status": "explicit"}
+{"id": "rw_019", "role": "magnitude", "input": "normalize magnitude: from two times to a target of three times", "target": "from two times to a target of three times", "gold_status": "explicit"}
+{"id": "rw_019", "role": "context", "input": "normalize context: to improve capital efficiency", "target": "to improve capital efficiency", "gold_status": "explicit"}
+{"id": "rw_023", "role": "actor", "input": "normalize actor: Citizens", "target": "Citizens", "gold_status": "explicit"}
+{"id": "rw_023", "role": "object", "input": "normalize object: in-store branches", "target": "in-store branches", "gold_status": "explicit"}
+{"id": "rw_023", "role": "intent", "input": "normalize intent: eliminate", "target": "close in-store branches", "gold_status": "explicit"}
+{"id": "rw_023", "role": "magnitude", "input": "normalize magnitude: approximately 100 to 120", "target": "approximately 100 to 120", "gold_status": "explicit"}
+{"id": "rw_023", "role": "constraints", "input": "normalize constraints: while adding standalone advisory and business banking branches", "target": "must still add standalone advisory and business banking branches", "gold_status": "explicit"}
+{"id": "rw_023", "role": "context", "input": "normalize context: as part of its NEXT program", "target": "as part of its NEXT program", "gold_status": "explicit"}
+{"id": "rw_024", "role": "actor", "input": "normalize actor: Citizens", "target": "Citizens", "gold_status": "explicit"}
+{"id": "rw_024", "role": "object", "input": "normalize object: private bank", "target": "private bank", "gold_status": "explicit"}
+{"id": "rw_024", "role": "measure", "input": "normalize measure: pre-tax income; ROE", "target": "['pre-tax income', 'ROE']", "gold_status": "explicit"}
+{"id": "rw_024", "role": "magnitude", "input": "normalize magnitude: 11.5%; around 25%", "target": "['11.5%', 'around 25%']", "gold_status": "explicit"}
+{"id": "rw_025", "role": "actor", "input": "normalize actor: Buffer", "target": "Buffer", "gold_status": "explicit"}
+{"id": "rw_025", "role": "object", "input": "normalize object: net profit and bonuses", "target": "net profit and bonuses", "gold_status": "explicit"}
+{"id": "rw_025", "role": "intent", "input": "normalize intent: increase", "target": "increase net profit", "gold_status": "explicit"}
+{"id": "rw_025", "role": "magnitude", "input": "normalize magnitude: by 5X or more", "target": "by 5X or more", "gold_status": "explicit"}
+{"id": "rw_025", "role": "time", "input": "normalize time: in 2025", "target": "2025", "gold_status": "explicit"}
+{"id": "rw_026", "role": "actor", "input": "normalize actor: Buffer", "target": "Buffer", "gold_status": "explicit"}
+{"id": "rw_026", "role": "object", "input": "normalize object: platform", "target": "platform", "gold_status": "explicit"}
+{"id": "rw_026", "role": "intent", "input": "normalize intent: expand", "target": "expand into a platform", "gold_status": "explicit"}
+{"id": "rw_026", "role": "context", "input": "normalize context: that customers and developers can build upon", "target": "for customers and developers to build upon", "gold_status": "explicit"}
+{"id": "rw_028", "role": "actor", "input": "normalize actor: Target", "target": "Target", "gold_status": "explicit"}
+{"id": "rw_028", "role": "intent", "input": "normalize intent: grew", "target": "grow sales", "gold_status": "explicit"}
+{"id": "rw_028", "role": "scope", "input": "normalize scope: digital channel; same-day delivery", "target": "['digital channel', 'same-day delivery']", "gold_status": "explicit"}
+{"id": "rw_028", "role": "magnitude", "input": "normalize magnitude: nearly 9%; more than 27%", "target": "['nearly 9%', 'more than 27%']", "gold_status": "explicit"}
+{"id": "rw_030", "role": "actor", "input": "normalize actor: Citizens", "target": "Citizens", "gold_status": "explicit"}
+{"id": "rw_030", "role": "object", "input": "normalize object: commercial banking clients", "target": "commercial banking clients", "gold_status": "explicit"}
+{"id": "rw_030", "role": "intent", "input": "normalize intent: adding", "target": "add new clients", "gold_status": "explicit"}
+{"id": "rw_030", "role": "scope", "input": "normalize scope: technology, healthcare, and energy sectors", "target": "technology, healthcare, and energy sectors", "gold_status": "explicit"}

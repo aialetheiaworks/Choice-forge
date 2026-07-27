@@ -6,6 +6,7 @@ source_text lists are joined with "; " into a single input string.
 
 import json
 import os
+import sys
 
 SRC = "choice_forge_dataset_full_100_v2.json"
 OUT = "data/seq2seq_pairs.jsonl"
@@ -21,7 +22,8 @@ def source_text_str(source_text):
 
 
 def main():
-    with open(SRC, encoding="utf-8") as f:
+    src = sys.argv[1] if len(sys.argv) > 1 else SRC
+    with open(src, encoding="utf-8") as f:
         rows = json.load(f)
 
     os.makedirs("data", exist_ok=True)

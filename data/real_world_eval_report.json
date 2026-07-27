@@ -1,0 +1,988 @@
+[
+  {
+    "id": "rw_003",
+    "query": "Target added around 1,500 new items and plans to refresh around 40% of its wellness assortment this year.",
+    "fields": {
+      "actor": {
+        "gold_value": "Target",
+        "gold_status": "explicit",
+        "pred_value": "Target",
+        "pred_status": "explicit",
+        "pred_conf": 0.853,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": "wellness assortment",
+        "gold_status": "explicit",
+        "pred_value": "wellness assortment",
+        "pred_status": "explicit",
+        "pred_conf": 0.413,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": true
+      },
+      "intent": {
+        "gold_value": "refresh product assortment",
+        "gold_status": "explicit",
+        "pred_value": "add new customers; refresh",
+        "pred_status": "explicit",
+        "pred_conf": 0.184,
+        "status_correct": true,
+        "value_correct": false,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": [
+          "around 1,500",
+          "around 40%"
+        ],
+        "gold_status": "explicit",
+        "pred_value": "['around 1,500', 'around 40%']",
+        "pred_status": "explicit",
+        "pred_conf": 0.567,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": "this year",
+        "gold_status": "explicit",
+        "pred_value": "this year",
+        "pred_status": "explicit",
+        "pred_conf": 0.965,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_009",
+    "query": "PNC's operating target for its CET1 capital ratio is around 10%.",
+    "fields": {
+      "actor": {
+        "gold_value": "PNC",
+        "gold_status": "explicit",
+        "pred_value": "PNC",
+        "pred_status": "explicit",
+        "pred_conf": 0.894,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "operating target for CET1 capital ratio",
+        "pred_status": "explicit",
+        "pred_conf": 0.632,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": "CET1 capital ratio",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": "around 10%",
+        "gold_status": "explicit",
+        "pred_value": "around 10%",
+        "pred_status": "explicit",
+        "pred_conf": 0.584,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_012",
+    "query": "FIS expects free cash flow to double by 2028 to more than $3 billion.",
+    "fields": {
+      "actor": {
+        "gold_value": "FIS",
+        "gold_status": "explicit",
+        "pred_value": "FIS",
+        "pred_status": "explicit",
+        "pred_conf": 0.898,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "free cash flow",
+        "pred_status": "explicit",
+        "pred_conf": 0.718,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": "double free cash flow",
+        "gold_status": "explicit",
+        "pred_value": "double",
+        "pred_status": "explicit",
+        "pred_conf": 0.358,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": "free cash flow",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": "more than $3 billion",
+        "gold_status": "explicit",
+        "pred_value": "by 2028 to more than $3 billion",
+        "pred_status": "explicit",
+        "pred_conf": 0.936,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": "by 2028",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_016",
+    "query": "Wells Fargo expects to increase its third quarter common stock dividend by 11% to $0.50 per share, subject to board approval.",
+    "fields": {
+      "actor": {
+        "gold_value": "Wells Fargo",
+        "gold_status": "explicit",
+        "pred_value": "Wells Fargo",
+        "pred_status": "explicit",
+        "pred_conf": 0.901,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": "common stock dividend",
+        "gold_status": "explicit",
+        "pred_value": "third quarter common stock dividend",
+        "pred_status": "explicit",
+        "pred_conf": 0.815,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": "increase the dividend",
+        "gold_status": "explicit",
+        "pred_value": "increase sales",
+        "pred_status": "explicit",
+        "pred_conf": 0.543,
+        "status_correct": true,
+        "value_correct": false,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": [
+          "11%",
+          "$0.50 per share"
+        ],
+        "gold_status": "explicit",
+        "pred_value": "['by 11%', '$50 per share']",
+        "pred_status": "explicit",
+        "pred_conf": 0.479,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": "third quarter",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": "subject to board approval",
+        "gold_status": "explicit",
+        "pred_value": "subject to board approval",
+        "pred_status": "explicit",
+        "pred_conf": 0.412,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_017",
+    "query": "Wells Fargo is maintaining its full-year guidance of about $50 billion in net interest income.",
+    "fields": {
+      "actor": {
+        "gold_value": "Wells Fargo",
+        "gold_status": "explicit",
+        "pred_value": "Wells Fargo",
+        "pred_status": "explicit",
+        "pred_conf": 0.929,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": "maintain guidance",
+        "gold_status": "explicit",
+        "pred_value": "maintain its full-year guidance",
+        "pred_status": "explicit",
+        "pred_conf": 0.487,
+        "status_correct": true,
+        "value_correct": false,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": "net interest income",
+        "gold_status": "explicit",
+        "pred_value": "net interest income",
+        "pred_status": "explicit",
+        "pred_conf": 0.562,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": "about $50 billion",
+        "gold_status": "explicit",
+        "pred_value": "$50 billion",
+        "pred_status": "explicit",
+        "pred_conf": 0.685,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": "full-year",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_020",
+    "query": "D.R. Horton targets consolidated leverage of around 20% over the long term, down from 23% at the end of June.",
+    "fields": {
+      "actor": {
+        "gold_value": "D.R. Horton",
+        "gold_status": "explicit",
+        "pred_value": "D.R. Horton",
+        "pred_status": "explicit",
+        "pred_conf": 0.827,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "consolidate leverage",
+        "pred_status": "explicit",
+        "pred_conf": 0.229,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": "consolidated leverage",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": [
+          "around 20%",
+          "23%"
+        ],
+        "gold_status": "explicit",
+        "pred_value": "['around 20%', 'from 23%']",
+        "pred_status": "explicit",
+        "pred_conf": 0.814,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": [
+          "over the long term",
+          "at the end of June"
+        ],
+        "gold_status": "explicit",
+        "pred_value": "end of June",
+        "pred_status": "explicit",
+        "pred_conf": 0.349,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_021",
+    "query": "D.R. Horton expects operating cash flow of at least $3 billion for fiscal 2026, while keeping rental inventory around $3 billion.",
+    "fields": {
+      "actor": {
+        "gold_value": "D.R. Horton",
+        "gold_status": "explicit",
+        "pred_value": "D.R. Horton",
+        "pred_status": "explicit",
+        "pred_conf": 0.871,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "operating cash flow of customers",
+        "pred_status": "explicit",
+        "pred_conf": 0.235,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": "operating cash flow",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": "at least $3 billion",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": "for fiscal 2026",
+        "gold_status": "explicit",
+        "pred_value": "fiscal 2026",
+        "pred_status": "explicit",
+        "pred_conf": 0.807,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": "keep rental inventory around $3 billion",
+        "gold_status": "explicit",
+        "pred_value": "rental inventory around $3 billion",
+        "pred_status": "explicit",
+        "pred_conf": 0.727,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_022",
+    "query": "Citizens expects to exit 2026 with about $100 million of annualized pre-tax benefit from its Reimagine the Bank program, and reaching about $450 million by 2028.",
+    "fields": {
+      "actor": {
+        "gold_value": "Citizens",
+        "gold_status": "explicit",
+        "pred_value": "Citizens",
+        "pred_status": "explicit",
+        "pred_conf": 0.902,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "exit",
+        "pred_status": "explicit",
+        "pred_conf": 0.506,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "Reimagine the Bank program",
+        "pred_status": "explicit",
+        "pred_conf": 0.173,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": "annualized pre-tax benefit",
+        "gold_status": "explicit",
+        "pred_value": "annualized pre-tax benefit",
+        "pred_status": "explicit",
+        "pred_conf": 0.553,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": [
+          "about $100 million",
+          "about $450 million"
+        ],
+        "gold_status": "explicit",
+        "pred_value": "about $450 million",
+        "pred_status": "explicit",
+        "pred_conf": 0.819,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": true
+      },
+      "time": {
+        "gold_value": [
+          "2026",
+          "by 2028"
+        ],
+        "gold_status": "explicit",
+        "pred_value": "by 2028",
+        "pred_status": "explicit",
+        "pred_conf": 0.782,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": "from its Reimagine the Bank program",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_027",
+    "query": "FactSet's organic ASV growth was 7.0% in the Americas, 10.0% in Asia Pacific, and 5.0% in EMEA.",
+    "fields": {
+      "actor": {
+        "gold_value": "FactSet",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": [
+          "Americas",
+          "Asia Pacific",
+          "EMEA"
+        ],
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": "organic ASV growth",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": [
+          "7.0%",
+          "10.0%",
+          "5.0%"
+        ],
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_029",
+    "query": "Citizens continues investing in Florida as a growth area for its private bank.",
+    "fields": {
+      "actor": {
+        "gold_value": "Citizens",
+        "gold_status": "explicit",
+        "pred_value": "Citizens",
+        "pred_status": "explicit",
+        "pred_conf": 0.689,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": "private bank",
+        "gold_status": "explicit",
+        "pred_value": "private bank",
+        "pred_status": "explicit",
+        "pred_conf": 0.256,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": "invest in growth",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": "Florida",
+        "gold_status": "explicit",
+        "pred_value": "invest in Florida",
+        "pred_status": "explicit",
+        "pred_conf": 0.394,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  }
+]

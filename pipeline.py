@@ -34,12 +34,26 @@ from polarity_guard import has_negation, apply_polarity_guard
 CRF_MODEL_PATH = "role_tagger.joblib"
 T5_MODEL_PATH = "value_synthesizer"
 
+# Below this, a second-or-later B-tag for an already-filled role is treated as
+# a likely spurious extraction rather than a legitimate second occurrence --
+# see decode_bio_multi / Pipeline.run for why this matters.
+MIN_JOIN_OPEN_CONFIDENCE = 0.4
+
 nlp = spacy.load("en_core_web_sm")
 
 
 def decode_bio_multi(doc, tags, marginals):
     """Collect ALL spans per role (a role can legitimately appear more than
-    once in one query, e.g. two separate numeric constraints under magnitude)."""
+    once in one query, e.g. two separate numeric constraints under magnitude).
+
+    Tracks "open_confidence" (the B-tag's own marginal) separately from the
+    span's mean confidence, because I-tag continuation confidence inflates
+    once the CRF has committed to a tag -- a weak, spurious B- decision can
+    still be followed by high-confidence I- tags riding the transition prior
+    (see the "cut; creep above where it was last quarter" bug: B-INTENT on
+    "creep" opened at 0.179 but its I-INTENT tail averaged well above 0.5).
+    open_confidence is the signal that actually reflects whether the CRF was
+    sure this span belongs here at all."""
     spans = {role: [] for role in ROLES}
     i = 0
     while i < len(tags):
@@ -47,7 +61,8 @@ def decode_bio_multi(doc, tags, marginals):
         if tag.startswith("B-"):
             role = tag[2:].lower()
             start = i
-            probs = [marginals[i].get(tag, 0.0)]
+            open_confidence = marginals[i].get(tag, 0.0)
+            probs = [open_confidence]
             j = i + 1
             while j < len(tags) and tags[j] == f"I-{tag[2:]}":
                 probs.append(marginals[j].get(tags[j], 0.0))
@@ -55,6 +70,7 @@ def decode_bio_multi(doc, tags, marginals):
             spans[role].append({
                 "text": doc[start:j].text,
                 "confidence": round(sum(probs) / len(probs), 3),
+                "open_confidence": round(open_confidence, 3),
             })
             i = j
         else:
@@ -106,8 +122,35 @@ class Pipeline:
                     "guard_note": None,
                 }
                 continue
+
+            dropped_note = None
+            if len(found) > 1:
+                # A second (or third...) B-tag for the same role is only a
+                # legitimate multi-span field if the CRF was actually
+                # confident about opening it. A low-confidence extra span is
+                # more likely a spurious tag riding an unrelated clause (see
+                # decode_bio_multi docstring) -- joining it in anyway is what
+                # produced nonsense like "reduce; creep above where it was
+                # last quarter". Keep at least one span so a role never gets
+                # dropped to "missing" purely by this filter.
+                confident = [s for s in found if s["open_confidence"] >= MIN_JOIN_OPEN_CONFIDENCE]
+                if not confident:
+                    confident = [max(found, key=lambda s: s["open_confidence"])]
+                if len(confident) < len(found):
+                    dropped_note = (
+                        f"dropped {len(found) - len(confident)} low-confidence span(s) "
+                        f"(< {MIN_JOIN_OPEN_CONFIDENCE}) from multi-span join"
+                    )
+                found = confident
+
             joined_span = "; ".join(s["text"] for s in found)
-            extraction_conf = sum(s["confidence"] for s in found) / len(found)
+            if len(found) == 1:
+                extraction_conf = found[0]["confidence"]
+            else:
+                # min, not mean: a joined field is only as trustworthy as its
+                # weakest surviving span -- averaging let one strong span mask
+                # a shaky one (this was the root of the original bug)
+                extraction_conf = min(s["open_confidence"] for s in found)
             value, synth_conf = self.synthesize(role, joined_span)
             value, flagged, guard_note = apply_polarity_guard(
                 joined_span, value, full_text=text
@@ -115,6 +158,9 @@ class Pipeline:
             confidence = round(extraction_conf * synth_conf, 3)
             if flagged:
                 confidence = min(confidence, 0.3)
+            if dropped_note:
+                flagged = True
+                guard_note = f"{guard_note}; {dropped_note}" if guard_note else dropped_note
             result[role] = {
                 "value": value,
                 # simplification -- see module docstring
