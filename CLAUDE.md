@@ -49,7 +49,97 @@ the **Rules** section below stable and update it rarely; keep the
   status/summary docs elsewhere in the repo — one living file, not several
   competing ones.
 
-## Current status (as of 2026-07-27, commit `db3e52e` + `e0b5782`)
+## Product vision — the full workflow (agreed 2026-07-29)
+
+CHOICE Forge (everything documented above) is layer 1 of a larger product,
+not the end product itself. Full intended workflow:
+
+1. User inputs a raw business query.
+2. CHOICE Forge extracts it into structured buckets (actor, intent, measure,
+   scope, context, etc.) — this is the pipeline that exists today.
+3. A **prompt-synthesis layer** (not built yet) takes the query + its
+   buckets and generates a **master prompt** — a well-formed, business-grade
+   prompt scaffold, not just a template dump of the fields.
+4. **Never assume a value for an empty or low-confidence bucket.** Any field
+   the pipeline didn't fill, or filled with low confidence, becomes an
+   explicit blank in the master prompt text rather than a guess. This should
+   reuse the pipeline's existing confidence signals (e.g.
+   `MIN_JOIN_OPEN_CONFIDENCE` in `pipeline.py`) as the "blank this field"
+   trigger — but see Phase 2 below, that requires a calibration check first.
+5. The user sees the full master prompt, blanks and all: fills in the
+   blanks, and reads through the rest of the prompt. This does two jobs at
+   once — real missing data comes from the user instead of being assumed,
+   and the user reading the whole prompt is their implicit confirmation
+   that the system understood the original query correctly.
+6. If the user continues, the prompt is confirmed correct and complete. If
+   not, a fallback path is needed: curate/regenerate an alternate prompt, or
+   diagnose where understanding went wrong before retrying. This
+   accept/reject signal is exactly the correction-capture data the
+   self-learning flywheel (gap 5 below) needs.
+7. Once confirmed, the completed master prompt is sent via API to an LLM to
+   produce the actual best-quality output for the user's original query.
+
+**Agreed build order (not started yet):**
+- **Phase 1** — build the prompt-synthesis step as a deterministic
+  *template*, not a trained model. There is no dataset yet of
+  (buckets → ideal master prompt) pairs to train on, so a model isn't
+  feasible yet. Wire blank-insertion to the existing per-field confidence
+  scores.
+- **Phase 2** — audit whether those confidence scores are actually
+  calibrated (low confidence ⇔ actually wrong/missing), using the same
+  eval-harness discipline as `data/eval_on_real_world.py`. This is the
+  linchpin of the whole safety design: if confidence is miscalibrated, a
+  wrong field slips through as a confident answer instead of getting
+  blanked, and the "never assume" guarantee breaks silently.
+- **Phase 3** — build the fill-in-blank + confirm/reject UI in `app.py`, and
+  log every accept/reject and every user-filled blank. This log is what
+  both measures how often the system gets it right *and* is the training
+  data needed for Phase 5 — do not train a prompt-synthesis model before
+  this data exists.
+- **Phase 4** — wire the final LLM API call (default to Claude via the
+  Anthropic API for this) on the confirmed master prompt.
+- **Phase 5** (later) — once accept/reject + fill logs accumulate, train
+  the real prompt-synthesis model on them, replacing the Phase 1 template.
+  Gate any new version against a frozen holdout, the same way model
+  promotion already works for the extraction layer.
+
+## Current status (as of 2026-07-29 — planning + calibration audit session)
+
+**2026-07-29 session:** agreed the Product vision above (full workflow),
+then ran the Phase 2 confidence-calibration audit against
+`data/real_world_eval_report.json` (10-row frozen holdout) before writing
+any Phase 1 code. Result, split by field:
+
+- **Every field except `intent`**: 28/28 non-missing predictions were
+  correct, regardless of confidence (down to 0.256). Confidence barely
+  matters here — once the pipeline commits to a non-missing value for
+  actor/object/scope/measure/magnitude/time/constraints/context, it has
+  been right every time in this holdout.
+- **`intent` only**: 3 of 4 non-missing predictions were wrong, and the
+  wrong ones spanned confidence 0.184–0.543 while the one correct one sat
+  at 0.358 — right in the middle of the wrong range. **Confidence does not
+  separate right from wrong for `intent`.** This is the T5-hallucination
+  gap (old gap #3) showing up exactly where expected.
+- **Decision for Phase 1:** use per-field confidence thresholds for
+  blanking (safe, since non-intent fields are reliable), but **do not
+  trust any threshold for `intent`** — instead always surface `intent` in
+  the master prompt as a mandatory user-reviewed/editable field regardless
+  of confidence, until the underlying T5 hallucination is fixed at the
+  model level.
+- **Caveat:** n=10 rows / 32 non-missing field predictions / only 4 for
+  intent. Directionally strong (100% vs 25% correct is a stark gap) but
+  statistically thin — worth re-checking once the eval holdout grows.
+
+Also this session: hand-tested the live pipeline on fresh (non-eval-set)
+queries. Confirmed the frozen eval score reproduces exactly (no drift).
+Found the `README.md` worked-example output is now stale relative to the
+current retrained model (not regenerated per user instruction — flagged,
+not fixed). Redesigned `app.py`'s UI (card-based field layout, confidence
+badges/progress bars, example query pills, download-JSON button) and
+updated its footer caption to state the real current eval numbers instead
+of the old "100-row v1" description.
+
+Previous session (2026-07-27, commit `db3e52e` + `e0b5782`):
 
 **Not yet ready to ship for unreviewed/autonomous use.** Meaningfully
 improved this session with measured before/after numbers, but still needs
@@ -119,10 +209,13 @@ What happened in the 2026-07-27 session:
    join-coherence fix (item 2 above) is verified on a hand-written example
    but not reflected in the tracked eval score.
 5. **Longer-term, agreed direction: self-learning correction flywheel.**
-   Capture stakeholder corrections via `app.py`, prioritize review by model
-   confidence (active learning), periodically retrain and gate every new
-   model against the frozen real eval set before promoting it. Not yet
-   built — this is the "make it self-learning" goal the user asked about.
+   Now scoped in full under "Product vision" above — capture stakeholder
+   corrections via `app.py`'s fill-in-blank/confirm-reject flow, prioritize
+   review by model confidence (active learning), periodically retrain and
+   gate every new model against a frozen real eval set before promoting it.
+   Not yet built. Start with Phase 1 (template-based prompt synthesis) from
+   the Product vision section, not with the model — there's no training
+   data for the prompt-synthesis model yet.
 
 Full detail and reasoning for all of the above lives in git history — see
 commit `db3e52e`'s message specifically.
