@@ -102,6 +102,12 @@ not the end product itself. Full intended workflow:
   the real prompt-synthesis model on them, replacing the Phase 1 template.
   Gate any new version against a frozen holdout, the same way model
   promotion already works for the extraction layer.
+- **Retraining is always batched, never per-query.** Log every correction
+  as it comes in, but only retrain on a count/time trigger (e.g. every
+  20-30 new rows, or weekly), then gate before promoting. Neither the CRF
+  (no incremental-fit mode) nor a per-query eval-gate cost makes retrain-
+  per-correction workable — this applies to the extraction layer today and
+  will apply to the prompt-synthesis model in Phase 5 too.
 
 ## Current status (as of 2026-07-29 — planning + calibration audit session)
 
@@ -189,9 +195,29 @@ What happened in the 2026-07-27 session:
 
 ## Known gaps, in priority order for next session
 
+0. **`actor` is actually the thinnest-trained role, not previously flagged.**
+   Discovered 2026-07-30 via a Gemini-generated adversarial batch (5 fresh
+   queries, Gemini wrote both the expected answers and the scoring — treat
+   as directional stress-test signal, not the same evidentiary weight as
+   the frozen `real_world_eval_holdout`). `actor` dropped to `missing` and
+   bled into `object` on 2/5 novel queries with generic role/team phrasing
+   ("Tier-1 support team", "field sales representatives") despite similar
+   patterns existing in training data. Checked `choice_forge_dataset_combined_120.json`:
+   `actor` is explicit in only 44/120 rows — the least of all 9 fields
+   (vs. measure 55, context 55). Checked `train_crf.py`'s `token_features`:
+   dependency-parse features (`dep`, `head_dep`, `head_lemma`) are already
+   fed to the CRF, so this is a data-volume/generalization gap, not a
+   missing-feature gap — same lesson as the 07-27 retrain. Also from this
+   same batch: `measure` was missing on 5/5 (consistent with, but starker
+   than, its known 28.6% value accuracy); `context` specifically misses
+   causal ("because X") and purpose ("to hit X") clauses — a concrete
+   target for the next real-data sourcing pass, not just "context is thin."
 1. **`measure`, `scope`, `context` roles still thin**, even in the real
    30-row batch (scope: 4 rows total). Need more real sourcing targeted
-   specifically at these.
+   specifically at these. Per item 0 above, `actor` belongs on this list
+   too now, and the next sourcing pass should specifically target:
+   generic team/role-phrased actors (not just company names), explicit
+   measure/KPI phrasing, and causal/purpose context clauses.
 2. **Negation-cue phrasing may not exist in real corporate language.**
    Checked 7 public companies' earnings calls specifically hunting for
    "without increasing X" style constraints — found zero. Executives phrase
