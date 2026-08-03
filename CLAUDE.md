@@ -49,28 +49,79 @@ the **Rules** section below stable and update it rarely; keep the
   status/summary docs elsewhere in the repo — one living file, not several
   competing ones.
 
-## Product vision — the full workflow (agreed 2026-07-29)
+## Product vision — the full CHOICE framework (agreed 2026-07-29, expanded 2026-08-01)
 
 CHOICE Forge (everything documented above) is layer 1 of a larger product,
-not the end product itself. Full intended workflow:
+not the end product itself. Two source docs (external to this repo, not
+under version control here) define the full scope — read them if you need
+the primary text instead of this summary:
+`/Users/amaansaify/Desktop/alethiaworks.org/Plan/The CHOICE framework details_v1.pdf`
+and `/Users/amaansaify/Desktop/alethiaworks.org/Plan/Knowledge_Bucket_Library.pdf`.
 
-1. User inputs a raw business query.
-2. CHOICE Forge extracts it into structured buckets (actor, intent, measure,
-   scope, context, etc.) — this is the pipeline that exists today.
+**Positioning:** CHOICE is one product inside a planned "Decision
+Intelligence Platform" (sibling products: PESTLE, SWOT, TOWS, Porter's Five
+Forces, Ansoff, JTBD, STP, Value Proposition Canvas). Those siblings are
+**not in scope** for this repo — noted here only so "CHOICE" isn't mistaken
+for the whole platform.
+
+**CHOICE's philosophy — read this before designing any scoring or
+confidence logic:**
+- Success metric is **reasoning integrity, not predictive accuracy**.
+  CHOICE does not judge whether the user's inputs are *true* — only
+  whether the reasoning built on top of them is internally consistent.
+- CHOICE does NOT: predict outcomes, verify/fact-check every input (it
+  trusts stated values like "my budget is ₹10 lakh" unless contradicted
+  elsewhere), or make the decision for the user.
+- CHOICE DOES three things, in order — the three steps below map directly
+  onto the phases in the build order:
+  1. **Clarify the Decision** — vague objective → precise decision
+     statement + identified choices.
+  2. **Structure the Reasoning** (the "Horizon") — surface what's known,
+     unknown, assumed, and uncertain; check internal consistency across
+     objective/assumptions/constraints/choices/success-criteria; ask the
+     missing questions.
+  3. **Guide the Decision, not predict it** — compare alternatives, surface
+     trade-offs/risks/dependencies/missing evidence, explain *why* one
+     option looks stronger under the *stated* assumptions.
+
+**Naming note — do not conflate these two "bucket" concepts:**
+the extraction pipeline's output fields (`actor`, `intent`, `measure`,
+`scope`, `context`, `magnitude`, `time`, `constraints`, `object`) should be
+called **extraction fields** in docs going forward. **"Knowledge Bucket"**
+is a distinct, unrelated concept (see Step 2 / Phase 6 below) — one of
+~60 business-analysis categories (Customer, Market, Pricing, Risk,
+Technology, Stakeholders, ...) in a fixed library, selected per-query by a
+separate Intent Classifier, used only for tooltip guidance text.
+
+**Step 1 workflow (Clarify the Decision — this is what Phases 1-5 below
+build):**
+
+1. User inputs a raw business query (the "Objective Statement" raw input).
+2. CHOICE Forge extracts it into structured extraction fields — this is
+   the pipeline that exists today.
 3. A **prompt-synthesis layer** (not built yet) takes the query + its
-   buckets and generates a **master prompt** — a well-formed, business-grade
-   prompt scaffold, not just a template dump of the fields.
-4. **Never assume a value for an empty or low-confidence bucket.** Any field
-   the pipeline didn't fill, or filled with low confidence, becomes an
-   explicit blank in the master prompt text rather than a guess. This should
-   reuse the pipeline's existing confidence signals (e.g.
+   extraction fields and generates a **master prompt** (= the framework
+   doc's "Objective Statement", e.g. "Increase annual sales of premium
+   office chairs by 30% within the next 12 months by targeting SMBs in
+   India, while operating within a ₹20 lakh marketing budget and without
+   expanding the sales team") — a well-formed, business-grade prompt
+   scaffold, not just a template dump of the fields.
+4. **Never assume a value for an empty or low-confidence field.** Any
+   field the pipeline didn't fill, or filled with low confidence, becomes
+   an explicit blank in the master prompt text rather than a guess. This
+   reuses the pipeline's existing confidence signals (e.g.
    `MIN_JOIN_OPEN_CONFIDENCE` in `pipeline.py`) as the "blank this field"
-   trigger — but see Phase 2 below, that requires a calibration check first.
+   trigger, gated by the Phase 2 calibration audit (done — see Current
+   status).
 5. The user sees the full master prompt, blanks and all: fills in the
    blanks, and reads through the rest of the prompt. This does two jobs at
    once — real missing data comes from the user instead of being assumed,
    and the user reading the whole prompt is their implicit confirmation
-   that the system understood the original query correctly.
+   that the system understood the original query correctly. The framework
+   doc also specifies a companion "Clarify Success" field set collected
+   alongside the objective: **Success Metric** (must be a quantity
+   `<=` what's derivable from the objective statement itself) and
+   **Deadline** (assume mid-month if the user gives only a month name).
 6. If the user continues, the prompt is confirmed correct and complete. If
    not, a fallback path is needed: curate/regenerate an alternate prompt, or
    diagnose where understanding went wrong before retrying. This
@@ -79,18 +130,84 @@ not the end product itself. Full intended workflow:
 7. Once confirmed, the completed master prompt is sent via API to an LLM to
    produce the actual best-quality output for the user's original query.
 
-**Agreed build order (not started yet):**
-- **Phase 1** — build the prompt-synthesis step as a deterministic
-  *template*, not a trained model. There is no dataset yet of
-  (buckets → ideal master prompt) pairs to train on, so a model isn't
+**Step 2 workflow (Structure the Reasoning / "Horizon" — new scope from the
+2026-08-01 docs, not yet phased into a build order):**
+
+- Once the Step 1 objective is confirmed, an **Intent Classifier**
+  (pattern matching — explicitly *not* the CRF field-extractor, a separate
+  component) reads the confirmed objective and selects **up to 5 Knowledge
+  Buckets**, in priority order, from the fixed ~60-entry Knowledge Bucket
+  Library (full table in `Knowledge_Bucket_Library.pdf` — e.g. Customer,
+  Value Proposition, Market, Competition, Risk, Technology, Stakeholders).
+  Each bucket contributes one line of guidance text ("Consider customer
+  segment, persona, needs...") assembled into a ≤5-line tooltip.
+- Each Knowledge Bucket's prompt text quietly embeds an established
+  framework (PESTLE, SWOT, Porter's Five Forces, Ansoff, JTBD, STP, VPC)
+  without naming it — a link to the relevant standalone tool lives in the
+  same tooltip, which is the platform's cross-sell/engagement mechanism
+  into the sibling products above.
+- This is the mechanism that answers the Horizon questions: what do we
+  know / what can we learn / what remains unknowable / which gaps matter
+  most for *this* decision — driven by whichever buckets the classifier
+  selected, not a fixed generic checklist.
+
+**Step 3 workflow (Guide the Decision — new scope, not yet phased into a
+build order):**
+
+- Compare alternatives using only the information gathered in Steps 1-2.
+- Output a transparent recommendation that states its assumptions and
+  confidence explicitly — never a bare "do X" without the reasoning
+  attached. This is a direct consequence of the reasoning-integrity
+  philosophy above: the recommendation must show its work, not just its
+  conclusion.
+
+**Knowledge Graph — persisted per session, cuts across all 3 steps (new
+scope from the 2026-08-01 docs):**
+
+For every framework session (CHOICE, and eventually PESTLE/TOWS/etc.),
+persist four things: (1) the user's typed raw responses, (2) AI
+prompts/summaries generated along the way, (3) decision tables /
+knowledge-database rows, (4) a knowledge graph of all actors — including
+"phantom"/hidden actors like political, economic, or legal-system forces —
+and the relationships between them. Node types seen in the framework doc's
+worked example: Objective, Internal/External Stakeholders, Customer
+Segment, Product/Offering, Market/Geography, Internal Capability/Resource,
+External Force (PESTLE), Industry Force (Porter's 5), Constraint, Enabler,
+Strategic Option, Outcome/KPI. Relationship types: directly-influences,
+related-to/affects, depends-on/enables, constrained-by/limits,
+interacts-with/connected-to.
+
+Editing rules for the graph (important — mirrors the "never silently
+overwrite raw input" principle already used for extraction fields):
+1. The graph can be viewed partially (e.g. "show only actors who are also
+   stakeholders", "hide phantom actors", "hide Strategic Options and
+   External Macro Environment") — the full graph still exists underneath,
+   it's just not rendered.
+2. Nodes can be added or removed by the user.
+3. Relationships between actors can be edited directly in the graph. Doing
+   so regenerates the corresponding AI summary. **The user's original
+   typed responses never change** — only the derived summary/graph layers
+   do. Edit the derived artifact, never the source-of-truth input.
+
+**Sign-up flow fields (from the framework doc, scoped to `app.py` /
+onboarding, independent of the phases below):** business profile fields
+are all optional (business name, HQ, product/service description, firm
+type, website, primary market B2B/B2C/etc., top 3 competitors); only the
+user's own name, mobile number, and email are mandatory.
+
+**Agreed build order:**
+- **Phase 1** — build the prompt-synthesis step (Step 1, item 3 above) as
+  a deterministic *template*, not a trained model. There is no dataset yet
+  of (fields → ideal master prompt) pairs to train on, so a model isn't
   feasible yet. Wire blank-insertion to the existing per-field confidence
-  scores.
+  scores. **This is the current next step — not yet started.**
 - **Phase 2** — audit whether those confidence scores are actually
   calibrated (low confidence ⇔ actually wrong/missing), using the same
   eval-harness discipline as `data/eval_on_real_world.py`. This is the
   linchpin of the whole safety design: if confidence is miscalibrated, a
   wrong field slips through as a confident answer instead of getting
-  blanked, and the "never assume" guarantee breaks silently.
+  blanked, and the "never assume" guarantee breaks silently. **Done —
+  see Current status, 2026-07-29 session.**
 - **Phase 3** — build the fill-in-blank + confirm/reject UI in `app.py`, and
   log every accept/reject and every user-filled blank. This log is what
   both measures how often the system gets it right *and* is the training
@@ -102,6 +219,13 @@ not the end product itself. Full intended workflow:
   the real prompt-synthesis model on them, replacing the Phase 1 template.
   Gate any new version against a frozen holdout, the same way model
   promotion already works for the extraction layer.
+- **Phase 6** (later, unscoped) — Step 2 / Horizon: build the Intent
+  Classifier + wire up the Knowledge Bucket Library and tooltip assembly.
+- **Phase 7** (later, unscoped) — Step 3 / Guide: alternative comparison
+  and transparent-recommendation generation.
+- **Phase 8** (later, unscoped) — Knowledge Graph: persistence of the four
+  artifacts above, graph construction/rendering, partial-view toggles,
+  node/relationship editing with AI-summary regeneration.
 - **Retraining is always batched, never per-query.** Log every correction
   as it comes in, but only retrain on a count/time trigger (e.g. every
   20-30 new rows, or weekly), then gate before promoting. Neither the CRF
@@ -109,7 +233,52 @@ not the end product itself. Full intended workflow:
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
-## Current status (as of 2026-07-29 — planning + calibration audit session)
+## Current status (as of 2026-08-02 — feasibility/timeline discussion, paused)
+
+**2026-08-02 session:** re-read `Knowledge_Bucket_Library.pdf` for a
+second pass (confirmed it matched what was already folded into Product
+vision on 2026-08-01 — no doc changes needed from that re-read). Then
+discussed solo feasibility/timeline for the full Phase 1-8 build order.
+**No code changed this session.** Conclusions, for next session to pick
+up from:
+
+- All 8 phases are technically feasible solo — nothing in the spec needs
+  exotic tech (Intent Classifier is pattern-matching per the source doc,
+  not ML; graph UI is a solved problem via existing libraries like
+  react-flow/cytoscape/vis.js; the LLM call is a thin API wrapper). The
+  constraint is bandwidth/time, not feasibility.
+- Rough solo, part-time-pace estimate for an MVP through Phase 8:
+  **~3-5 months** (or ~6-10 weeks if worked closer to full-time). Phase 5
+  is additionally gated on calendar time to accumulate 20-30+ logged
+  corrections, not just work-hours.
+- **Phase 8 (Knowledge Graph) is the long pole** — node/edge construction,
+  a real interactive graph UI, and edit-triggers-resummarize logic is
+  3-6+ weeks alone and easy to let scope-creep (partial views, node
+  editing, relationship editing all in the spec).
+- **Recommendation (not yet acted on):** don't march through all 8 phases
+  serially. Ship Phases 1-4 as a usable, demoable v1 first (objective in →
+  confirmed master prompt → LLM output out) before starting Phase 8. Scope
+  a bare-bones first cut of the Knowledge Graph rather than building the
+  full editable-graph spec (partial views + add/remove nodes + edit
+  relationships + resummarize) in one pass.
+- Session paused here by user request ("we will continue with this later
+  in a while") — **Phase 1 (deterministic template master-prompt
+  synthesis) is still the agreed next actual build step**, unstarted.
+
+## Previous status (as of 2026-08-01 — framework-scope digest session)
+
+**2026-08-01 session:** user shared two external planning docs (see
+Product vision section above for exact paths) laying out the full CHOICE
+framework philosophy (reasoning integrity, not predictive accuracy; the
+3-step Clarify/Structure/Guide flow) and a large new scope item — the
+Intent Classifier + ~60-entry Knowledge Bucket Library + Knowledge Graph
+persistence. Merged this into the Product vision section above (Phases
+6-8, all unscoped/not started). **No code changed this session** — this
+was a documentation/alignment pass only. Agreed with user: keep building
+toward Phase 1 (deterministic template master-prompt synthesis) next,
+unaffected by the new scope discovered today.
+
+## Previous status (as of 2026-07-29 — planning + calibration audit session)
 
 **2026-07-29 session:** agreed the Product vision above (full workflow),
 then ran the Phase 2 confidence-calibration audit against
