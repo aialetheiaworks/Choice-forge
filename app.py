@@ -11,13 +11,16 @@ Run:
     streamlit run app.py
 """
 
+import datetime
 import html
 import json
 import statistics
 
 import streamlit as st
 
+from correction_log import log_correction
 from pipeline import Pipeline, ROLES
+from prompt_synthesis import render_sentence, synthesize_master_prompt
 
 st.set_page_config(page_title="CHOICE Forge", page_icon="🧭", layout="wide")
 
@@ -92,6 +95,7 @@ EXAMPLES = [
 
 if "query_text" not in st.session_state:
     st.session_state.query_text = ""
+st.session_state.setdefault("run_id", 0)
 
 
 def _apply_example():
@@ -136,8 +140,11 @@ if run and query.strip():
     with st.spinner("Extracting..."):
         result = pipe.run(query.strip())
     st.session_state.last_result = result
+    st.session_state.last_query = query.strip()
+    st.session_state.run_id += 1
 
 result = st.session_state.get("last_result")
+synth = synthesize_master_prompt(result) if result else None
 
 if result:
     st.subheader("Result")
@@ -208,6 +215,75 @@ if result:
     )
     with st.expander("Raw JSON"):
         st.json(result)
+
+    st.divider()
+    st.subheader("Master Prompt")
+    st.caption(
+        "Fill in any blanks and correct anything the pipeline got wrong, then "
+        "Confirm or Reject. Every decision is logged and becomes training data "
+        "for a future prompt-synthesis model (Phase 5)."
+    )
+
+    run_id = st.session_state.run_id
+    st.markdown(f"> {html.escape(synth['master_prompt'])}")
+
+    with st.form(f"master_prompt_form_{run_id}"):
+        for role in ROLES:
+            f = synth["fields"][role]
+            icon = ROLE_ICONS.get(role, "🔹")
+            label = f"{icon} {role}" + (" ⚠️" if f["needs_review"] else "")
+            if f["blank"]:
+                st.text_input(label, value="", placeholder=f["text"], key=f"field_{role}_{run_id}")
+            else:
+                st.text_input(label, value=f["text"], key=f"field_{role}_{run_id}")
+
+        reject_reason = st.text_area(
+            "Reject reason (optional)", key=f"reject_reason_{run_id}"
+        )
+
+        confirm_col, reject_col = st.columns(2)
+        confirmed = confirm_col.form_submit_button("✅ Confirm", type="primary")
+        rejected = reject_col.form_submit_button("❌ Reject")
+
+    if confirmed or rejected:
+        final_fields = {}
+        log_fields = {}
+        for role in ROLES:
+            orig = synth["fields"][role]
+            submitted = st.session_state[f"field_{role}_{run_id}"].strip()
+            user_edited = bool(submitted) and (orig["blank"] or submitted != orig["text"])
+
+            resolved_text = submitted if user_edited else orig["text"]
+            resolved_blank = False if user_edited else orig["blank"]
+
+            final_fields[role] = {"text": resolved_text, "blank": resolved_blank}
+            log_fields[role] = {
+                "original_value": result[role]["value"],
+                "original_status": result[role]["status"],
+                "original_confidence": result[role]["confidence"],
+                "blank": resolved_blank,
+                "needs_review": orig["needs_review"],
+                "multi_span": orig["multi_span"],
+                "final_value": None if resolved_blank else resolved_text,
+                "user_edited": user_edited,
+            }
+
+        master_prompt_final = render_sentence(final_fields)
+        entry = {
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "query": st.session_state.last_query,
+            "fields": log_fields,
+            "master_prompt_shown": synth["master_prompt"],
+            "master_prompt_final": master_prompt_final,
+            "decision": "confirmed" if confirmed else "rejected",
+            "reject_reason": (reject_reason.strip() or None) if rejected else None,
+        }
+        log_correction(entry)
+
+        if confirmed:
+            st.success(f"Confirmed:\n\n{master_prompt_final}")
+        else:
+            st.warning(f"Rejected:\n\n{master_prompt_final}")
 
 st.divider()
 st.caption(
