@@ -333,11 +333,25 @@ extraction).
   `correction_log.log_correction()` with the original per-field pipeline
   output, the resolved final value, whether it was user-edited, both
   prompt versions, and the confirm/reject decision (+ reason on reject).
-  **Not yet done:** end-to-end browser verification (this session's
-  sandbox had no Streamlit/spaCy/torch installed; installed
-  `requirements.txt` and reran `python3 prompt_synthesis.py` smoke queries
-  plus a live `streamlit run app.py` pass before treating this as done —
-  see verification note below if that didn't happen yet).
+  **Provenance note:** this was actually built by a cloud Ultraplan session
+  (planned in-session, then handed off), which timed out waiting for
+  approval after 90 minutes and was reported as "failed" — but it had
+  already committed the work to a new branch, `phase-3-master-prompt-ui`
+  (commit `257ec05`), on top of the Phase 1 work. Treated that as
+  unverified until independently checked: reviewed the full diff against
+  the approved plan (matched — clean `render_sentence()` refactor, no
+  behavior change; `correction_log.py` as specified), reran the
+  `prompt_synthesis.py` CLI smoke query (byte-identical output pre/post
+  refactor), and drove the actual running `streamlit run app.py` in a real
+  browser end-to-end: filled blanks + edited fields + Confirm (matches the
+  two pre-existing log entries in `data/corrections_log.jsonl` from the
+  cloud session's own testing), a fresh Reject with a typed reason
+  (blank fields correctly logged as `final_value: null`, edited fields
+  correct, reason captured), and running a second, different query to
+  confirm the form doesn't inherit the first query's edited text (the
+  `run_id` key-namespacing fix works as designed). All confirmed working.
+  **Still on the `phase-3-master-prompt-ui` branch, not yet merged to
+  `main`** — that's the next step, pending user go-ahead.
 
 ## Previous status (as of 2026-08-02 — feasibility/timeline discussion, paused)
 
