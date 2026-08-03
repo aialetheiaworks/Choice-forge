@@ -33,6 +33,7 @@ the **Rules** section below stable and update it rarely; keep the
 | `data/real_world_eval_report.json` | Latest eval run's per-row, per-field detail. Regenerated each run — not hand-edited. |
 | `Doc/` | Pre-existing human-reference explainer PDFs (one per layer). Not auto-generated, don't touch without reason. |
 | `app.py` | Streamlit stakeholder UI — the planned home for the self-learning correction-capture flow (not built yet, see gaps below). |
+| `prompt_synthesis.py` | Phase 1 of the Product vision below: deterministic-template master-prompt synthesis from a `Pipeline.run()` result. Not yet wired into `app.py` (Phase 3). |
 
 **Standing safety rules:**
 - Never add rows to or otherwise touch `data/real_world_eval_holdout.json`
@@ -200,7 +201,8 @@ user's own name, mobile number, and email are mandatory.
   a deterministic *template*, not a trained model. There is no dataset yet
   of (fields → ideal master prompt) pairs to train on, so a model isn't
   feasible yet. Wire blank-insertion to the existing per-field confidence
-  scores. **This is the current next step — not yet started.**
+  scores. **Core template built — see Current status, 2026-08-03 session.
+  Not yet wired into `app.py` (that's Phase 3).**
 - **Phase 2** — audit whether those confidence scores are actually
   calibrated (low confidence ⇔ actually wrong/missing), using the same
   eval-harness discipline as `data/eval_on_real_world.py`. This is the
@@ -233,7 +235,60 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
-## Current status (as of 2026-08-02 — feasibility/timeline discussion, paused)
+## Current status (as of 2026-08-03 — Phase 1 build session)
+
+**2026-08-03 session:** resumed from the 2026-08-02 pause. First, caught
+up git state left over from the two prior planning-only sessions —
+committed `CLAUDE.md`'s 2026-08-01/2026-08-02 doc edits and the untracked
+`Doc/` explainer PDFs (`93d2b62`). Then built Phase 1: `prompt_synthesis.py`,
+a new module (kept separate from `pipeline.py`, which stays pure
+extraction).
+
+- `synthesize_master_prompt(pipeline_result)` assembles one flowing
+  "Objective Statement" sentence from the 9 extraction fields, following
+  the Product vision's Step 1 item 3 (actor/intent/measure-or-object
+  fused subject+verb+target, then magnitude/time/scope clauses, then
+  constraints/context as trailing clauses).
+- Blank-insertion reuses `pipeline.MIN_JOIN_OPEN_CONFIDENCE` (0.4) exactly
+  as the Phase 2 audit decision specified: a field is blanked (shown as a
+  `[role — please fill in]` placeholder in the prompt text) whenever
+  `status == "missing"` or `confidence < 0.4`. `intent` is additionally
+  **always** marked `needs_review` even when non-blank, per the Phase 2
+  finding that confidence doesn't separate right/wrong for `intent`.
+- Returns structured `{master_prompt, fields, blanks, mandatory_review}` —
+  the `blanks`/`mandatory_review` lists are what Phase 3's fill-in/confirm
+  UI will consume; not wired into `app.py` yet.
+- `time`/`magnitude` values from T5 often already carry their own
+  preposition ("within the next sprint", "by 40%"); a fixed template
+  prefix would have doubled up ("within within..."). Added
+  `_prefixed_clause()` to skip the template's own prefix when the value
+  already opens with a known preposition word — verified against several
+  hand-run queries.
+- Manually tested against all 7 example queries from `app.py`. Confirms
+  the design works as intended (confidence-driven blanking correctly
+  fires, e.g. `scope` at 0.391 confidence blanked as expected) but also
+  surfaces — faithfully, not incorrectly — existing pipeline noise
+  documented in Known gaps #0/#3 (e.g. `intent` sometimes bundles its own
+  object, "increase market share" + a separately-extracted `object` field
+  producing a redundant-sounding sentence). Deliberately did not add
+  fusion heuristics to paper over this: `intent` is already
+  `mandatory_review`, and the whole design principle here is "surface
+  uncertainty, let the human fix it" rather than guessing grammar the
+  pipeline output doesn't actually support.
+- **Found and fixed a small unrelated bug** in `polarity_guard.py`
+  (Layer 4) while test-driving queries: `VERB_BASE`'s fallback stemmer did
+  a naive `verb[:-3]` strip for gerunds not in its lookup table, so
+  doubled-consonant verbs came out wrong (`"letting"` → `"lett"`,
+  `"cutting"` → `"cutt"`). Added `_degeminate()` to undo the doubled
+  consonant when the fallback fires. Re-ran
+  `python3 data/eval_on_real_world.py` after the fix — frozen holdout
+  score unchanged (77.8% / 63.0% / 90% actor), confirming no regression.
+- **Not yet done:** Phase 3 (`app.py` fill-in-blank/confirm-reject UI,
+  correction logging) — `prompt_synthesis.py` exists as a standalone
+  module with its own CLI (`python3 prompt_synthesis.py "<query>"`) but
+  isn't called from `app.py` yet. That's the natural next step.
+
+## Previous status (as of 2026-08-02 — feasibility/timeline discussion, paused)
 
 **2026-08-02 session:** re-read `Knowledge_Bucket_Library.pdf` for a
 second pass (confirmed it matched what was already folded into Product

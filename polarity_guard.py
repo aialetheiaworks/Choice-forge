@@ -85,12 +85,21 @@ def _direction(text):
     return None
 
 
+def _degeminate(stem):
+    """Undo doubled-consonant gerund spelling ("lett" -> "let", "cutt" ->
+    "cut") for verbs not covered by VERB_BASE. A naive `-ing` strip alone
+    leaves the doubled consonant from the gerund spelling rule behind."""
+    if len(stem) >= 3 and stem[-1] == stem[-2] and stem[-1] not in "aeiou" and stem[-3] in "aeiou":
+        return stem[:-1]
+    return stem
+
+
 def _apply_without_template(source_text):
     m = re.search(r"without (\w+ing) (.+)", source_text, re.IGNORECASE)
     if not m:
         return None
     verb, obj = m.group(1).lower(), m.group(2).strip()
-    base = VERB_BASE.get(verb, verb[:-3] if verb.endswith("ing") else verb)
+    base = VERB_BASE.get(verb, _degeminate(verb[:-3]) if verb.endswith("ing") else verb)
     return f"must not {base} {obj}"
 
 
