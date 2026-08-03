@@ -283,6 +283,28 @@ extraction).
   consonant when the fallback fires. Re-ran
   `python3 data/eval_on_real_world.py` after the fix — frozen holdout
   score unchanged (77.8% / 63.0% / 90% actor), confirming no regression.
+- **Multi-actor/multi-object handling, addressed same session (not
+  deferred):** discussed what happens when a field legitimately has more
+  than one value (e.g. two actors) or the input is long/compound (~300+
+  chars). Two separate findings: (1) there's no length cutoff anywhere in
+  the pipeline — spaCy/CRF process the full token sequence and T5 only
+  normalizes short per-field spans, so the real risk on long/compound
+  input is quality (known gaps #3/#4), not truncation; (2) `pipeline.py`
+  already collected all surviving spans per role (`decode_bio_multi`) but
+  silently `"; "`-joined multiples into one string before Phase 1 ever saw
+  it, and `prompt_synthesis.py`'s template has exactly one slot per field
+  — so "CEO; Regional Sales Director" would've rendered as a single
+  awkward value with no signal that it's actually plural. Decided to fix
+  immediately rather than defer: the surviving-multi-span info already
+  existed in `Pipeline.run()`, discarding it and re-deriving it later would
+  cost the same effort twice for no benefit (unlike Phases 6-8, which are
+  genuinely deferred because they're large and still unscoped). Exposed it
+  as a new `multi_span: bool` field on every role in `Pipeline.run()`'s
+  output (`pipeline.py`), and `prompt_synthesis.py` now includes
+  `multi_span` in `needs_review` the same way `intent` always is — a
+  multi-actor/object field surfaces for human review instead of silently
+  reading as one fused value. Re-ran the eval after — unchanged (purely
+  additive field, no scoring-path change).
 - **Not yet done:** Phase 3 (`app.py` fill-in-blank/confirm-reject UI,
   correction logging) — `prompt_synthesis.py` exists as a standalone
   module with its own CLI (`python3 prompt_synthesis.py "<query>"`) but

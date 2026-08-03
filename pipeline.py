@@ -119,7 +119,7 @@ class Pipeline:
                 result[role] = {
                     "value": None, "status": "missing", "confidence": 0.0,
                     "source_text": None, "flagged_for_review": False,
-                    "guard_note": None,
+                    "guard_note": None, "multi_span": False,
                 }
                 continue
 
@@ -169,6 +169,13 @@ class Pipeline:
                 "source_text": joined_span if len(found) > 1 else found[0]["text"],
                 "flagged_for_review": flagged,
                 "guard_note": guard_note,
+                # true when >1 span survived the confidence filter above --
+                # a real second occurrence, not spurious noise that got
+                # dropped. Downstream consumers (e.g. prompt_synthesis.py)
+                # use this to flag "this field may bundle >1 distinct
+                # actor/object/etc." for human review, since a single
+                # template slot can't safely disambiguate multiple values.
+                "multi_span": len(found) > 1,
             }
         return result
 

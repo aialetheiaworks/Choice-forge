@@ -58,10 +58,16 @@ def build_fields(result):
     for role in ROLES:
         r = result[role]
         blank = _is_blank(r)
+        multi_span = r.get("multi_span", False)
         fields[role] = {
             "text": BLANK_PROMPTS[role] if blank else str(r["value"]),
             "blank": blank,
-            "needs_review": blank or role in ALWAYS_REVIEW_ROLES,
+            # a single template slot can't safely disambiguate multiple
+            # surviving spans (e.g. two actors) -- surface for review
+            # rather than silently rendering the "; "-joined text as if it
+            # were one value, same reasoning as ALWAYS_REVIEW_ROLES.
+            "multi_span": multi_span,
+            "needs_review": blank or role in ALWAYS_REVIEW_ROLES or multi_span,
             "confidence": r["confidence"],
             "status": r["status"],
         }
