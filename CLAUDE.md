@@ -32,8 +32,10 @@ the **Rules** section below stable and update it rarely; keep the
 | `data/eval_on_real_world.py` | The only end-to-end, real-world scoring harness. Run after every retrain. |
 | `data/real_world_eval_report.json` | Latest eval run's per-row, per-field detail. Regenerated each run — not hand-edited. |
 | `Doc/` | Pre-existing human-reference explainer PDFs (one per layer). Not auto-generated, don't touch without reason. |
-| `app.py` | Streamlit stakeholder UI — the planned home for the self-learning correction-capture flow (not built yet, see gaps below). |
-| `prompt_synthesis.py` | Phase 1 of the Product vision below: deterministic-template master-prompt synthesis from a `Pipeline.run()` result. Not yet wired into `app.py` (Phase 3). |
+| `app.py` | Streamlit stakeholder UI. Also hosts the Phase 3 fill-in-blank/confirm-reject "Master Prompt" section (calls `prompt_synthesis.py` + `correction_log.py`). |
+| `prompt_synthesis.py` | Phase 1 of the Product vision below: deterministic-template master-prompt synthesis from a `Pipeline.run()` result. `render_sentence()` (the sentence-assembly core) is shared with `app.py`'s confirm/reject re-render step. |
+| `correction_log.py` | Phase 3: appends one JSON object per confirm/reject decision from `app.py` to `data/corrections_log.jsonl`. This is the training data Phase 5 will retrain the prompt-synthesis model on. |
+| `data/corrections_log.jsonl` | Append-only log of every confirm/reject decision (written by `correction_log.py`). Versioned like `data/seq2seq_pairs.jsonl` — not gitignored, not hand-edited. |
 
 **Standing safety rules:**
 - Never add rows to or otherwise touch `data/real_world_eval_holdout.json`
@@ -214,7 +216,7 @@ user's own name, mobile number, and email are mandatory.
   log every accept/reject and every user-filled blank. This log is what
   both measures how often the system gets it right *and* is the training
   data needed for Phase 5 — do not train a prompt-synthesis model before
-  this data exists.
+  this data exists. **Built — see Current status, 2026-08-03 session.**
 - **Phase 4** — wire the final LLM API call (default to Claude via the
   Anthropic API for this) on the confirmed master prompt.
 - **Phase 5** (later) — once accept/reject + fill logs accumulate, train
@@ -235,7 +237,7 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
-## Current status (as of 2026-08-03 — Phase 1 build session)
+## Current status (as of 2026-08-03 — Phase 1 + Phase 3 build session)
 
 **2026-08-03 session:** resumed from the 2026-08-02 pause. First, caught
 up git state left over from the two prior planning-only sessions —
@@ -305,10 +307,37 @@ extraction).
   multi-actor/object field surfaces for human review instead of silently
   reading as one fused value. Re-ran the eval after — unchanged (purely
   additive field, no scoring-path change).
-- **Not yet done:** Phase 3 (`app.py` fill-in-blank/confirm-reject UI,
-  correction logging) — `prompt_synthesis.py` exists as a standalone
-  module with its own CLI (`python3 prompt_synthesis.py "<query>"`) but
-  isn't called from `app.py` yet. That's the natural next step.
+- **Phase 3 built, same session:** extracted `render_sentence(fields)` out
+  of `prompt_synthesis.py`'s `synthesize_master_prompt()` (pure refactor,
+  no behavior change) so the sentence-assembly logic — the
+  `_prefixed_clause` preposition-skip, measure/object fusion — can be
+  reused both for the pipeline-extracted prompt and for re-rendering after
+  user edits. Added `correction_log.py` (append-only JSONL writer, same
+  convention as `data/seq2seq_pairs.jsonl`). Added a "Master Prompt"
+  section to `app.py` below the existing per-field diagnostic grid (that
+  grid is unchanged, stays as the raw-extraction view): shows the
+  assembled sentence, then an `st.form` with one editable text input per
+  role (all 9 editable, not just blank/flagged ones — a correction on a
+  field the pipeline was confident about is valuable signal too), blank
+  fields shown via `placeholder=` rather than pre-filled `value=`, and
+  Confirm/Reject submit buttons. Widget keys are suffixed with a
+  `run_id` counter (bumped on every Run click) so a second query's form
+  doesn't inherit the first query's edited text — Streamlit only honors a
+  widget's `value=` on first creation of a given key, not on reruns. On
+  submit, resolves each field's final text (edited value if the user typed
+  something, else the original), explicitly flips `blank` to `False` for
+  edited fields so `render_sentence()`'s preposition-skip logic applies
+  correctly to user-typed text (not doing this would double up
+  prepositions like "within within Q4" on a filled-in blank), re-renders
+  the sentence via `render_sentence()`, and logs one JSON entry via
+  `correction_log.log_correction()` with the original per-field pipeline
+  output, the resolved final value, whether it was user-edited, both
+  prompt versions, and the confirm/reject decision (+ reason on reject).
+  **Not yet done:** end-to-end browser verification (this session's
+  sandbox had no Streamlit/spaCy/torch installed; installed
+  `requirements.txt` and reran `python3 prompt_synthesis.py` smoke queries
+  plus a live `streamlit run app.py` pass before treating this as done —
+  see verification note below if that didn't happen yet).
 
 ## Previous status (as of 2026-08-02 — feasibility/timeline discussion, paused)
 

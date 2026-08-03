@@ -108,11 +108,11 @@ def _target_phrase(fields):
     return measure["text"]
 
 
-def synthesize_master_prompt(result):
-    """Build the master prompt text + structured blank/review metadata from
-    a Pipeline.run() result dict."""
-    fields = build_fields(result)
-
+def render_sentence(fields):
+    """Assemble the master-prompt sentence from a fields dict shaped like
+    build_fields()'s output (role -> {"text":..., "blank":...}, at least).
+    Shared by synthesize_master_prompt() (pipeline-extracted fields) and
+    app.py's confirm/reject step (user-edited fields)."""
     subject = _capitalize(fields["actor"]["text"])
     intent_text = fields["intent"]["text"]
     target_phrase = _target_phrase(fields)
@@ -120,7 +120,7 @@ def synthesize_master_prompt(result):
     magnitude_clause = _prefixed_clause("by", fields["magnitude"], MAGNITUDE_SELF_PREPOSITIONS)
     time_clause = _prefixed_clause("within", fields["time"], TIME_SELF_PREPOSITIONS)
 
-    sentence = (
+    return (
         f"{subject} wants to {intent_text} {target_phrase} "
         f"{magnitude_clause} "
         f"{time_clause} "
@@ -128,6 +128,13 @@ def synthesize_master_prompt(result):
         f"while subject to this constraint: {fields['constraints']['text']}, "
         f"because {fields['context']['text']}."
     )
+
+
+def synthesize_master_prompt(result):
+    """Build the master prompt text + structured blank/review metadata from
+    a Pipeline.run() result dict."""
+    fields = build_fields(result)
+    sentence = render_sentence(fields)
 
     blanks = [role for role in ROLES if fields[role]["blank"]]
     mandatory_review = [role for role in ROLES if fields[role]["needs_review"]]
