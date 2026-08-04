@@ -27,6 +27,14 @@ from pipeline import Pipeline, ROLES, MIN_JOIN_OPEN_CONFIDENCE
 # how confident the pipeline was.
 ALWAYS_REVIEW_ROLES = {"intent"}
 
+# Roles that are trailing clauses, not part of the core actor/intent/target
+# skeleton -- a query can legitimately never state one of these (e.g. no
+# constraint was ever mentioned), so the user gets a "not applicable" option
+# instead of being forced to invent a value for a blank. actor/intent/object/
+# measure are excluded: they're structural (subject, verb, target phrase) and
+# omitting them would leave the sentence without a subject or target.
+NOT_APPLICABLE_ELIGIBLE_ROLES = {"scope", "magnitude", "time", "constraints", "context"}
+
 BLANK_PROMPTS = {
     "actor": "[actor — who is responsible? please fill in]",
     "object": "[object — what is being acted on? please fill in]",
@@ -70,6 +78,9 @@ def build_fields(result):
             "needs_review": blank or role in ALWAYS_REVIEW_ROLES or multi_span,
             "confidence": r["confidence"],
             "status": r["status"],
+            # never set by the pipeline -- only the user, at confirm time,
+            # can know a field genuinely doesn't apply to this query.
+            "not_applicable": False,
         }
     return fields
 
@@ -108,26 +119,46 @@ def _target_phrase(fields):
     return measure["text"]
 
 
+def _not_applicable(field):
+    return field.get("not_applicable", False)
+
+
 def render_sentence(fields):
     """Assemble the master-prompt sentence from a fields dict shaped like
     build_fields()'s output (role -> {"text":..., "blank":...}, at least).
     Shared by synthesize_master_prompt() (pipeline-extracted fields) and
-    app.py's confirm/reject step (user-edited fields)."""
+    app.py's confirm/reject step (user-edited fields).
+
+    A NOT_APPLICABLE_ELIGIBLE_ROLES field marked not_applicable drops its
+    clause entirely instead of rendering a blank placeholder -- e.g. a query
+    with no stated constraint shouldn't force "while subject to this
+    constraint: [constraints -- please fill in]" into the prompt."""
     subject = _capitalize(fields["actor"]["text"])
     intent_text = fields["intent"]["text"]
     target_phrase = _target_phrase(fields)
 
-    magnitude_clause = _prefixed_clause("by", fields["magnitude"], MAGNITUDE_SELF_PREPOSITIONS)
-    time_clause = _prefixed_clause("within", fields["time"], TIME_SELF_PREPOSITIONS)
+    core = f"{subject} wants to {intent_text} {target_phrase}"
 
-    return (
-        f"{subject} wants to {intent_text} {target_phrase} "
-        f"{magnitude_clause} "
-        f"{time_clause} "
-        f"by targeting {fields['scope']['text']}, "
-        f"while subject to this constraint: {fields['constraints']['text']}, "
-        f"because {fields['context']['text']}."
-    )
+    lead_clauses = []
+    if not _not_applicable(fields["magnitude"]):
+        lead_clauses.append(_prefixed_clause("by", fields["magnitude"], MAGNITUDE_SELF_PREPOSITIONS))
+    if not _not_applicable(fields["time"]):
+        lead_clauses.append(_prefixed_clause("within", fields["time"], TIME_SELF_PREPOSITIONS))
+
+    trailing_clauses = []
+    if not _not_applicable(fields["scope"]):
+        trailing_clauses.append(f"by targeting {fields['scope']['text']}")
+    if not _not_applicable(fields["constraints"]):
+        trailing_clauses.append(f"while subject to this constraint: {fields['constraints']['text']}")
+    if not _not_applicable(fields["context"]):
+        trailing_clauses.append(f"because {fields['context']['text']}")
+
+    sentence = core
+    if lead_clauses:
+        sentence += " " + " ".join(lead_clauses)
+    if trailing_clauses:
+        sentence += " " + ", ".join(trailing_clauses)
+    return sentence + "."
 
 
 def synthesize_master_prompt(result):

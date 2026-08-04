@@ -20,7 +20,11 @@ import streamlit as st
 
 from correction_log import log_correction
 from pipeline import Pipeline, ROLES
-from prompt_synthesis import render_sentence, synthesize_master_prompt
+from prompt_synthesis import (
+    NOT_APPLICABLE_ELIGIBLE_ROLES,
+    render_sentence,
+    synthesize_master_prompt,
+)
 
 st.set_page_config(page_title="CHOICE Forge", page_icon="🧭", layout="wide")
 
@@ -233,6 +237,11 @@ if result:
             icon = ROLE_ICONS.get(role, "🔹")
             label = f"{icon} {role}" + (" ⚠️" if f["needs_review"] else "")
             if f["blank"]:
+                if role in NOT_APPLICABLE_ELIGIBLE_ROLES:
+                    st.checkbox(
+                        f"Not applicable to this query — {role} was never stated",
+                        key=f"na_{role}_{run_id}",
+                    )
                 st.text_input(label, value="", placeholder=f["text"], key=f"field_{role}_{run_id}")
             else:
                 st.text_input(label, value=f["text"], key=f"field_{role}_{run_id}")
@@ -250,18 +259,34 @@ if result:
         log_fields = {}
         for role in ROLES:
             orig = synth["fields"][role]
+            not_applicable = (
+                role in NOT_APPLICABLE_ELIGIBLE_ROLES
+                and st.session_state.get(f"na_{role}_{run_id}", False)
+            )
             submitted = st.session_state[f"field_{role}_{run_id}"].strip()
-            user_edited = bool(submitted) and (orig["blank"] or submitted != orig["text"])
+            user_edited = (
+                not not_applicable
+                and bool(submitted)
+                and (orig["blank"] or submitted != orig["text"])
+            )
 
-            resolved_text = submitted if user_edited else orig["text"]
-            resolved_blank = False if user_edited else orig["blank"]
+            if not_applicable:
+                resolved_text, resolved_blank = "", True
+            else:
+                resolved_text = submitted if user_edited else orig["text"]
+                resolved_blank = False if user_edited else orig["blank"]
 
-            final_fields[role] = {"text": resolved_text, "blank": resolved_blank}
+            final_fields[role] = {
+                "text": resolved_text,
+                "blank": resolved_blank,
+                "not_applicable": not_applicable,
+            }
             log_fields[role] = {
                 "original_value": result[role]["value"],
                 "original_status": result[role]["status"],
                 "original_confidence": result[role]["confidence"],
                 "blank": resolved_blank,
+                "not_applicable": not_applicable,
                 "needs_review": orig["needs_review"],
                 "multi_span": orig["multi_span"],
                 "final_value": None if resolved_blank else resolved_text,
