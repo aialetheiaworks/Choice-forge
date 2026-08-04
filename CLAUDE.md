@@ -242,6 +242,84 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-04, continued again — UI redesign + Cloud secrets)
+
+**Third same-day session:** the Gemini key landed correctly this time (see
+below), then two more asks: redesign the Streamlit UI ("doesn't look good
+at all"), and figure out the path to a live Streamlit Community Cloud
+deployment.
+
+- **Near-miss on the Gemini key:** the user's first attempt pasted the
+  real key into `.env.example` (tracked) instead of `.env` (gitignored).
+  Caught before anything was staged/committed -- confirmed via
+  `git status`/`git diff` that it never touched git history, moved the
+  key into `.env`, restored `.env.example` to its clean template.
+  Verified the real key works with a live `llm_client.generate_output()`
+  call afterward. No exposure, but worth remembering: only ever edit
+  `.env`, never `.env.example`.
+- **UI redesign, invoked via the `frontend-design` skill.** Concept:
+  "field survey instrument" -- CHOICE Forge reads a vague business ask
+  like a surveyor's transit reads terrain, resolving it into precise
+  bearings (the 9 fields) each with a stated confidence/tolerance; the
+  existing compass mark and "Forge" name already pointed this way.
+  Token system: ink-slate background, three accents each carrying real
+  meaning (brass = primary/action, verdigris = confirmed/high-confidence,
+  rust = flagged/missing/low-confidence) instead of one decorative color;
+  type split three ways by role (Space Grotesk labels, Source Serif 4 for
+  actual document content -- query/master-prompt/LLM output, JetBrains
+  Mono for readout data). Signature element: a tick-mark confidence gauge
+  (10 ticks, filled by decile, colored by tier) replacing the plain
+  progress-bar-plus-badge combo, repeated across every field card.
+  Self-critiqued against the generic-AI-default checklist from the skill
+  (cream+serif+terracotta / near-black+neon / broadsheet-zero-radius)
+  before building -- deliberately none of the three.
+  **Process note:** inspected the actual live Streamlit 1.60 DOM via
+  browser JS (`data-testid` attributes for every widget type) before
+  writing CSS selectors, rather than guessing at internal class names --
+  those are version-fragile and guessing wrong would have silently no-op'd
+  half the redesign. Rebuilt the 9-field grid, metric row, and
+  master-prompt display as custom HTML (pure display, no interactivity
+  lost); left the query textarea, example pills, and the confirm/reject
+  form's inputs/checkboxes/buttons as native Streamlit widgets, restyled
+  via CSS on their confirmed `data-testid`s.
+  Verified end-to-end in a live session: real query -> field grid/gauges
+  render correctly -> filled/confirmed the master prompt -> real Gemini
+  call -> generated output typesets correctly (even the LLM's own
+  markdown headers pick up the Space Grotesk treatment). Also checked
+  390px mobile width (cards stack to one column, tags/pills wrap) and
+  caught one transient false alarm (two example pills briefly looked
+  "selected" in one screenshot; confirmed via `aria-checked` + computed
+  styles it was just a mouse-hover artifact at that exact screenshot
+  moment, not a real state bug). Added focus-visible outlines and gated
+  hover/transition animation behind `prefers-reduced-motion`.
+- **Deployment groundwork for Streamlit Community Cloud.** Corrected an
+  assumption: pushing to GitHub does not by itself make the app live --
+  the first deployment needs a one-time manual connection at
+  share.streamlit.io (the user's own GitHub OAuth session, not something
+  doable from here). After that one-time link, subsequent pushes to
+  `main` do auto-redeploy.
+  Found and fixed a real gap before that matters: every `llm_providers/*.py`
+  module reads config via `os.environ.get(...)`, which works locally via
+  `.env`, but Streamlit Cloud only exposes deployment secrets through
+  `st.secrets`, not as real environment variables. Confirmed locally that
+  `st.secrets` raises `StreamlitSecretNotFoundError` when no
+  `secrets.toml` exists anywhere (i.e. every local dev setup) -- added a
+  guarded bridge in `llm_client.py` that mirrors `st.secrets` into
+  `os.environ` via `setdefault` (never overwrites a real env var), wrapped
+  in try/except so the normal local-dev case (no secrets.toml) is a clean
+  no-op. Re-verified a real local Gemini call still works after adding it.
+  Flagged two things that couldn't be confirmed from docs alone and are
+  the user's call, not blockers: Community Cloud apps are public by
+  default unless the sharing setting is changed (real cost exposure,
+  since this app spends real API credits on whichever key is configured),
+  and the app's `torch`/`transformers`/230MB-model dependency footprint
+  may or may not fit comfortably in free-tier Community Cloud resource
+  limits (couldn't get a current authoritative number via WebFetch).
+- Confirmed via `git status` that `main` was back in sync with
+  `origin/main` after this session's commits -- the user pushed
+  independently between turns (SSH agent still had a key loaded from
+  earlier in the day, checked via `ssh-add -l` rather than assumed).
+
 ## Current status (as of 2026-08-04, continued — provider-agnostic LLM architecture)
 
 **Same-day follow-up session:** after Phase 4 shipped hardcoded to
