@@ -13,11 +13,24 @@ and the environment.
 
 import os
 
+import streamlit as st
 from dotenv import load_dotenv
 
 from llm_providers import anthropic_provider, gemini_provider, ollama_provider
 
-load_dotenv()  # no-op if there's no .env file
+load_dotenv()  # local dev: reads .env if present, no-op otherwise
+
+try:
+    # Streamlit Community Cloud: secrets are set via the Cloud dashboard's
+    # Secrets UI and only exposed through st.secrets, not as real env vars.
+    # Mirror them into os.environ so every provider module can keep reading
+    # via os.environ.get(...) unchanged, whether run locally or deployed.
+    # Raises StreamlitSecretNotFoundError locally when no secrets.toml
+    # exists anywhere -- expected and fine, .env/shell env vars still work.
+    for _key, _value in st.secrets.items():
+        os.environ.setdefault(_key, str(_value))
+except Exception:
+    pass
 
 PROVIDERS = {
     "anthropic": anthropic_provider.generate,
