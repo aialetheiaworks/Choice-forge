@@ -9,8 +9,9 @@ was grounded in.
 
 The 9-field extraction step runs entirely locally — no external LLM API
 calls. The optional "Generate Output" step in the Streamlit UI (after you
-confirm a master prompt) does call the Anthropic API — see "Generate Output
-(Phase 4)" below.
+confirm a master prompt) calls an LLM provider of your choice (Anthropic,
+Gemini, or a local Ollama model) — see "Generate Output (Phase 4)" below
+and `API_KEYS.md` for the full reference.
 
 ## Setup
 
@@ -44,19 +45,23 @@ either run it on a shared machine they can reach, or tunnel it (e.g.
 Below the field results, the UI shows a "Master Prompt" — an assembled
 objective statement with blanks for anything the pipeline didn't confidently
 extract. Fill in or mark blanks "not applicable", then Confirm. Once
-confirmed, a "Generate Output" section appears with a "Send to Claude"
-button that sends the confirmed prompt to the Anthropic API and shows
-Claude's answer.
+confirmed, a "Generate Output" section appears with a "Send to
+{Provider}" button that sends the confirmed prompt to whichever LLM
+provider is currently configured and shows its answer.
 
-This step requires an API key:
+**Which provider runs is a config change, not a code change** — see
+`API_KEYS.md` for the full reference (every provider's env vars, how to
+switch, how to add a new one). Quick version:
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
+cp .env.example .env   # then fill in the one provider's key you're using
 ```
 
-Without it, clicking "Send to Claude" shows a clear error in the UI instead
-of a live answer — the rest of the app (extraction, master-prompt editing,
-confirm/reject logging) works the same either way.
+`.env` is gitignored — never commit it, and never paste a real key
+anywhere (chat, docs, commits). Without a key set for the active
+provider, clicking "Send to {Provider}" shows a clear error in the UI
+instead of a live answer — the rest of the app (extraction, master-prompt
+editing, confirm/reject logging) works the same either way.
 
 ## Run it from the command line
 
@@ -123,5 +128,7 @@ See `ABOUT.md` for how each piece works and why it's built this way.
 | `pipeline.py` | Runs a query through spaCy → CRF → T5 → polarity guard. Also the entry point for CLI use. |
 | `prompt_synthesis.py` | Assembles the 9 fields into a master-prompt sentence, blanking low-confidence/missing fields. |
 | `correction_log.py` | Appends every confirm/reject decision to `data/corrections_log.jsonl`. |
-| `llm_client.py` | Sends a confirmed master prompt to Claude (Anthropic API) — needs `ANTHROPIC_API_KEY`. |
+| `llm_client.py` | Routes a confirmed master prompt to whichever provider `LLM_PROVIDER` selects. |
+| `llm_providers/` | One module per LLM provider (Anthropic/Gemini/Ollama), each behind the same `generate(prompt)` contract — see `API_KEYS.md`. |
+| `API_KEYS.md` | The one file to read to switch LLM providers or add a new one. |
 | `app.py` | Streamlit UI for stakeholders — **this is the recommended entry point.** |

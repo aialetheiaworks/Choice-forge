@@ -36,7 +36,10 @@ the **Rules** section below stable and update it rarely; keep the
 | `prompt_synthesis.py` | Phase 1 of the Product vision below: deterministic-template master-prompt synthesis from a `Pipeline.run()` result. `render_sentence()` (the sentence-assembly core) is shared with `app.py`'s confirm/reject re-render step. |
 | `correction_log.py` | Phase 3: appends one JSON object per confirm/reject decision from `app.py` to `data/corrections_log.jsonl`. This is the training data Phase 5 will retrain the prompt-synthesis model on. |
 | `data/corrections_log.jsonl` | Append-only log of every confirm/reject decision (written by `correction_log.py`). Versioned like `data/seq2seq_pairs.jsonl` — not gitignored, not hand-edited. |
-| `llm_client.py` | Phase 4: thin wrapper around the Anthropic API (`client.messages.create`, model `claude-opus-5`). Sends a confirmed master prompt, returns Claude's answer. Reads `ANTHROPIC_API_KEY` from the environment via the SDK's default resolution — never hardcode a key here. |
+| `llm_client.py` | Phase 4: provider-agnostic router. Reads `LLM_PROVIDER` and dispatches to the matching module in `llm_providers/`. `app.py` only ever calls `llm_client.generate_output()` -- it never imports a provider SDK directly. |
+| `llm_providers/` | One module per LLM provider (`anthropic_provider.py`, `gemini_provider.py`, `ollama_provider.py`), each a single `generate(prompt) -> str` function reading its own key/model from the environment. Adding a provider = one new module + one registry line in `llm_client.py`. Never hardcode a key in any of these. |
+| `API_KEYS.md` | The one file to read to switch providers, see every env var per provider, or add a new one. Security rules for keys live here too. |
+| `.env.example` | Template for `.env` (gitignored) — no real values, ever. |
 
 **Standing safety rules:**
 - Never add rows to or otherwise touch `data/real_world_eval_holdout.json`
@@ -238,6 +241,61 @@ user's own name, mobile number, and email are mandatory.
   (no incremental-fit mode) nor a per-query eval-gate cost makes retrain-
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
+
+## Current status (as of 2026-08-04, continued — provider-agnostic LLM architecture)
+
+**Same-day follow-up session:** after Phase 4 shipped hardcoded to
+Anthropic, the user asked for the LLM call to be provider-agnostic before
+adding a real key -- they want to test now against a Gemini key they
+already have on hand, add the Anthropic key later, and be able to point
+at a local Ollama model later still, all without touching app.py or
+re-architecting again each time.
+
+- **Refactored `llm_client.py` from "the Anthropic client" into a
+  router.** It now reads `LLM_PROVIDER` and dispatches to one of three
+  new modules under `llm_providers/` (`anthropic_provider.py`,
+  `gemini_provider.py`, `ollama_provider.py`), each exposing the same
+  `generate(prompt) -> str` contract and sharing one system prompt
+  (`llm_providers/_shared.py`) so wording can't drift between providers.
+  `app.py`'s call site (`llm_client.generate_output(...)`) didn't change
+  at all -- the whole point.
+- **Did not trust the fetched Gemini docs at face value.** WebFetch
+  described a `client.interactions.create(model=..., system_instruction=...,
+  input=...)` / `.output_text` shape that doesn't match the
+  `generate_content()` pattern in older training data. Installed
+  `google-genai` locally and inspected the actual installed package's type
+  definitions (`CreateModelInteractionParam`, `Interaction.output_text`)
+  to confirm the field names before writing `gemini_provider.py` --
+  matched exactly. Also cross-checked that `gemini-3.6-flash` (the model
+  WebFetch reported) is a real, current model string by grepping the
+  installed SDK's own model-name references, since a wrong model ID here
+  would have been a much harder bug to spot than a wrong field name.
+- **Added `API_KEYS.md`** as the single file to read for switching
+  providers, seeing every provider's env vars, or adding a new one (just:
+  one new module + one line in `llm_client.py`'s registry). Documents the
+  security rules explicitly: never hardcode a key, never commit `.env`
+  (added to `.gitignore`), never paste a real key into chat/docs/commits
+  -- treat any accidental exposure as compromised and rotate it.
+  `.env.example` (no real values) shows the shape; `llm_client.py`
+  auto-loads a real `.env` via `python-dotenv` if present.
+- **Set `LLM_PROVIDER=gemini` as the temporary default**, per the user's
+  request, since a Gemini key was already available for testing. Switching
+  to `anthropic` (once that key is ready) or `ollama` is a one-line env
+  var change -- no code edit, by design.
+- **Caught a real bug via manual testing, not by inspection**: after the
+  refactor, the "Generate Output" section still hardcoded "Send to
+  Claude" and "Claude API call failed: ..." in `app.py`, even though the
+  call was actually routing to Gemini underneath. Fixed both the button
+  label and the error message to name the active provider dynamically
+  (`os.environ.get("LLM_PROVIDER", ...)`.capitalize()`). Re-verified in a
+  live streamlit session: confirmed a query, clicked "Send to Gemini",
+  got a genuine Gemini-specific `AuthenticationError` referencing
+  `ai.google.dev` -- proof it's really calling Gemini, not a leftover
+  Claude code path with relabeled text.
+- Also directly exercised `llm_client.generate_output()` for all three
+  providers plus an unknown `LLM_PROVIDER` value from the command line
+  (no browser needed for this part) -- each produced a distinct, correct,
+  informative error with no key/server present.
 
 ## Current status (as of 2026-08-04 — not-applicable fields + Phase 4 build session)
 
