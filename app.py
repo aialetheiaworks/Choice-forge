@@ -18,6 +18,7 @@ import statistics
 
 import streamlit as st
 
+import llm_client
 from correction_log import log_correction
 from pipeline import Pipeline, ROLES
 from prompt_synthesis import (
@@ -146,6 +147,8 @@ if run and query.strip():
     st.session_state.last_result = result
     st.session_state.last_query = query.strip()
     st.session_state.run_id += 1
+    for key in ("last_decision", "last_master_prompt_final", "llm_output", "llm_error"):
+        st.session_state.pop(key, None)
 
 result = st.session_state.get("last_result")
 synth = synthesize_master_prompt(result) if result else None
@@ -305,10 +308,39 @@ if result:
         }
         log_correction(entry)
 
+        st.session_state.last_decision = entry["decision"]
+        st.session_state.last_master_prompt_final = master_prompt_final
+
         if confirmed:
             st.success(f"Confirmed:\n\n{master_prompt_final}")
         else:
             st.warning(f"Rejected:\n\n{master_prompt_final}")
+
+    if st.session_state.get("last_decision") == "confirmed":
+        st.divider()
+        st.subheader("Generate Output")
+        st.caption(
+            "Sends the confirmed master prompt to Claude (Anthropic API) and "
+            "returns its answer to your original business query."
+        )
+        if st.button("🚀 Send to Claude"):
+            with st.spinner("Calling Claude..."):
+                try:
+                    st.session_state.llm_output = llm_client.generate_output(
+                        st.session_state.last_master_prompt_final
+                    )
+                    st.session_state.llm_error = None
+                except Exception as e:
+                    st.session_state.llm_output = None
+                    st.session_state.llm_error = str(e)
+
+        if st.session_state.get("llm_error"):
+            st.error(
+                f"Claude API call failed: {st.session_state.llm_error}\n\n"
+                "Check that ANTHROPIC_API_KEY is set in your environment."
+            )
+        elif st.session_state.get("llm_output"):
+            st.markdown(st.session_state.llm_output)
 
 st.divider()
 st.caption(
