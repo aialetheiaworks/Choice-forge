@@ -8,3 +8,6 @@ torch
 sentencepiece
 accelerate
 anthropic
+google-genai
+ollama
+python-dotenv

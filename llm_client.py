@@ -1,38 +1,45 @@
 """
 Phase 4 of the CHOICE product vision (see CLAUDE.md "Agreed build order"):
-sends a confirmed master prompt to Claude (Anthropic API) and returns the
-actual answer to the user's original business query. Thin wrapper only --
-no retries/caching beyond what the SDK already does by default.
+sends a confirmed master prompt to an LLM and returns its answer to the
+user's original business query.
 
-Requires ANTHROPIC_API_KEY in the environment (see README.md). Never
-hardcode a key here.
+Which LLM actually runs the call is controlled entirely by the
+LLM_PROVIDER environment variable -- see API_KEYS.md for the full
+reference (every provider's env vars, defaults, and how to add a new
+one). Swapping providers (e.g. Anthropic -> Gemini -> a local Ollama
+model) never requires touching this file or app.py -- only API_KEYS.md
+and the environment.
 """
 
-import anthropic
+import os
 
-MODEL = "claude-opus-5"
+from dotenv import load_dotenv
 
-SYSTEM_PROMPT = (
-    "You are a business strategy assistant. The user will give you a "
-    "fully-specified objective statement, already clarified and confirmed "
-    "by the stakeholder who asked it. Answer the objective directly and "
-    "practically -- give a concrete, actionable response grounded only in "
-    "what the objective states, not a restatement of the objective itself."
-)
+from llm_providers import anthropic_provider, gemini_provider, ollama_provider
+
+load_dotenv()  # no-op if there's no .env file
+
+PROVIDERS = {
+    "anthropic": anthropic_provider.generate,
+    "gemini": gemini_provider.generate,
+    "ollama": ollama_provider.generate,
+}
+
+# Temporary for testing -- see API_KEYS.md "Current default" before changing.
+DEFAULT_PROVIDER = "gemini"
 
 
 def generate_output(master_prompt):
-    """Call Claude on a confirmed master prompt, return the response text.
+    """Call the LLM_PROVIDER-configured provider on a confirmed master
+    prompt, return the response text.
 
-    Raises whatever the Anthropic SDK raises (AuthenticationError,
-    RateLimitError, etc.) -- the caller (app.py) is responsible for
-    catching and displaying these to the user.
+    Raises whatever the underlying provider raises -- the caller (app.py)
+    is responsible for catching and displaying these to the user.
     """
-    client = anthropic.Anthropic()
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=4096,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": master_prompt}],
-    )
-    return next(block.text for block in response.content if block.type == "text")
+    provider_name = os.environ.get("LLM_PROVIDER", DEFAULT_PROVIDER).strip().lower()
+    if provider_name not in PROVIDERS:
+        raise ValueError(
+            f"Unknown LLM_PROVIDER '{provider_name}'. "
+            f"Valid options: {', '.join(sorted(PROVIDERS))}. See API_KEYS.md."
+        )
+    return PROVIDERS[provider_name](master_prompt)

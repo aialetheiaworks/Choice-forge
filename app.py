@@ -14,6 +14,7 @@ Run:
 import datetime
 import html
 import json
+import os
 import statistics
 
 import streamlit as st
@@ -317,14 +318,20 @@ if result:
             st.warning(f"Rejected:\n\n{master_prompt_final}")
 
     if st.session_state.get("last_decision") == "confirmed":
+        active_provider = os.environ.get(
+            "LLM_PROVIDER", llm_client.DEFAULT_PROVIDER
+        ).strip().lower()
+        provider_label = active_provider.capitalize()
+
         st.divider()
         st.subheader("Generate Output")
         st.caption(
-            "Sends the confirmed master prompt to Claude (Anthropic API) and "
+            f"Sends the confirmed master prompt to the configured LLM provider "
+            f"(currently **{provider_label}** — see `API_KEYS.md` to switch) and "
             "returns its answer to your original business query."
         )
-        if st.button("🚀 Send to Claude"):
-            with st.spinner("Calling Claude..."):
+        if st.button(f"🚀 Send to {provider_label}"):
+            with st.spinner(f"Calling {provider_label}..."):
                 try:
                     st.session_state.llm_output = llm_client.generate_output(
                         st.session_state.last_master_prompt_final
@@ -336,8 +343,8 @@ if result:
 
         if st.session_state.get("llm_error"):
             st.error(
-                f"Claude API call failed: {st.session_state.llm_error}\n\n"
-                "Check that ANTHROPIC_API_KEY is set in your environment."
+                f"{provider_label} call failed: {st.session_state.llm_error}\n\n"
+                f"Check the `{active_provider}` provider's setup in `API_KEYS.md`."
             )
         elif st.session_state.get("llm_output"):
             st.markdown(st.session_state.llm_output)
