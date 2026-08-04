@@ -36,6 +36,7 @@ the **Rules** section below stable and update it rarely; keep the
 | `prompt_synthesis.py` | Phase 1 of the Product vision below: deterministic-template master-prompt synthesis from a `Pipeline.run()` result. `render_sentence()` (the sentence-assembly core) is shared with `app.py`'s confirm/reject re-render step. |
 | `correction_log.py` | Phase 3: appends one JSON object per confirm/reject decision from `app.py` to `data/corrections_log.jsonl`. This is the training data Phase 5 will retrain the prompt-synthesis model on. |
 | `data/corrections_log.jsonl` | Append-only log of every confirm/reject decision (written by `correction_log.py`). Versioned like `data/seq2seq_pairs.jsonl` — not gitignored, not hand-edited. |
+| `llm_client.py` | Phase 4: thin wrapper around the Anthropic API (`client.messages.create`, model `claude-opus-5`). Sends a confirmed master prompt, returns Claude's answer. Reads `ANTHROPIC_API_KEY` from the environment via the SDK's default resolution — never hardcode a key here. |
 
 **Standing safety rules:**
 - Never add rows to or otherwise touch `data/real_world_eval_holdout.json`
@@ -218,7 +219,8 @@ user's own name, mobile number, and email are mandatory.
   data needed for Phase 5 — do not train a prompt-synthesis model before
   this data exists. **Built — see Current status, 2026-08-03 session.**
 - **Phase 4** — wire the final LLM API call (default to Claude via the
-  Anthropic API for this) on the confirmed master prompt.
+  Anthropic API for this) on the confirmed master prompt. **Built — see
+  Current status, 2026-08-04 session.**
 - **Phase 5** (later) — once accept/reject + fill logs accumulate, train
   the real prompt-synthesis model on them, replacing the Phase 1 template.
   Gate any new version against a frozen holdout, the same way model
@@ -236,6 +238,69 @@ user's own name, mobile number, and email are mandatory.
   (no incremental-fit mode) nor a per-query eval-gate cost makes retrain-
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
+
+## Current status (as of 2026-08-04 — not-applicable fields + Phase 4 build session)
+
+**2026-08-04 session:** started from a discussion of real gaps in the Phase
+3 UI: a blank field collapses "the pipeline failed to extract this" and
+"this genuinely doesn't apply to the query" (e.g. no constraint was ever
+stated) into one identical placeholder, which also meant scoring had no way
+to exclude inapplicable fields from a denominator. Discussed and agreed the
+fix, then built it, then built Phase 4.
+
+- **Checked actual repo state before doing anything** — `CLAUDE.md`'s
+  "still on branch, not yet merged" note from the 2026-08-03 session was
+  stale: `git branch --merged main` showed `phase-3-master-prompt-ui` was
+  already merged into `main` (just not pushed to `origin/main`, which was 7
+  commits behind). No merge needed this session, just eventually a push.
+- **Added a "not applicable" state**, distinct from `blank`, for the 5
+  trailing-clause roles where a query can legitimately never mention one
+  (`scope`, `magnitude`, `time`, `constraints`, `context`). `actor`/`intent`/
+  `object`/`measure` stay fill-or-blank only — they're structural to the
+  sentence (subject/verb/target), not droppable clauses.
+  `prompt_synthesis.py`: added `NOT_APPLICABLE_ELIGIBLE_ROLES`, a
+  `not_applicable` key on every field (default `False`, never set by the
+  pipeline — only the user can know this), and rewrote `render_sentence()`
+  to drop each not-applicable clause entirely instead of rendering its
+  blank placeholder — verified byte-identical output to the pre-change
+  version when nothing is marked not-applicable. `app.py`: a "Not
+  applicable" checkbox next to each eligible blank field; at submit time,
+  a checked box forces `blank=True, not_applicable=True` for that field
+  regardless of what (if anything) was typed into it.
+  `correction_log.py`'s entries (via `app.py`'s `log_fields`) now carry
+  `not_applicable` per field, distinct from `blank` — this is the input
+  a future scoring pass needs to divide by "applicable fields" instead of
+  always 9, and it's now available going forward (not retrofitted onto
+  old log entries).
+- **Verified end-to-end in a running streamlit session**: ran a real query,
+  checked `scope`/`magnitude`/`context` as not-applicable and left `time`/
+  `constraints` filled, confirmed, and got a clean sentence with the three
+  not-applicable clauses cleanly absent (no dangling "while subject to this
+  constraint: [blank]" text). Checked `data/corrections_log.jsonl` — the
+  three fields logged `blank: true, not_applicable: true, final_value:
+  null`, correctly distinguished from the filled fields. Kept this as
+  verification data in the log, same convention as the prior phase-3
+  session.
+- **Built Phase 4**: new `llm_client.py` sends a confirmed master prompt to
+  Claude (`claude-opus-5` via the Anthropic API) and returns the answer.
+  Reads `ANTHROPIC_API_KEY` from the environment via the SDK's default
+  client resolution — never hardcoded. Added a "Generate Output" section to
+  `app.py`, shown only once a query is confirmed (tracked in
+  `st.session_state.last_decision`, reset on every new Run so it can't
+  leak across queries), with a "Send to Claude" button. Verified in a
+  running streamlit session with no API key present: confirmed a query,
+  the section appeared correctly, and clicking through produced a clean
+  caught `AuthenticationError` displayed in the UI (not a crash) pointing
+  at the missing key — confirms the wiring is correct up to the network
+  call itself, which needs a real key to verify further. Added `anthropic`
+  to `requirements.txt` and documented the env var in `README.md`.
+- **Push blocked, not attempted further**: `git push origin main` failed —
+  the `alethiaworks` deploy key (`~/.ssh/id_ed25519_alethiaworks`) is
+  passphrase-protected and the local ssh-agent had no identities loaded.
+  Did not attempt to enter or work around the passphrase (that's
+  credential handling). Commits are made locally (`cd34a77`, `b5bc360`);
+  pushing to `origin/main` is left for the user to do themselves
+  (`ssh-add ~/.ssh/id_ed25519_alethiaworks` then `git push`).
 
 ## Current status (as of 2026-08-03 — Phase 1 + Phase 3 build session)
 

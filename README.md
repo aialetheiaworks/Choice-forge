@@ -7,7 +7,10 @@ enterprise accounts within the next sprint.") into a structured object with
 (`explicit`/`missing`), a `confidence` score, and the `source_text` span it
 was grounded in.
 
-Runs entirely locally — no external LLM API calls.
+The 9-field extraction step runs entirely locally — no external LLM API
+calls. The optional "Generate Output" step in the Streamlit UI (after you
+confirm a master prompt) does call the Anthropic API — see "Generate Output
+(Phase 4)" below.
 
 ## Setup
 
@@ -35,6 +38,25 @@ This runs the actual trained models locally in your browser session —
 nothing is sent anywhere. To share with remote stakeholders you'd need to
 either run it on a shared machine they can reach, or tunnel it (e.g.
 `ngrok http 8501`); it isn't deployed anywhere by default.
+
+## Generate Output (Phase 4)
+
+Below the field results, the UI shows a "Master Prompt" — an assembled
+objective statement with blanks for anything the pipeline didn't confidently
+extract. Fill in or mark blanks "not applicable", then Confirm. Once
+confirmed, a "Generate Output" section appears with a "Send to Claude"
+button that sends the confirmed prompt to the Anthropic API and shows
+Claude's answer.
+
+This step requires an API key:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+```
+
+Without it, clicking "Send to Claude" shows a clear error in the UI instead
+of a live answer — the rest of the app (extraction, master-prompt editing,
+confirm/reject logging) works the same either way.
 
 ## Run it from the command line
 
@@ -99,4 +121,7 @@ See `ABOUT.md` for how each piece works and why it's built this way.
 | `role_tagger.joblib` | Trained CRF model (output of `train_crf.py`). |
 | `value_synthesizer/` | Trained T5 model (output of `train_seq2seq.py`). |
 | `pipeline.py` | Runs a query through spaCy → CRF → T5 → polarity guard. Also the entry point for CLI use. |
+| `prompt_synthesis.py` | Assembles the 9 fields into a master-prompt sentence, blanking low-confidence/missing fields. |
+| `correction_log.py` | Appends every confirm/reject decision to `data/corrections_log.jsonl`. |
+| `llm_client.py` | Sends a confirmed master prompt to Claude (Anthropic API) — needs `ANTHROPIC_API_KEY`. |
 | `app.py` | Streamlit UI for stakeholders — **this is the recommended entry point.** |
