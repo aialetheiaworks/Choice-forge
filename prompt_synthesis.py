@@ -161,6 +161,40 @@ def render_sentence(fields):
     return sentence + "."
 
 
+# Roles whose multi_span co-occurrence actually signals a bundled query --
+# "who does it" and "what do they do" both having multiple surviving spans
+# is the actor<->intent pairing problem (CLAUDE.md Known gap 6, raised
+# 2026-08-05); object joins the same signal since a query can bundle
+# multiple targets instead of multiple actors ("grow enterprise accounts
+# and reduce churn"). scope/magnitude/time etc. legitimately have multiple
+# spans within a single decision (e.g. "7% in the Americas, 10% in APAC")
+# and are excluded so they don't produce false positives here.
+COMPOUND_SIGNAL_ROLES = {"actor", "intent", "object"}
+
+
+def detect_possible_compound_query(fields):
+    """A single master-prompt template has exactly one slot per role, so it
+    can't correctly render two independent actor-intent(-object) chains
+    bundled into one query (e.g. "Marketing will grow brand awareness while
+    Sales grows enterprise accounts"). Rather than silently guessing a
+    pairing, surface the condition so the user can be asked directly --
+    per the recommended direction in CLAUDE.md Known gap 6: this is itself
+    a clarifying question in the spirit of the product's actual goal, not
+    a defect to paper over quietly."""
+    multi_span_roles = [r for r in COMPOUND_SIGNAL_ROLES if fields[r]["multi_span"]]
+    is_possible_compound = len(multi_span_roles) >= 2
+    return {
+        "is_possible_compound": is_possible_compound,
+        "multi_span_roles": multi_span_roles,
+        "message": (
+            "This query might describe more than one decision bundled together "
+            f"({' and '.join(multi_span_roles)} each found multiple candidates). "
+            "If so, consider running each part through CHOICE Forge separately "
+            "for a clearer master prompt per decision."
+        ) if is_possible_compound else None,
+    }
+
+
 def synthesize_master_prompt(result):
     """Build the master prompt text + structured blank/review metadata from
     a Pipeline.run() result dict."""
@@ -175,6 +209,7 @@ def synthesize_master_prompt(result):
         "fields": fields,
         "blanks": blanks,
         "mandatory_review": mandatory_review,
+        "possible_compound_query": detect_possible_compound_query(fields),
     }
 
 

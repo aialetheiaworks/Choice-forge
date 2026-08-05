@@ -517,7 +517,17 @@ if result:
         unsafe_allow_html=True,
     )
 
+    compound = synth["possible_compound_query"]
+    if compound["is_possible_compound"]:
+        st.warning(f"🔀 {compound['message']}")
+
     with st.form(f"master_prompt_form_{run_id}"):
+        if compound["is_possible_compound"]:
+            st.checkbox(
+                "This query actually describes more than one separate decision "
+                "bundled together",
+                key=f"is_compound_{run_id}",
+            )
         for role in ROLES:
             f = synth["fields"][role]
             icon = ROLE_ICONS.get(role, "🔹")
@@ -588,6 +598,11 @@ if result:
             "master_prompt_final": master_prompt_final,
             "decision": "confirmed" if confirmed else "rejected",
             "reject_reason": (reject_reason.strip() or None) if rejected else None,
+            "possible_compound_query_flagged": compound["is_possible_compound"],
+            "possible_compound_query_confirmed": (
+                st.session_state.get(f"is_compound_{run_id}", False)
+                if compound["is_possible_compound"] else None
+            ),
         }
         log_correction(entry)
 
@@ -634,12 +649,14 @@ if result:
 
 st.divider()
 st.caption(
-    "This is v1, trained on 120 rows (100 synthetic + 20 real, hand-sourced from public "
-    "earnings calls and shareholder letters). Measured against a frozen 10-row real-world "
-    "holdout: 77.8% field status accuracy, 63.0% value accuracy, 90% actor-detection accuracy. "
-    "`actor`, `time`, and `constraints` (including negated ones like \"without increasing X\") "
-    "are the most reliable fields. `measure`, `scope`, and `context` are still data-thin, and "
-    "`intent` can come back short or low-confidence on multi-clause queries — that's the model "
-    "correctly signalling it isn't sure, not a display bug. Flag anything that looks wrong so "
-    "it can go into the next training round."
+    "This is v1, trained on 126 rows (100 synthetic + 26 real, hand-sourced from public "
+    "earnings calls and shareholder letters). Measured against the original frozen 10-row "
+    "real-world holdout: 78.9% field status accuracy, 67.4% value accuracy, 100% "
+    "actor-detection accuracy. `actor` and `time` are the most reliable fields. `measure`, "
+    "`scope`, and `context` are still data-thin, negated constraints (\"without increasing X\") "
+    "are real but not yet reliably detected, and `intent` can come back short or low-confidence "
+    "on multi-clause queries — that's the model correctly signalling it isn't sure, not a "
+    "display bug. A query that looks like it bundles more than one decision (e.g. two actors, "
+    "two intents) gets flagged above the form instead of silently guessing how they pair up. "
+    "Flag anything that looks wrong so it can go into the next training round."
 )

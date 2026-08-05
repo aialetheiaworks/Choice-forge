@@ -261,6 +261,26 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-05, continued again — compound-query detection)
+
+**Same-day continuation, after committing the sourcing/retrain work
+(commit `906f7bf`):** disk space cleanup (see below), then built the
+detection half of Known gap 6 (actor↔intent pairing) — see the Known
+gaps entry for the full technical description. Also fixed a stale
+footer caption in `app.py` still citing the pre-retrain baseline
+(77.8%/63.0%/90%) instead of the live model's real numbers
+(78.9%/67.4%/100%), caught while live-testing the new feature in a
+running Streamlit session (killed and cleaned up after).
+
+**Disk space, unrelated but handled same session:** project folder had
+grown to 28GB. Root cause: `seq2seq_ckpt/` (already gitignored) was 27GB
+— `train_seq2seq.py` had no `save_total_limit`, so every epoch of every
+retrain left a checkpoint behind permanently (2 retrains × 20 epochs = 40
+checkpoints × ~695MB). Deleted the directory (safe: gitignored, never in
+git history, and the actual deliverable is saved separately to
+`value_synthesizer/`) and added `save_total_limit=2` so this can't
+reaccumulate. Project folder is now ~930MB.
+
 ## Current status (as of 2026-08-05, continued — sourcing pass + retrain)
 
 **2026-08-05 session:** user asked for a senior-dev sanity check on the
@@ -860,34 +880,39 @@ What happened in the 2026-07-27 session:
    the Product vision section, not with the model — there's no training
    data for the prompt-synthesis model yet.
 6. **No actor↔intent pairing across multiple spans (raised 2026-08-05,
-   not yet designed).** `pipeline.py` already flags a role with more than
-   one surviving span via `multi_span: bool` (`decode_bio_multi`), and
-   `prompt_synthesis.py` forces any `multi_span` role into
-   `needs_review` — but this is per-role only. Nothing links *which*
-   actor goes with *which* intent when a long/detailed query bundles more
-   than one actor-intent(-object...) chain, e.g. "Marketing will grow
-   brand awareness while Sales grows enterprise accounts" — both `actor`
-   and `intent` would independently flag `multi_span`, but today's single
-   master-prompt template has no way to render two coherent, correctly
-   paired sentences instead of one conflated one. Not yet reflected in
-   `choice_forge_dataset_combined_120.json` or the eval holdout either —
-   worth checking whether any existing rows exercise this before adding
-   new ones from the current sourcing pass.
-   **Recommended direction, not yet decided/built:** lean toward detecting
-   this condition (multiple roles independently `multi_span`) and asking
-   the user to confirm whether they're describing one decision or several
-   bundled together, rather than the system silently guessing a pairing.
-   This fits the product's actual north star better than a clever
-   auto-pairing heuristic would — see the "ask effective questions so the
-   user gains clarity before we answer" framing agreed 2026-08-05, `intent`
-   handling above, and the core reasoning-integrity philosophy: a compound
-   query is arguably *two decisions*, and surfacing that to the user is
-   itself a clarifying question, not a defect to paper over. If confirmed
-   as multiple decisions, each would need to become its own Step 1 run
-   (separate master prompt / separate confirm-reject cycle) rather than
-   one prompt with paired clauses — an open design question for whoever
-   picks this up, likely intersecting with Phase 1 template design and
-   possibly Phase 5 training data shape. No code changed for this yet.
+   detection built same day — see status entry below).** `pipeline.py`
+   already flags a role with more than one surviving span via
+   `multi_span: bool` (`decode_bio_multi`), and `prompt_synthesis.py`
+   forces any `multi_span` role into `needs_review` — but that alone is
+   per-role only and doesn't link *which* actor goes with *which* intent.
+   **What's built:** `prompt_synthesis.py`'s `detect_possible_compound_query()`
+   flags when 2+ of `{actor, intent, object}` are independently `multi_span`
+   at once (the signal that a query bundles more than one decision), and
+   `app.py` surfaces this as a warning banner + an explicit "this is
+   actually more than one decision" checkbox in the confirm form, logged
+   via `correction_log.py` (`possible_compound_query_flagged`/`_confirmed`)
+   as training signal for calibrating the detector later. Verified live:
+   `detect_possible_compound_query` unit-tested directly (2+ roles
+   triggers, 1 role or excluded roles like scope+magnitude correctly
+   don't), and end-to-end in a running Streamlit session with
+   "Target wants to increase market share and PNC wants to reduce costs
+   this year." (real actor/intent multi_span from the live model) —
+   confirmed the banner, checkbox, and logged entry all fire correctly.
+   **What's still open, by design (not a punt, a real unscoped decision):**
+   this only *detects and asks* — per the reasoning-integrity philosophy,
+   a compound query is arguably two decisions, and surfacing that is
+   itself a clarifying question, not a defect to paper over silently. It
+   does NOT auto-split into separate pipeline runs. If confirmed as
+   multiple decisions, each would still need to become its own Step 1 run
+   (separate master prompt / separate confirm-reject cycle) — building
+   that is the next piece, intersecting with Phase 1 template design and
+   possibly Phase 5 training data shape. Also note: the detector's actual
+   trigger rate is bounded by the CRF's own multi-span detection maturity
+   (Known gap 0) — a real compound query the CRF only finds one span for
+   (as happened with "Marketing... while Sales..." in live testing, where
+   the CRF missed "Sales" as a second actor entirely) won't trigger the
+   warning. This isn't a bug in the detector; it inherits the underlying
+   data-thinness gap.
 
 Full detail and reasoning for all of the above lives in git history — see
 commit `db3e52e`'s message specifically.
