@@ -2024,5 +2024,845 @@
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/23/citizens-financial-cfg-q2-2026-earnings-call-transcript/",
     "_source_note": "lightly trimmed"
+  },
+  {
+    "id": "rw_031",
+    "input_query": "Intuit's mid-market direct sales team was expanded by approximately 30%.",
+    "choice": {
+      "actor": {
+        "value": "Intuit's mid-market direct sales team",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Intuit's mid-market direct sales team"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": "expand the sales team",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "was expanded"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "approximately 30%",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "approximately 30%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/02/26/intuit-intu-q2-2026-earnings-call-transcript/",
+    "_source_note": "Sasan K. Goodarzi (CEO), rephrased to third person; generic team-as-actor, not company name"
+  },
+  {
+    "id": "rw_032",
+    "input_query": "FactSet's engineering teams have pushed AI code-authorship share to 27% of committed code.",
+    "choice": {
+      "actor": {
+        "value": "FactSet's engineering teams",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "FactSet's engineering teams"
+      },
+      "object": {
+        "value": "committed code",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "committed code"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "AI code-authorship share",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "AI code-authorship share"
+      },
+      "magnitude": {
+        "value": "27%",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "27%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/01/factset-fds-q3-2026-earnings-call-transcript/",
+    "_source_note": "Sanoke Viswanathan (CEO); original: 'Coding agents now author 27% of committed code in the engineering teams using these tools' -- rephrased with team as subject"
+  },
+  {
+    "id": "rw_033",
+    "input_query": "FactSet initiated a roughly 10% reduction in its technology workforce to free up capacity for strategic product development.",
+    "choice": {
+      "actor": {
+        "value": "FactSet",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "FactSet"
+      },
+      "object": {
+        "value": "technology workforce",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "technology workforce"
+      },
+      "intent": {
+        "value": "reduce workforce",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "initiated"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "roughly 10%",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "roughly 10%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": "freeing up capacity for strategic product development",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "to free up capacity for strategic product development"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/01/factset-fds-q3-2026-earnings-call-transcript/",
+    "_source_note": "Sanoke Viswanathan (CEO), lightly trimmed -- purpose/causal context clause"
+  },
+  {
+    "id": "rw_034",
+    "input_query": "Albany International's Engineered Composites segment grew 16% because of higher production rates across the LEAP, Boeing, and CH-53K programs.",
+    "choice": {
+      "actor": {
+        "value": "Albany International",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Albany International"
+      },
+      "object": {
+        "value": "Engineered Composites segment",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Engineered Composites segment"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": [
+          "LEAP",
+          "Boeing",
+          "CH-53K programs"
+        ],
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": [
+          "LEAP",
+          "Boeing",
+          "CH-53K programs"
+        ]
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "16%",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "16%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": "driven by higher production rates",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "because of higher production rates"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/04/albany-international-ain-q2-2026-earnings-call-transcript/",
+    "_source_note": "Willard Station, lightly trimmed -- causal context + programs-as-scope"
+  },
+  {
+    "id": "rw_035",
+    "input_query": "Albany International's tooling for a next-generation defense program has shifted into the back half of the year.",
+    "choice": {
+      "actor": {
+        "value": "Albany International",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Albany International"
+      },
+      "object": {
+        "value": "tooling",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "tooling"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "next-generation defense program",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "next-generation defense program"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": "delivery delayed to the back half of the year",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "has shifted into the back half of the year"
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/04/albany-international-ain-q2-2026-earnings-call-transcript/",
+    "_source_note": "Gunnar Kleveland, lightly trimmed -- constraint via delayed timeline, not 'subject to' phrasing"
+  },
+  {
+    "id": "rw_036",
+    "input_query": "Trane Technologies is expanding its margins without increasing costs or capital intensity.",
+    "choice": {
+      "actor": {
+        "value": "Trane Technologies",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Trane Technologies"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": "expand margins",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "expanding its margins"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": "without increasing costs or capital intensity",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "without increasing costs or capital intensity"
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/30/trane-technologies-tt-q2-2026-earnings-call-transcript/",
+    "_source_note": "Christopher Kuehn (CFO), lightly trimmed -- genuine negation-cue constraint in a formal earnings call; a real counter-example to Known gap 2's 'found zero' finding"
+  },
+  {
+    "id": "rw_037",
+    "input_query": "Trane Technologies' teams in Asia Pacific delivered bookings up 31% this quarter.",
+    "choice": {
+      "actor": {
+        "value": "Trane Technologies' teams",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Trane Technologies' teams"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "Asia Pacific",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Asia Pacific"
+      },
+      "measure": {
+        "value": "bookings",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "bookings"
+      },
+      "magnitude": {
+        "value": "31%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "31%"
+      },
+      "time": {
+        "value": "this quarter",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "this quarter"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/30/trane-technologies-tt-q2-2026-earnings-call-transcript/",
+    "_source_note": "David Regnery (CEO), lightly trimmed -- regional team-as-actor"
+  },
+  {
+    "id": "rw_038",
+    "input_query": "The residential business team delivered a very strong second quarter.",
+    "choice": {
+      "actor": {
+        "value": "The residential business team",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "The residential business team"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": "perform strongly",
+        "status": "explicit",
+        "confidence": 0.6,
+        "source_text": "delivered a very strong"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": "second quarter",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "second quarter"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/30/trane-technologies-tt-q2-2026-earnings-call-transcript/",
+    "_source_note": "David Regnery (CEO), lightly trimmed -- actor is a bare role/team phrase with no company name anchor at all, the exact pattern Known gap 0 flagged"
+  },
+  {
+    "id": "rw_039",
+    "input_query": "FactSet's data operations team now ingests third-party data at 10 times the speed without adding headcount.",
+    "choice": {
+      "actor": {
+        "value": "FactSet's data operations team",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "FactSet's data operations team"
+      },
+      "object": {
+        "value": "third-party data",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "third-party data"
+      },
+      "intent": {
+        "value": "ingest data faster",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "now ingests"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "10 times the speed",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "10 times the speed"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": "without adding headcount",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "without adding headcount"
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2025/12/18/factset-fds-q1-2026-earnings-call-transcript/",
+    "_source_note": "Helen Shan (CFO), lightly trimmed"
+  },
+  {
+    "id": "rw_040",
+    "input_query": "The company is growing market share and processing more volume without adding meaningfully to operational headcount.",
+    "choice": {
+      "actor": {
+        "value": "The company",
+        "status": "explicit",
+        "confidence": 0.55,
+        "source_text": "The company"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": "grow market share",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "growing market share"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": "without adding meaningfully to operational headcount",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "without adding meaningfully to operational headcount"
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/05/06/efc-q1-2026-earnings-transcript/",
+    "_source_note": "Mark Tecotzky (Co-Chief Investment Officer), lightly trimmed"
+  },
+  {
+    "id": "rw_041",
+    "input_query": "Tesla has continually brought down the cost of its vehicles without sacrificing range, performance, or premiumness.",
+    "choice": {
+      "actor": {
+        "value": "Tesla",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Tesla"
+      },
+      "object": {
+        "value": "vehicles",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "vehicles"
+      },
+      "intent": {
+        "value": "reduce vehicle costs",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "brought down the cost"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": "without sacrificing range, performance, or premiumness",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "without sacrificing range, performance, or premiumness"
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/01/28/tesla-tsla-q4-2025-earnings-call-transcript/",
+    "_source_note": "Lars Moravy (VP Vehicle Engineering), lightly trimmed"
+  },
+  {
+    "id": "rw_042",
+    "input_query": "Climb Global increased throughput across its platform to support higher volumes of activity without the commensurate increase in head count.",
+    "choice": {
+      "actor": {
+        "value": "Climb Global",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Climb Global"
+      },
+      "object": {
+        "value": "platform",
+        "status": "explicit",
+        "confidence": 0.6,
+        "source_text": "platform"
+      },
+      "intent": {
+        "value": "increase throughput",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "increased throughput"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": "without the commensurate increase in head count",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "without the commensurate increase in head count"
+      },
+      "context": {
+        "value": "supporting higher volumes of activity",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "to support higher volumes of activity"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/04/30/climb-global-clmb-q1-2026-earnings-transcript/",
+    "_source_note": "Dale Foster (CEO), lightly trimmed -- purpose clause + negation-cue constraint in one sentence"
+  },
+  {
+    "id": "rw_043",
+    "input_query": "Climb Global's strong quarter was driven by the strength of its global platform.",
+    "choice": {
+      "actor": {
+        "value": "Climb Global",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Climb Global"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": "attributed to the strength of its global platform",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "driven by the strength of its global platform"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/04/30/climb-global-clmb-q1-2026-earnings-transcript/",
+    "_source_note": "Dale Foster (CEO), lightly trimmed -- causal context clause"
   }
 ]

@@ -43,6 +43,30 @@ DHI_URL = "https://www.fool.com/earnings/call-transcripts/2026/07/22/dr-horton-d
 CFG_URL = "https://www.fool.com/earnings/call-transcripts/2026/07/23/citizens-financial-cfg-q2-2026-earnings-call-transcript/"
 BUFFER_URL = "https://buffer.com/shareholders/january-2025"
 
+# 2026-08-05 sourcing pass: targeting Known gaps 0 (actor generic team/role
+# phrasing), 1 (measure/scope/context thinness incl. causal/purpose clauses),
+# and 2 (testing whether negation-cue constraint phrasing exists in real
+# corporate language -- Trane's "without increasing costs" below is a real
+# counter-example to the prior "found zero" finding).
+INTUIT_URL = "https://www.fool.com/earnings/call-transcripts/2026/02/26/intuit-intu-q2-2026-earnings-call-transcript/"
+ALBANY_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/04/albany-international-ain-q2-2026-earnings-call-transcript/"
+TRANE_URL = "https://www.fool.com/earnings/call-transcripts/2026/07/30/trane-technologies-tt-q2-2026-earnings-call-transcript/"
+
+# 2026-08-05, second pass same session: rw_036 (Trane) was the only
+# "without X" negation-cue constraint example in the whole dataset, and a
+# live test proved one example teaches the CRF nothing -- a fresh novel
+# query with the same pattern came back with constraints completely
+# missing. This batch adds 4 more real "without X" examples across 4 more
+# companies so the pattern has enough training signal to actually be
+# learnable, plus one held-out eval example to test whether it worked.
+# Also corrects Known gap 2's "found zero negation-cue phrasing in real
+# corporate language" finding -- it exists, the first search just didn't
+# find it.
+FACTSET_Q1_URL = "https://www.fool.com/earnings/call-transcripts/2025/12/18/factset-fds-q1-2026-earnings-call-transcript/"
+EFC_URL = "https://www.fool.com/earnings/call-transcripts/2026/05/06/efc-q1-2026-earnings-transcript/"
+TESLA_URL = "https://www.fool.com/earnings/call-transcripts/2026/01/28/tesla-tsla-q4-2025-earnings-call-transcript/"
+CLIMB_URL = "https://www.fool.com/earnings/call-transcripts/2026/04/30/climb-global-clmb-q1-2026-earnings-transcript/"
+
 rows = [
     row("rw_001",
         "Target is on track to open over thirty stores in 2026.",
@@ -324,6 +348,124 @@ rows = [
                      "technology, healthcare, and energy sectors"),
         object=field("commercial banking clients", "explicit", 0.85, "commercial banking clients"),
         intent=field("add new clients", "explicit", 0.75, "adding"),
+        ),
+
+    row("rw_031",
+        "Intuit's mid-market direct sales team was expanded by approximately 30%.",
+        INTUIT_URL, "Sasan K. Goodarzi (CEO), rephrased to third person; generic team-as-actor, not company name",
+        actor=field("Intuit's mid-market direct sales team", "explicit", 0.8,
+                     "Intuit's mid-market direct sales team"),
+        intent=field("expand the sales team", "explicit", 0.7, "was expanded"),
+        magnitude=field("approximately 30%", "explicit", 0.9, "approximately 30%"),
+        ),
+    row("rw_032",
+        "FactSet's engineering teams have pushed AI code-authorship share to 27% of committed code.",
+        FACTSET_URL, "Sanoke Viswanathan (CEO); original: 'Coding agents now author 27% of committed "
+             "code in the engineering teams using these tools' -- rephrased with team as subject",
+        actor=field("FactSet's engineering teams", "explicit", 0.8, "FactSet's engineering teams"),
+        measure=field("AI code-authorship share", "explicit", 0.75, "AI code-authorship share"),
+        magnitude=field("27%", "explicit", 0.9, "27%"),
+        object=field("committed code", "explicit", 0.8, "committed code"),
+        ),
+    row("rw_033",
+        "FactSet initiated a roughly 10% reduction in its technology workforce to free up capacity for strategic product development.",
+        FACTSET_URL, "Sanoke Viswanathan (CEO), lightly trimmed -- purpose/causal context clause",
+        actor=field("FactSet", "explicit", 0.9, "FactSet"),
+        intent=field("reduce workforce", "explicit", 0.8, "initiated"),
+        object=field("technology workforce", "explicit", 0.85, "technology workforce"),
+        magnitude=field("roughly 10%", "explicit", 0.9, "roughly 10%"),
+        context=field("freeing up capacity for strategic product development", "explicit", 0.75,
+                       "to free up capacity for strategic product development"),
+        ),
+    row("rw_034",
+        "Albany International's Engineered Composites segment grew 16% because of higher production rates across the LEAP, Boeing, and CH-53K programs.",
+        ALBANY_URL, "Willard Station, lightly trimmed -- causal context + programs-as-scope",
+        actor=field("Albany International", "explicit", 0.85, "Albany International"),
+        object=field("Engineered Composites segment", "explicit", 0.85, "Engineered Composites segment"),
+        magnitude=field("16%", "explicit", 0.9, "16%"),
+        scope=field(["LEAP", "Boeing", "CH-53K programs"], "explicit", 0.8,
+                     ["LEAP", "Boeing", "CH-53K programs"]),
+        context=field("driven by higher production rates", "explicit", 0.7, "because of higher production rates"),
+        ),
+    row("rw_035",
+        "Albany International's tooling for a next-generation defense program has shifted into the back half of the year.",
+        ALBANY_URL, "Gunnar Kleveland, lightly trimmed -- constraint via delayed timeline, not 'subject to' phrasing",
+        actor=field("Albany International", "explicit", 0.85, "Albany International"),
+        object=field("tooling", "explicit", 0.7, "tooling"),
+        scope=field("next-generation defense program", "explicit", 0.7, "next-generation defense program"),
+        constraints=field("delivery delayed to the back half of the year", "explicit", 0.75,
+                           "has shifted into the back half of the year"),
+        ),
+    row("rw_036",
+        "Trane Technologies is expanding its margins without increasing costs or capital intensity.",
+        TRANE_URL, "Christopher Kuehn (CFO), lightly trimmed -- genuine negation-cue constraint in a "
+             "formal earnings call; a real counter-example to Known gap 2's 'found zero' finding",
+        actor=field("Trane Technologies", "explicit", 0.9, "Trane Technologies"),
+        intent=field("expand margins", "explicit", 0.8, "expanding its margins"),
+        constraints=field("without increasing costs or capital intensity", "explicit", 0.85,
+                           "without increasing costs or capital intensity"),
+        ),
+    row("rw_037",
+        "Trane Technologies' teams in Asia Pacific delivered bookings up 31% this quarter.",
+        TRANE_URL, "David Regnery (CEO), lightly trimmed -- regional team-as-actor",
+        actor=field("Trane Technologies' teams", "explicit", 0.8, "Trane Technologies' teams"),
+        measure=field("bookings", "explicit", 0.8, "bookings"),
+        magnitude=field("31%", "explicit", 0.85, "31%"),
+        scope=field("Asia Pacific", "explicit", 0.85, "Asia Pacific"),
+        time=field("this quarter", "explicit", 0.8, "this quarter"),
+        ),
+    row("rw_038",
+        "The residential business team delivered a very strong second quarter.",
+        TRANE_URL, "David Regnery (CEO), lightly trimmed -- actor is a bare role/team phrase with no "
+             "company name anchor at all, the exact pattern Known gap 0 flagged",
+        actor=field("The residential business team", "explicit", 0.75, "The residential business team"),
+        intent=field("perform strongly", "explicit", 0.6, "delivered a very strong"),
+        time=field("second quarter", "explicit", 0.7, "second quarter"),
+        ),
+
+    row("rw_039",
+        "FactSet's data operations team now ingests third-party data at 10 times the speed without adding headcount.",
+        FACTSET_Q1_URL, "Helen Shan (CFO), lightly trimmed",
+        actor=field("FactSet's data operations team", "explicit", 0.8, "FactSet's data operations team"),
+        intent=field("ingest data faster", "explicit", 0.7, "now ingests"),
+        object=field("third-party data", "explicit", 0.75, "third-party data"),
+        magnitude=field("10 times the speed", "explicit", 0.85, "10 times the speed"),
+        constraints=field("without adding headcount", "explicit", 0.85, "without adding headcount"),
+        ),
+    row("rw_040",
+        "The company is growing market share and processing more volume without adding meaningfully to operational headcount.",
+        EFC_URL, "Mark Tecotzky (Co-Chief Investment Officer), lightly trimmed",
+        actor=field("The company", "explicit", 0.55, "The company"),
+        intent=field("grow market share", "explicit", 0.7, "growing market share"),
+        constraints=field("without adding meaningfully to operational headcount", "explicit", 0.85,
+                           "without adding meaningfully to operational headcount"),
+        ),
+    row("rw_041",
+        "Tesla has continually brought down the cost of its vehicles without sacrificing range, performance, or premiumness.",
+        TESLA_URL, "Lars Moravy (VP Vehicle Engineering), lightly trimmed",
+        actor=field("Tesla", "explicit", 0.9, "Tesla"),
+        intent=field("reduce vehicle costs", "explicit", 0.8, "brought down the cost"),
+        object=field("vehicles", "explicit", 0.8, "vehicles"),
+        constraints=field("without sacrificing range, performance, or premiumness", "explicit", 0.85,
+                           "without sacrificing range, performance, or premiumness"),
+        ),
+    row("rw_042",
+        "Climb Global increased throughput across its platform to support higher volumes of activity without the commensurate increase in head count.",
+        CLIMB_URL, "Dale Foster (CEO), lightly trimmed -- purpose clause + negation-cue constraint in one sentence",
+        actor=field("Climb Global", "explicit", 0.85, "Climb Global"),
+        intent=field("increase throughput", "explicit", 0.75, "increased throughput"),
+        object=field("platform", "explicit", 0.6, "platform"),
+        context=field("supporting higher volumes of activity", "explicit", 0.7,
+                       "to support higher volumes of activity"),
+        constraints=field("without the commensurate increase in head count", "explicit", 0.85,
+                           "without the commensurate increase in head count"),
+        ),
+    row("rw_043",
+        "Climb Global's strong quarter was driven by the strength of its global platform.",
+        CLIMB_URL, "Dale Foster (CEO), lightly trimmed -- causal context clause",
+        actor=field("Climb Global", "explicit", 0.85, "Climb Global"),
+        context=field("attributed to the strength of its global platform", "explicit", 0.75,
+                       "driven by the strength of its global platform"),
         ),
 ]
 

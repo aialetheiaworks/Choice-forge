@@ -228,6 +228,25 @@ user's own name, mobile number, and email are mandatory.
   the real prompt-synthesis model on them, replacing the Phase 1 template.
   Gate any new version against a frozen holdout, the same way model
   promotion already works for the extraction layer.
+- **Gate before Phase 6 (agreed 2026-08-05, senior-dev plan review):**
+  do not start Phase 6 until both of the following are true, not just
+  time-elapsed:
+  1. A real-data sourcing pass has specifically targeted the Known gaps
+     list below (`actor` generic role-phrasing, `measure`/`scope`/`context`
+     thinness, `intent` hallucination) and `data/eval_on_real_world.py`
+     shows measurable improvement over the current 77.8%/63.0% baseline.
+  2. Phases 1-4 have real (non-solo-testing) usage generating actual
+     correction-log volume — not just the mechanism existing. Building
+     Intent Classifier / Knowledge Bucket / Knowledge Graph scope on top
+     of an extraction layer that's still 63% value-accurate, before
+     anyone outside this session has used the confirm/reject flow, risks
+     months of solo effort on unvalidated foundations. **Reasoning:** the
+     2026-08-02 session already flagged Phase 8 as the long pole and
+     recommended shipping 1-4 as a demoable v1 before starting it — this
+     gate makes that recommendation an explicit, checked precondition
+     instead of an informal intent that scope-creep could quietly skip.
+  This gate does not block continued Phase 1-4 hardening, deployment, or
+  real-data sourcing work in the meantime — only the *start* of Phase 6.
 - **Phase 6** (later, unscoped) — Step 2 / Horizon: build the Intent
   Classifier + wire up the Knowledge Bucket Library and tooltip assembly.
 - **Phase 7** (later, unscoped) — Step 3 / Guide: alternative comparison
@@ -241,6 +260,109 @@ user's own name, mobile number, and email are mandatory.
   (no incremental-fit mode) nor a per-query eval-gate cost makes retrain-
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
+
+## Current status (as of 2026-08-05, continued — sourcing pass + retrain)
+
+**2026-08-05 session:** user asked for a senior-dev sanity check on the
+8-phase plan. Flagged two things, both now written into the "Agreed build
+order" section above rather than left as informal opinion: (1) added an
+explicit gate before Phase 6 requiring both a targeted real-data sourcing
+pass on the Known gaps list (with a measured `eval_on_real_world.py`
+improvement over the current 77.8%/63.0% baseline) and real (non-solo)
+usage of Phases 1-4 generating actual correction-log volume; (2) this
+formalizes — rather than changes — the 2026-08-02 session's existing
+recommendation to ship 1-4 as a demoable v1 before starting Phase 8, since
+an informal recommendation is easy for scope-creep to quietly skip.
+
+Also flagged a real, previously-undocumented edge case: today's pipeline
+has no actor↔intent pairing across multiple spans — `multi_span` is
+per-role only, so a compound query with several bundled actor-intent
+chains (e.g. two departments each with their own goal) has no mechanism
+to keep pairings straight in one master prompt. Written up as Known gap 6
+below with a recommended direction (detect and ask the user to confirm
+one-decision-vs-several, rather than auto-pair) — not designed or built,
+just captured so the upcoming real-data sourcing pass and any future
+prompt-synthesis work keep it in mind.
+
+**Same-day continuation: did the real-data sourcing pass the Phase 6 gate
+requires, in two rounds, then retrained and gated the result.**
+
+- **Round 1 (8 rows, `rw_031`-`rw_038`):** sourced real quotes from Intuit,
+  FactSet, Albany International, and Trane Technologies Q1/Q2 2026 earnings
+  calls, targeting Known gaps 0/1 — generic team/role-phrased `actor` (e.g.
+  "Intuit's mid-market direct sales team", "The residential business team"
+  with zero company-name anchor), `measure`/`scope` thinness, and
+  causal/purpose `context` clauses. Also found a genuine "without X"
+  negation-cue constraint at Trane, contradicting the prior "found zero"
+  finding in Known gap 2. Validated via `data/validate_real_world_pilot.py`
+  (one overlap bug in the FactSet workforce row, fixed), split 2 new rows
+  into eval (rare-role picks) and 6 into training, rebuilt
+  `choice_forge_dataset_combined_126.json`, retrained CRF + T5. Real
+  before/after on the original 10 eval rows: status 77.8%→**78.9%**, value
+  63.0%→**67.4%**, actor 90%→**100%**. Genuine improvement, verified by
+  re-running `data/eval_on_real_world.py`, not assumed.
+- **Live-tested the improvement, not just trusted the eval score:**
+  swapped the pre-retrain model back in via `git show`/`git lfs smudge`
+  (the LFS-tracked `.safetensors` needed the smudge filter — a plain
+  `git show` silently produces the LFS pointer text, not the binary; caught
+  this immediately when the swapped-in file was 134 bytes instead of
+  ~230MB) to run the identical query through both models side by side.
+  Concrete finding: on `rw_027`'s query, the old model returned `actor:
+  missing` entirely; the new model returns a real span. Flagged the honest
+  caveat too — the new prediction is at confidence 0.379, just under the
+  0.4 Phase 1 blank-insertion threshold, so this specific case still
+  renders as a blank in the product UI even though the raw model "found"
+  something. Backed up both model states to the session scratchpad before
+  any swap so nothing was ever at risk of being lost.
+- **Round 2 (5 rows, `rw_039`-`rw_043`):** live-tested round 1's model
+  against a fresh, novel query using the negation-cue pattern ("without
+  increasing headcount") — `constraints` came back completely missing.
+  One training example (`rw_036`) wasn't enough for the CRF to generalize
+  the pattern. Sourced 4 more real "without X" examples across 4 more
+  companies (FactSet Q1 2026, EFC, Tesla, Climb Global) plus one causal
+  `context` example, giving the pattern 4 training examples instead of 1
+  (kept Tesla's row eval-only to actually test generalization). Rebuilt
+  `choice_forge_dataset_combined_130.json` (13 eval / 30 train), retrained
+  both models again.
+- **Gated the result — and it failed the gate, honestly reported.**
+  Round 2's model did fix the target: the same novel test query now
+  detects `constraints` (confidence 0.376, `guard_note: "direction-flip
+  corrected via template"`), and the held-out Tesla eval row detected the
+  right span at 0.723 confidence (T5's paraphrase had a typo/hallucinated
+  "must not" framing, so value-match still failed — detection generalized,
+  normalization quality on the new pattern didn't). But aggregate accuracy
+  on the original 10 tracked rows *regressed below the original baseline*:
+  status 78.9%→74.4% (baseline was 77.8%), value 67.4%→58.7% (baseline was
+  63.0%) — one shared CRF across 9 roles, and reinforcing one pattern in a
+  130-row dataset shifted decision boundaries elsewhere (`measure`
+  specifically dropped hard). Per the standing rule to gate every model
+  version against the frozen holdout before promoting, **did not keep this
+  version live.**
+- **Decision (user's call, asked directly, not assumed):** keep round 1's
+  model live (strictly better than baseline on every tracked metric, no
+  regressions) rather than round 2's (fixes one real pattern but regresses
+  others) or reverting to pre-session baseline. Restored round 1's
+  `role_tagger.joblib` / `value_synthesizer/model.safetensors` from the
+  scratchpad backup and re-ran `eval_on_real_world.py` to confirm it
+  reproduces 78.9%/67.4%/100% exactly before calling it done.
+- **Known reproducibility gap this creates, flagged explicitly so a future
+  session doesn't get confused:** `data/real_world_training_augment.json`,
+  `data/real_world_eval_holdout.json`, and
+  `choice_forge_dataset_combined_130.json` on disk all reflect **round 2's**
+  43-row dataset (kept — it's good, validated, real-sourced data, no
+  reason to discard it). But the **live model artifacts**
+  (`role_tagger.joblib`, `value_synthesizer/`) were trained on **round 1's**
+  38-row dataset (`choice_forge_dataset_combined_126.json`, no longer the
+  literal current combined-dataset file, but the retrain command in
+  `README.md` reproduces it exactly via `data/build_real_world_pilot.py`'s
+  git history if ever needed). Whoever picks up the negation-cue
+  constraint work next should retrain fresh on the full 130-row set with
+  either more reinforcement examples or a regularization change, re-gate,
+  and only then let the combined-dataset filename and the live model
+  match again.
+- **Nothing committed yet this session** — sourcing scripts, updated
+  eval/split outputs, and the chosen model artifacts are all still local,
+  uncommitted changes, pending a go-ahead.
 
 ## Current status (as of 2026-08-04, continued again — UI redesign + Cloud secrets)
 
@@ -708,14 +830,19 @@ What happened in the 2026-07-27 session:
    too now, and the next sourcing pass should specifically target:
    generic team/role-phrased actors (not just company names), explicit
    measure/KPI phrasing, and causal/purpose context clauses.
-2. **Negation-cue phrasing may not exist in real corporate language.**
-   Checked 7 public companies' earnings calls specifically hunting for
-   "without increasing X" style constraints — found zero. Executives phrase
-   constraints as "subject to X", "while maintaining Y" instead. This means
-   the negation pattern `polarity_guard.py` targets may be more an artifact
-   of the original LLM-generated dataset's phrasing than of real usage — or
-   it just needs a different real source (internal informal business
-   asks / Slack-style requests, not formal earnings calls). Unresolved.
+2. ~~Negation-cue phrasing may not exist in real corporate language.~~
+   **Corrected 2026-08-05: it does exist, the original 7-company search just
+   didn't find it.** A broader search turned up real "without X" constraints
+   at Trane Technologies, FactSet, EFC, Tesla, and Climb Global (5 companies,
+   5 different phrasings: "without increasing costs", "without adding
+   headcount", "without sacrificing range/performance", etc.) — see
+   `rw_036`/`rw_039`-`rw_042` in `data/build_real_world_pilot.py`. So
+   `polarity_guard.py`'s negation pattern is grounded in real usage after
+   all. What's still genuinely unresolved: whether the *model* can reliably
+   learn this pattern — see the 2026-08-05 status entry below for a direct
+   test (one training example taught the CRF nothing; 5 examples got
+   detection working but regressed other fields in aggregate — this needs
+   more/better-balanced data, not just more of the same single pattern).
 3. **T5 still hallucinates on short or compound source spans** even
    post-retrain (e.g. bare "increase" -> wrong object "sales"; a query with
    two legitimate actions in one sentence produces a fused, partly
@@ -732,6 +859,35 @@ What happened in the 2026-07-27 session:
    Not yet built. Start with Phase 1 (template-based prompt synthesis) from
    the Product vision section, not with the model — there's no training
    data for the prompt-synthesis model yet.
+6. **No actor↔intent pairing across multiple spans (raised 2026-08-05,
+   not yet designed).** `pipeline.py` already flags a role with more than
+   one surviving span via `multi_span: bool` (`decode_bio_multi`), and
+   `prompt_synthesis.py` forces any `multi_span` role into
+   `needs_review` — but this is per-role only. Nothing links *which*
+   actor goes with *which* intent when a long/detailed query bundles more
+   than one actor-intent(-object...) chain, e.g. "Marketing will grow
+   brand awareness while Sales grows enterprise accounts" — both `actor`
+   and `intent` would independently flag `multi_span`, but today's single
+   master-prompt template has no way to render two coherent, correctly
+   paired sentences instead of one conflated one. Not yet reflected in
+   `choice_forge_dataset_combined_120.json` or the eval holdout either —
+   worth checking whether any existing rows exercise this before adding
+   new ones from the current sourcing pass.
+   **Recommended direction, not yet decided/built:** lean toward detecting
+   this condition (multiple roles independently `multi_span`) and asking
+   the user to confirm whether they're describing one decision or several
+   bundled together, rather than the system silently guessing a pairing.
+   This fits the product's actual north star better than a clever
+   auto-pairing heuristic would — see the "ask effective questions so the
+   user gains clarity before we answer" framing agreed 2026-08-05, `intent`
+   handling above, and the core reasoning-integrity philosophy: a compound
+   query is arguably *two decisions*, and surfacing that to the user is
+   itself a clarifying question, not a defect to paper over. If confirmed
+   as multiple decisions, each would need to become its own Step 1 run
+   (separate master prompt / separate confirm-reject cycle) rather than
+   one prompt with paired clauses — an open design question for whoever
+   picks this up, likely intersecting with Phase 1 template design and
+   possibly Phase 5 training data shape. No code changed for this yet.
 
 Full detail and reasoning for all of the above lives in git history — see
 commit `db3e52e`'s message specifically.

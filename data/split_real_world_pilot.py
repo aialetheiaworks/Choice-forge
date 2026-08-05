@@ -17,6 +17,19 @@ import json
 EVAL_IDS = {
     "rw_016", "rw_021", "rw_027", "rw_029",  # rare-role picks (constraints x2, scope x2)
     "rw_003", "rw_009", "rw_012", "rw_017", "rw_020", "rw_022",  # diverse source/density picks
+    # 2026-08-05 sourcing pass (rw_031-rw_038, see build_real_world_pilot.py):
+    # rw_034 (scope via programs + causal context) and rw_035 (constraints via
+    # delayed timeline, not "subject to" phrasing) picked for eval to keep rare
+    # roles diverse there too. rw_036 (the "without increasing" negation-cue
+    # constraint) deliberately kept in TRAIN instead -- it's the only example
+    # of that pattern in the whole dataset, so putting it in eval-only would
+    # guarantee a miss with no chance for the model to ever learn it.
+    "rw_034", "rw_035",
+    # rw_041 (Tesla "without sacrificing...") held out to actually test
+    # whether 4 training examples of the negation-cue constraint pattern
+    # (rw_036, rw_039, rw_040, rw_042) taught the CRF something rw_036
+    # alone did not.
+    "rw_041",
 }
 
 with open("data/real_world_pilot_batch.json", encoding="utf-8") as f:

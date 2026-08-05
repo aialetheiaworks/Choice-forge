@@ -116,6 +116,7 @@ def main():
         learning_rate=3e-4,
         eval_strategy="epoch",
         save_strategy="epoch",
+        save_total_limit=2,             # keep best + latest only -- unbounded before, 40 checkpoints hit 27GB
         load_best_model_at_end=True,
         predict_with_generate=True,
         logging_steps=10,

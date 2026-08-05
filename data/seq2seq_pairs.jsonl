@@ -719,3 +719,41 @@
 {"id": "rw_030", "role": "object", "input": "normalize object: commercial banking clients", "target": "commercial banking clients", "gold_status": "explicit"}
 {"id": "rw_030", "role": "intent", "input": "normalize intent: adding", "target": "add new clients", "gold_status": "explicit"}
 {"id": "rw_030", "role": "scope", "input": "normalize scope: technology, healthcare, and energy sectors", "target": "technology, healthcare, and energy sectors", "gold_status": "explicit"}
+{"id": "rw_031", "role": "actor", "input": "normalize actor: Intuit's mid-market direct sales team", "target": "Intuit's mid-market direct sales team", "gold_status": "explicit"}
+{"id": "rw_031", "role": "intent", "input": "normalize intent: was expanded", "target": "expand the sales team", "gold_status": "explicit"}
+{"id": "rw_031", "role": "magnitude", "input": "normalize magnitude: approximately 30%", "target": "approximately 30%", "gold_status": "explicit"}
+{"id": "rw_032", "role": "actor", "input": "normalize actor: FactSet's engineering teams", "target": "FactSet's engineering teams", "gold_status": "explicit"}
+{"id": "rw_032", "role": "object", "input": "normalize object: committed code", "target": "committed code", "gold_status": "explicit"}
+{"id": "rw_032", "role": "measure", "input": "normalize measure: AI code-authorship share", "target": "AI code-authorship share", "gold_status": "explicit"}
+{"id": "rw_032", "role": "magnitude", "input": "normalize magnitude: 27%", "target": "27%", "gold_status": "explicit"}
+{"id": "rw_033", "role": "actor", "input": "normalize actor: FactSet", "target": "FactSet", "gold_status": "explicit"}
+{"id": "rw_033", "role": "object", "input": "normalize object: technology workforce", "target": "technology workforce", "gold_status": "explicit"}
+{"id": "rw_033", "role": "intent", "input": "normalize intent: initiated", "target": "reduce workforce", "gold_status": "explicit"}
+{"id": "rw_033", "role": "magnitude", "input": "normalize magnitude: roughly 10%", "target": "roughly 10%", "gold_status": "explicit"}
+{"id": "rw_033", "role": "context", "input": "normalize context: to free up capacity for strategic product development", "target": "freeing up capacity for strategic product development", "gold_status": "explicit"}
+{"id": "rw_036", "role": "actor", "input": "normalize actor: Trane Technologies", "target": "Trane Technologies", "gold_status": "explicit"}
+{"id": "rw_036", "role": "intent", "input": "normalize intent: expanding its margins", "target": "expand margins", "gold_status": "explicit"}
+{"id": "rw_036", "role": "constraints", "input": "normalize constraints: without increasing costs or capital intensity", "target": "without increasing costs or capital intensity", "gold_status": "explicit"}
+{"id": "rw_037", "role": "actor", "input": "normalize actor: Trane Technologies' teams", "target": "Trane Technologies' teams", "gold_status": "explicit"}
+{"id": "rw_037", "role": "scope", "input": "normalize scope: Asia Pacific", "target": "Asia Pacific", "gold_status": "explicit"}
+{"id": "rw_037", "role": "measure", "input": "normalize measure: bookings", "target": "bookings", "gold_status": "explicit"}
+{"id": "rw_037", "role": "magnitude", "input": "normalize magnitude: 31%", "target": "31%", "gold_status": "explicit"}
+{"id": "rw_037", "role": "time", "input": "normalize time: this quarter", "target": "this quarter", "gold_status": "explicit"}
+{"id": "rw_038", "role": "actor", "input": "normalize actor: The residential business team", "target": "The residential business team", "gold_status": "explicit"}
+{"id": "rw_038", "role": "intent", "input": "normalize intent: delivered a very strong", "target": "perform strongly", "gold_status": "explicit"}
+{"id": "rw_038", "role": "time", "input": "normalize time: second quarter", "target": "second quarter", "gold_status": "explicit"}
+{"id": "rw_039", "role": "actor", "input": "normalize actor: FactSet's data operations team", "target": "FactSet's data operations team", "gold_status": "explicit"}
+{"id": "rw_039", "role": "object", "input": "normalize object: third-party data", "target": "third-party data", "gold_status": "explicit"}
+{"id": "rw_039", "role": "intent", "input": "normalize intent: now ingests", "target": "ingest data faster", "gold_status": "explicit"}
+{"id": "rw_039", "role": "magnitude", "input": "normalize magnitude: 10 times the speed", "target": "10 times the speed", "gold_status": "explicit"}
+{"id": "rw_039", "role": "constraints", "input": "normalize constraints: without adding headcount", "target": "without adding headcount", "gold_status": "explicit"}
+{"id": "rw_040", "role": "actor", "input": "normalize actor: The company", "target": "The company", "gold_status": "explicit"}
+{"id": "rw_040", "role": "intent", "input": "normalize intent: growing market share", "target": "grow market share", "gold_status": "explicit"}
+{"id": "rw_040", "role": "constraints", "input": "normalize constraints: without adding meaningfully to operational headcount", "target": "without adding meaningfully to operational headcount", "gold_status": "explicit"}
+{"id": "rw_042", "role": "actor", "input": "normalize actor: Climb Global", "target": "Climb Global", "gold_status": "explicit"}
+{"id": "rw_042", "role": "object", "input": "normalize object: platform", "target": "platform", "gold_status": "explicit"}
+{"id": "rw_042", "role": "intent", "input": "normalize intent: increased throughput", "target": "increase throughput", "gold_status": "explicit"}
+{"id": "rw_042", "role": "constraints", "input": "normalize constraints: without the commensurate increase in head count", "target": "without the commensurate increase in head count", "gold_status": "explicit"}
+{"id": "rw_042", "role": "context", "input": "normalize context: to support higher volumes of activity", "target": "supporting higher volumes of activity", "gold_status": "explicit"}
+{"id": "rw_043", "role": "actor", "input": "normalize actor: Climb Global", "target": "Climb Global", "gold_status": "explicit"}
+{"id": "rw_043", "role": "context", "input": "normalize context: driven by the strength of its global platform", "target": "attributed to the strength of its global platform", "gold_status": "explicit"}

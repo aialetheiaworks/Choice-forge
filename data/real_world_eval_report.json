@@ -8,7 +8,7 @@
         "gold_status": "explicit",
         "pred_value": "Target",
         "pred_status": "explicit",
-        "pred_conf": 0.853,
+        "pred_conf": 0.723,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -18,7 +18,7 @@
         "gold_status": "explicit",
         "pred_value": "wellness assortment",
         "pred_status": "explicit",
-        "pred_conf": 0.413,
+        "pred_conf": 0.748,
         "status_correct": true,
         "value_correct": true,
         "flagged": true
@@ -28,7 +28,7 @@
         "gold_status": "explicit",
         "pred_value": "add new customers; refresh",
         "pred_status": "explicit",
-        "pred_conf": 0.184,
+        "pred_conf": 0.273,
         "status_correct": true,
         "value_correct": false,
         "flagged": false
@@ -61,7 +61,7 @@
         "gold_status": "explicit",
         "pred_value": "['around 1,500', 'around 40%']",
         "pred_status": "explicit",
-        "pred_conf": 0.567,
+        "pred_conf": 0.583,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -71,7 +71,7 @@
         "gold_status": "explicit",
         "pred_value": "this year",
         "pred_status": "explicit",
-        "pred_conf": 0.965,
+        "pred_conf": 0.979,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -107,7 +107,7 @@
         "gold_status": "explicit",
         "pred_value": "PNC",
         "pred_status": "explicit",
-        "pred_conf": 0.894,
+        "pred_conf": 0.93,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -115,9 +115,9 @@
       "object": {
         "gold_value": null,
         "gold_status": "missing",
-        "pred_value": "operating target for CET1 capital ratio",
+        "pred_value": "CET1 capital ratio",
         "pred_status": "explicit",
-        "pred_conf": 0.632,
+        "pred_conf": 0.714,
         "status_correct": false,
         "value_correct": null,
         "flagged": false
@@ -157,7 +157,7 @@
         "gold_status": "explicit",
         "pred_value": "around 10%",
         "pred_status": "explicit",
-        "pred_conf": 0.584,
+        "pred_conf": 0.899,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -203,7 +203,7 @@
         "gold_status": "explicit",
         "pred_value": "FIS",
         "pred_status": "explicit",
-        "pred_conf": 0.898,
+        "pred_conf": 0.932,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -213,7 +213,7 @@
         "gold_status": "missing",
         "pred_value": "free cash flow",
         "pred_status": "explicit",
-        "pred_conf": 0.718,
+        "pred_conf": 0.439,
         "status_correct": false,
         "value_correct": null,
         "flagged": false
@@ -221,11 +221,11 @@
       "intent": {
         "gold_value": "double free cash flow",
         "gold_status": "explicit",
-        "pred_value": "double",
-        "pred_status": "explicit",
-        "pred_conf": 0.358,
-        "status_correct": true,
-        "value_correct": true,
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
         "flagged": false
       },
       "scope": {
@@ -253,7 +253,7 @@
         "gold_status": "explicit",
         "pred_value": "by 2028 to more than $3 billion",
         "pred_status": "explicit",
-        "pred_conf": 0.936,
+        "pred_conf": 0.877,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -299,7 +299,7 @@
         "gold_status": "explicit",
         "pred_value": "Wells Fargo",
         "pred_status": "explicit",
-        "pred_conf": 0.901,
+        "pred_conf": 0.922,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -309,7 +309,7 @@
         "gold_status": "explicit",
         "pred_value": "third quarter common stock dividend",
         "pred_status": "explicit",
-        "pred_conf": 0.815,
+        "pred_conf": 0.678,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -317,11 +317,11 @@
       "intent": {
         "gold_value": "increase the dividend",
         "gold_status": "explicit",
-        "pred_value": "increase sales",
+        "pred_value": "increase",
         "pred_status": "explicit",
-        "pred_conf": 0.543,
+        "pred_conf": 0.52,
         "status_correct": true,
-        "value_correct": false,
+        "value_correct": true,
         "flagged": false
       },
       "scope": {
@@ -350,9 +350,9 @@
           "$0.50 per share"
         ],
         "gold_status": "explicit",
-        "pred_value": "['by 11%', '$50 per share']",
+        "pred_value": "['11%', '$50 per share']",
         "pred_status": "explicit",
-        "pred_conf": 0.479,
+        "pred_conf": 0.562,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -370,9 +370,9 @@
       "constraints": {
         "gold_value": "subject to board approval",
         "gold_status": "explicit",
-        "pred_value": "subject to board approval",
+        "pred_value": "board approval",
         "pred_status": "explicit",
-        "pred_conf": 0.412,
+        "pred_conf": 0.435,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -398,7 +398,7 @@
         "gold_status": "explicit",
         "pred_value": "Wells Fargo",
         "pred_status": "explicit",
-        "pred_conf": 0.929,
+        "pred_conf": 0.964,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -418,7 +418,7 @@
         "gold_status": "explicit",
         "pred_value": "maintain its full-year guidance",
         "pred_status": "explicit",
-        "pred_conf": 0.487,
+        "pred_conf": 0.604,
         "status_correct": true,
         "value_correct": false,
         "flagged": false
@@ -438,7 +438,7 @@
         "gold_status": "explicit",
         "pred_value": "net interest income",
         "pred_status": "explicit",
-        "pred_conf": 0.562,
+        "pred_conf": 0.667,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -446,11 +446,11 @@
       "magnitude": {
         "gold_value": "about $50 billion",
         "gold_status": "explicit",
-        "pred_value": "$50 billion",
+        "pred_value": "approximately $50 billion",
         "pred_status": "explicit",
-        "pred_conf": 0.685,
+        "pred_conf": 0.698,
         "status_correct": true,
-        "value_correct": true,
+        "value_correct": false,
         "flagged": false
       },
       "time": {
@@ -494,7 +494,7 @@
         "gold_status": "explicit",
         "pred_value": "D.R. Horton",
         "pred_status": "explicit",
-        "pred_conf": 0.827,
+        "pred_conf": 0.787,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -502,10 +502,10 @@
       "object": {
         "gold_value": null,
         "gold_status": "missing",
-        "pred_value": "consolidate leverage",
-        "pred_status": "explicit",
-        "pred_conf": 0.229,
-        "status_correct": false,
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
         "value_correct": null,
         "flagged": false
       },
@@ -532,11 +532,11 @@
       "measure": {
         "gold_value": "consolidated leverage",
         "gold_status": "explicit",
-        "pred_value": null,
-        "pred_status": "missing",
-        "pred_conf": 0.0,
-        "status_correct": false,
-        "value_correct": false,
+        "pred_value": "leverage",
+        "pred_status": "explicit",
+        "pred_conf": 0.136,
+        "status_correct": true,
+        "value_correct": true,
         "flagged": false
       },
       "magnitude": {
@@ -547,7 +547,7 @@
         "gold_status": "explicit",
         "pred_value": "['around 20%', 'from 23%']",
         "pred_status": "explicit",
-        "pred_conf": 0.814,
+        "pred_conf": 0.881,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -560,7 +560,7 @@
         "gold_status": "explicit",
         "pred_value": "end of June",
         "pred_status": "explicit",
-        "pred_conf": 0.349,
+        "pred_conf": 0.979,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -596,7 +596,7 @@
         "gold_status": "explicit",
         "pred_value": "D.R. Horton",
         "pred_status": "explicit",
-        "pred_conf": 0.871,
+        "pred_conf": 0.853,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -604,9 +604,9 @@
       "object": {
         "gold_value": null,
         "gold_status": "missing",
-        "pred_value": "operating cash flow of customers",
+        "pred_value": "operating cash flow",
         "pred_status": "explicit",
-        "pred_conf": 0.235,
+        "pred_conf": 0.428,
         "status_correct": false,
         "value_correct": null,
         "flagged": false
@@ -644,11 +644,11 @@
       "magnitude": {
         "gold_value": "at least $3 billion",
         "gold_status": "explicit",
-        "pred_value": null,
-        "pred_status": "missing",
-        "pred_conf": 0.0,
-        "status_correct": false,
-        "value_correct": false,
+        "pred_value": "at least $3 billion",
+        "pred_status": "explicit",
+        "pred_conf": 0.723,
+        "status_correct": true,
+        "value_correct": true,
         "flagged": false
       },
       "time": {
@@ -656,7 +656,7 @@
         "gold_status": "explicit",
         "pred_value": "fiscal 2026",
         "pred_status": "explicit",
-        "pred_conf": 0.807,
+        "pred_conf": 0.905,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -666,7 +666,7 @@
         "gold_status": "explicit",
         "pred_value": "rental inventory around $3 billion",
         "pred_status": "explicit",
-        "pred_conf": 0.727,
+        "pred_conf": 0.827,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -692,7 +692,7 @@
         "gold_status": "explicit",
         "pred_value": "Citizens",
         "pred_status": "explicit",
-        "pred_conf": 0.902,
+        "pred_conf": 0.707,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -710,9 +710,9 @@
       "intent": {
         "gold_value": null,
         "gold_status": "missing",
-        "pred_value": "exit",
+        "pred_value": "exit 2026",
         "pred_status": "explicit",
-        "pred_conf": 0.506,
+        "pred_conf": 0.57,
         "status_correct": false,
         "value_correct": null,
         "flagged": false
@@ -722,7 +722,7 @@
         "gold_status": "missing",
         "pred_value": "Reimagine the Bank program",
         "pred_status": "explicit",
-        "pred_conf": 0.173,
+        "pred_conf": 0.248,
         "status_correct": false,
         "value_correct": null,
         "flagged": false
@@ -732,7 +732,7 @@
         "gold_status": "explicit",
         "pred_value": "annualized pre-tax benefit",
         "pred_status": "explicit",
-        "pred_conf": 0.553,
+        "pred_conf": 0.593,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -743,12 +743,12 @@
           "about $450 million"
         ],
         "gold_status": "explicit",
-        "pred_value": "about $450 million",
+        "pred_value": "['about $100 million', 'about $450 million']",
         "pred_status": "explicit",
-        "pred_conf": 0.819,
+        "pred_conf": 0.601,
         "status_correct": true,
         "value_correct": true,
-        "flagged": true
+        "flagged": false
       },
       "time": {
         "gold_value": [
@@ -758,7 +758,7 @@
         "gold_status": "explicit",
         "pred_value": "by 2028",
         "pred_status": "explicit",
-        "pred_conf": 0.782,
+        "pred_conf": 0.883,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -792,11 +792,11 @@
       "actor": {
         "gold_value": "FactSet",
         "gold_status": "explicit",
-        "pred_value": null,
-        "pred_status": "missing",
-        "pred_conf": 0.0,
-        "status_correct": false,
-        "value_correct": false,
+        "pred_value": "FactSet's organic ASV growth",
+        "pred_status": "explicit",
+        "pred_conf": 0.379,
+        "status_correct": true,
+        "value_correct": true,
         "flagged": false
       },
       "object": {
@@ -826,12 +826,12 @@
           "EMEA"
         ],
         "gold_status": "explicit",
-        "pred_value": null,
-        "pred_status": "missing",
-        "pred_conf": 0.0,
-        "status_correct": false,
-        "value_correct": false,
-        "flagged": false
+        "pred_value": "Asia Pacific",
+        "pred_status": "explicit",
+        "pred_conf": 0.485,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": true
       },
       "measure": {
         "gold_value": "organic ASV growth",
@@ -850,20 +850,20 @@
           "5.0%"
         ],
         "gold_status": "explicit",
-        "pred_value": null,
-        "pred_status": "missing",
-        "pred_conf": 0.0,
-        "status_correct": false,
-        "value_correct": false,
+        "pred_value": "['7.0%, '10.0%', '5%']",
+        "pred_status": "explicit",
+        "pred_conf": 0.443,
+        "status_correct": true,
+        "value_correct": true,
         "flagged": false
       },
       "time": {
         "gold_value": null,
         "gold_status": "missing",
-        "pred_value": null,
-        "pred_status": "missing",
-        "pred_conf": 0.0,
-        "status_correct": true,
+        "pred_value": "EMEA",
+        "pred_status": "explicit",
+        "pred_conf": 0.339,
+        "status_correct": false,
         "value_correct": null,
         "flagged": false
       },
@@ -898,7 +898,7 @@
         "gold_status": "explicit",
         "pred_value": "Citizens",
         "pred_status": "explicit",
-        "pred_conf": 0.689,
+        "pred_conf": 0.466,
         "status_correct": true,
         "value_correct": true,
         "flagged": false
@@ -906,11 +906,11 @@
       "object": {
         "gold_value": "private bank",
         "gold_status": "explicit",
-        "pred_value": "private bank",
-        "pred_status": "explicit",
-        "pred_conf": 0.256,
-        "status_correct": true,
-        "value_correct": true,
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
         "flagged": false
       },
       "intent": {
@@ -926,11 +926,11 @@
       "scope": {
         "gold_value": "Florida",
         "gold_status": "explicit",
-        "pred_value": "invest in Florida",
-        "pred_status": "explicit",
-        "pred_conf": 0.394,
-        "status_correct": true,
-        "value_correct": true,
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
         "flagged": false
       },
       "measure": {
@@ -966,11 +966,303 @@
       "constraints": {
         "gold_value": null,
         "gold_status": "missing",
+        "pred_value": "Florida as a growth area for its private bank",
+        "pred_status": "explicit",
+        "pred_conf": 0.128,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
         "pred_value": null,
         "pred_status": "missing",
         "pred_conf": 0.0,
         "status_correct": true,
         "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_034",
+    "query": "Albany International's Engineered Composites segment grew 16% because of higher production rates across the LEAP, Boeing, and CH-53K programs.",
+    "fields": {
+      "actor": {
+        "gold_value": "Albany International",
+        "gold_status": "explicit",
+        "pred_value": "Albany International's Engineered Composites segment",
+        "pred_status": "explicit",
+        "pred_conf": 0.596,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": "Engineered Composites segment",
+        "gold_status": "explicit",
+        "pred_value": "higher production rates",
+        "pred_status": "explicit",
+        "pred_conf": 0.415,
+        "status_correct": true,
+        "value_correct": false,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "grew",
+        "pred_status": "explicit",
+        "pred_conf": 0.51,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": [
+          "LEAP",
+          "Boeing",
+          "CH-53K programs"
+        ],
+        "gold_status": "explicit",
+        "pred_value": "LEAP, Boeing, and CH-53K programs",
+        "pred_status": "explicit",
+        "pred_conf": 0.656,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": "16%",
+        "gold_status": "explicit",
+        "pred_value": "16%",
+        "pred_status": "explicit",
+        "pred_conf": 0.684,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": "driven by higher production rates",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_035",
+    "query": "Albany International's tooling for a next-generation defense program has shifted into the back half of the year.",
+    "fields": {
+      "actor": {
+        "gold_value": "Albany International",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": "tooling",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": "next-generation defense program",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": "delivery delayed to the back half of the year",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "Albany International's tooling for a next-generation defense program has shifted into the back",
+        "pred_status": "explicit",
+        "pred_conf": 0.154,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
+  },
+  {
+    "id": "rw_041",
+    "query": "Tesla has continually brought down the cost of its vehicles without sacrificing range, performance, or premiumness.",
+    "fields": {
+      "actor": {
+        "gold_value": "Tesla",
+        "gold_status": "explicit",
+        "pred_value": "Tesla",
+        "pred_status": "explicit",
+        "pred_conf": 0.841,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": "vehicles",
+        "gold_status": "explicit",
+        "pred_value": "cost of vehicles",
+        "pred_status": "explicit",
+        "pred_conf": 0.166,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": "reduce vehicle costs",
+        "gold_status": "explicit",
+        "pred_value": "reduces risk",
+        "pred_status": "explicit",
+        "pred_conf": 0.254,
+        "status_correct": true,
+        "value_correct": false,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": "without sacrificing range, performance, or premiumness",
+        "gold_status": "explicit",
+        "pred_value": "must not sacrific range, performance, or premiumness",
+        "pred_status": "explicit",
+        "pred_conf": 0.607,
+        "status_correct": true,
+        "value_correct": false,
         "flagged": false
       },
       "context": {
