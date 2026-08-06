@@ -14,7 +14,7 @@ HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 MODEL = os.environ.get("OLLAMA_MODEL", "llama3.1")
 
 
-def generate(master_prompt):
+def generate(prompt, system_prompt=SYSTEM_PROMPT):
     """Raises whatever ollama.Client().chat() raises (e.g. a connection
     error if no local server is running) -- llm_client.py's caller is
     responsible for catching it."""
@@ -22,8 +22,8 @@ def generate(master_prompt):
     response = client.chat(
         model=MODEL,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": master_prompt},
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt},
         ],
     )
     return response.message.content

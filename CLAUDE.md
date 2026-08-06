@@ -36,8 +36,9 @@ the **Rules** section below stable and update it rarely; keep the
 | `prompt_synthesis.py` | Phase 1 of the Product vision below: deterministic-template master-prompt synthesis from a `Pipeline.run()` result. `render_sentence()` (the sentence-assembly core) is shared with `app.py`'s confirm/reject re-render step. |
 | `correction_log.py` | Phase 3: appends one JSON object per confirm/reject decision from `app.py` to `data/corrections_log.jsonl`. This is the training data Phase 5 will retrain the prompt-synthesis model on. |
 | `data/corrections_log.jsonl` | Append-only log of every confirm/reject decision (written by `correction_log.py`). Versioned like `data/seq2seq_pairs.jsonl` — not gitignored, not hand-edited. |
-| `llm_client.py` | Phase 4: provider-agnostic router. Reads `LLM_PROVIDER` and dispatches to the matching module in `llm_providers/`. `app.py` only ever calls `llm_client.generate_output()` -- it never imports a provider SDK directly. |
-| `llm_providers/` | One module per LLM provider (`anthropic_provider.py`, `gemini_provider.py`, `ollama_provider.py`), each a single `generate(prompt) -> str` function reading its own key/model from the environment. Adding a provider = one new module + one registry line in `llm_client.py`. Never hardcode a key in any of these. |
+| `llm_client.py` | Phase 4: provider-agnostic router. Reads `LLM_PROVIDER` and dispatches to the matching module in `llm_providers/`. `app.py`/`blank_suggestions.py` only ever call `llm_client.generate_output()` / `generate_suggestions()` -- never a provider SDK directly. |
+| `llm_providers/` | One module per LLM provider (`anthropic_provider.py`, `gemini_provider.py`, `ollama_provider.py`), each a single `generate(prompt, system_prompt=SYSTEM_PROMPT) -> str` function reading its own key/model from the environment. Adding a provider = one new module + one registry line in `llm_client.py`. Never hardcode a key in any of these. |
+| `blank_suggestions.py` | Optional, explicitly opt-in extension to Phase 3: on request (`app.py`'s "Suggest values for blanks" button), asks the configured LLM for plausible-but-unverified values for currently-blank master-prompt fields, using `SUGGESTION_SYSTEM_PROMPT` (`llm_providers/_shared.py`) -- a different, stricter system prompt than Phase 4's answer-generation call. Never auto-applied: the user must tick a box per field to pull a suggestion into the form, same as typing it themselves. Exists specifically to answer 2026-08-06 stakeholder feedback that wanted invented actor/context/constraint text folded in as if it were extracted fact, without breaking the "never assume a value for an empty field" rule below -- see that day's Current-status entry for the full reasoning. |
 | `API_KEYS.md` | The one file to read to switch providers, see every env var per provider, or add a new one. Security rules for keys live here too. |
 | `.env.example` | Template for `.env` (gitignored) — no real values, ever. |
 
@@ -260,6 +261,65 @@ user's own name, mobile number, and email are mandatory.
   (no incremental-fit mode) nor a per-query eval-gate cost makes retrain-
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
+
+## Current status (as of 2026-08-06 — AI-suggested blank fills)
+
+**2026-08-06 session:** user shared a stakeholder review doc (`CHOICE
+Forge improvement suggestions_6-Aug.docx`) with 3 worked examples where a
+human reviewer "corrected" the master prompt by inventing values for
+blank Actor/Constraint/Context fields — e.g. adding "Marketing and Sales
+team" as Actor and "service quality and SLA compliance must not be
+compromised" as a Constraint, neither of which appeared anywhere in the
+original query text. Checked each example against its source query before
+reacting: confirmed none of the added content was actually stated, so
+folding it in silently would directly break this file's own "never assume
+a value for an empty field" rule. Flagged the tension to the user instead
+of implementing the doc's suggestion as-is.
+
+Agreed direction: offer the same kind of enrichment, but only as an
+explicitly-labeled, opt-in AI suggestion the user must actively accept —
+never silently presented as extracted fact. Built as an extension to
+Phase 3, not a new phase:
+
+- Gave the provider contract (`llm_providers/*.py`) a `system_prompt`
+  parameter (`generate(prompt, system_prompt=SYSTEM_PROMPT)`, all three
+  providers) so a second, stricter system prompt
+  (`SUGGESTION_SYSTEM_PROMPT` in `llm_providers/_shared.py`) can be used
+  for this call without touching Phase 4's answer-generation prompt.
+  Wording explicitly bars inventing specific numbers/dates/names and
+  instructs omitting a field rather than guessing.
+- New `blank_suggestions.py` (build/parse/get suggestions) and
+  `llm_client.generate_suggestions()` — see the folder-map entry above
+  for the full contract.
+- `app.py`: a "💡 Suggest values for blanks" button (shown only when
+  blanks exist) fetches suggestions once, scoped to the current `run_id`
+  so they can't leak onto a different query. Each suggested field gets a
+  checkbox, outside the confirm/reject form, captioned "unverified
+  guesses, not extracted from your query." Checking one pre-fills the
+  corresponding form field via the same session-state-before-widget-
+  creation trick `_apply_example()` already uses for the example pills —
+  proven pattern in this file, not a new mechanism. Required dropping an
+  explicit `value=""` on the blank-field `text_input` (it was silently
+  overriding the pre-fill on the widget's first creation).
+  `data/corrections_log.jsonl` entries now carry `ai_suggested` +
+  `ai_suggestion_shown` per field, distinguishing "suggestion shown but
+  declined" from "suggestion accepted" from "real user-typed knowledge" —
+  data a future Phase 5 training pass will need to weight these
+  differently.
+- Verified live in a running Streamlit session using the doc's own
+  example 1 query: suggestions rendered correctly labeled, accepting
+  Actor ("Sales and Marketing Team") and Context ("regional market
+  expansion strategy") pre-filled those fields while declined suggestions
+  (object/scope/measure/magnitude/constraints) stayed blank, Confirm
+  produced the correct final sentence, and `corrections_log.jsonl`'s new
+  entry showed exactly the intended per-field provenance. Also confirmed
+  a second, different query afterward showed no leftover suggestions from
+  the first (the `run_id` scoping holds). Smoke-tested
+  `blank_suggestions.parse_suggestions()` against well-formed,
+  markdown-fenced, and garbage LLM output beforehand (degrades to `{}`
+  safely in the last two cases, never raises).
+- Nothing committed yet this session — pending user go-ahead, same as the
+  2026-08-05 sourcing/retrain work already sitting uncommitted.
 
 ## Current status (as of 2026-08-05, continued again — compound-query detection)
 

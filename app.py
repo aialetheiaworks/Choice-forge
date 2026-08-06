@@ -19,6 +19,7 @@ import statistics
 
 import streamlit as st
 
+import blank_suggestions
 import llm_client
 from correction_log import log_correction
 from pipeline import Pipeline, ROLES
@@ -409,6 +410,16 @@ def _apply_example():
         st.session_state.query_text = picked
 
 
+def _apply_suggestion(role, run_id):
+    """Pre-fills (or clears) the not-yet-created form text_input for `role`
+    via its session_state key, the same trick _apply_example() uses for
+    query_text -- the callback runs before the script reruns top-to-bottom,
+    so by the time the widget is instantiated it reads this value."""
+    checked = st.session_state.get(f"use_suggestion_{role}_{run_id}", False)
+    suggestion_text = st.session_state.get("blank_suggestions", {}).get(role, "")
+    st.session_state[f"field_{role}_{run_id}"] = suggestion_text if checked else ""
+
+
 pipe = load_pipeline()
 
 st.markdown(
@@ -453,11 +464,21 @@ if run and query.strip():
     st.session_state.last_result = result
     st.session_state.last_query = query.strip()
     st.session_state.run_id += 1
-    for key in ("last_decision", "last_master_prompt_final", "llm_output", "llm_error"):
+    for key in (
+        "last_decision",
+        "last_master_prompt_final",
+        "llm_output",
+        "llm_error",
+        "blank_suggestions",
+        "blank_suggestions_error",
+        "blank_suggestions_run_id",
+    ):
         st.session_state.pop(key, None)
 
 result = st.session_state.get("last_result")
 synth = synthesize_master_prompt(result) if result else None
+active_provider = os.environ.get("LLM_PROVIDER", llm_client.DEFAULT_PROVIDER).strip().lower()
+provider_label = active_provider.capitalize()
 
 if result:
     section_header("Result")
@@ -521,6 +542,44 @@ if result:
     if compound["is_possible_compound"]:
         st.warning(f"🔀 {compound['message']}")
 
+    if synth["blanks"]:
+        if st.button(f"💡 Suggest values for blanks ({provider_label}, unverified)"):
+            with st.spinner(f"Asking {provider_label} for suggestions..."):
+                try:
+                    st.session_state.blank_suggestions = blank_suggestions.get_suggestions(
+                        st.session_state.last_query, synth["fields"], synth["blanks"]
+                    )
+                    st.session_state.blank_suggestions_run_id = run_id
+                    st.session_state.blank_suggestions_error = None
+                except Exception as e:
+                    st.session_state.blank_suggestions = {}
+                    st.session_state.blank_suggestions_error = str(e)
+
+        if st.session_state.get("blank_suggestions_error"):
+            st.error(
+                f"Could not fetch suggestions: {st.session_state.blank_suggestions_error}"
+            )
+
+        suggestions = (
+            st.session_state.get("blank_suggestions", {})
+            if st.session_state.get("blank_suggestions_run_id") == run_id
+            else {}
+        )
+        if suggestions:
+            st.caption(
+                "💡 AI suggestions below are **unverified guesses**, not extracted "
+                "from your query. Check a box to pre-fill that field below — you can "
+                "still edit or clear it before confirming."
+            )
+            for role in synth["blanks"]:
+                if role in suggestions:
+                    st.checkbox(
+                        f'Use AI suggestion for {role}: "{suggestions[role]}"',
+                        key=f"use_suggestion_{role}_{run_id}",
+                        on_change=_apply_suggestion,
+                        args=(role, run_id),
+                    )
+
     with st.form(f"master_prompt_form_{run_id}"):
         if compound["is_possible_compound"]:
             st.checkbox(
@@ -538,7 +597,7 @@ if result:
                         f"Not applicable to this query — {role} was never stated",
                         key=f"na_{role}_{run_id}",
                     )
-                st.text_input(label, value="", placeholder=f["text"], key=f"field_{role}_{run_id}")
+                st.text_input(label, placeholder=f["text"], key=f"field_{role}_{run_id}")
             else:
                 st.text_input(label, value=f["text"], key=f"field_{role}_{run_id}")
 
@@ -551,6 +610,11 @@ if result:
         rejected = reject_col.form_submit_button("❌ Reject")
 
     if confirmed or rejected:
+        run_suggestions = (
+            st.session_state.get("blank_suggestions", {})
+            if st.session_state.get("blank_suggestions_run_id") == run_id
+            else {}
+        )
         final_fields = {}
         log_fields = {}
         for role in ROLES:
@@ -564,6 +628,13 @@ if result:
                 not not_applicable
                 and bool(submitted)
                 and (orig["blank"] or submitted != orig["text"])
+            )
+            suggestion_text = run_suggestions.get(role)
+            ai_suggested = (
+                not not_applicable
+                and bool(submitted)
+                and st.session_state.get(f"use_suggestion_{role}_{run_id}", False)
+                and bool(suggestion_text)
             )
 
             if not_applicable:
@@ -587,6 +658,8 @@ if result:
                 "multi_span": orig["multi_span"],
                 "final_value": None if resolved_blank else resolved_text,
                 "user_edited": user_edited,
+                "ai_suggested": ai_suggested,
+                "ai_suggestion_shown": suggestion_text,
             }
 
         master_prompt_final = render_sentence(final_fields)
@@ -615,11 +688,6 @@ if result:
             st.warning(f"Rejected:\n\n{master_prompt_final}")
 
     if st.session_state.get("last_decision") == "confirmed":
-        active_provider = os.environ.get(
-            "LLM_PROVIDER", llm_client.DEFAULT_PROVIDER
-        ).strip().lower()
-        provider_label = active_provider.capitalize()
-
         st.divider()
         section_header(
             "Generate Output",

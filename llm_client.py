@@ -17,6 +17,7 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from llm_providers import anthropic_provider, gemini_provider, ollama_provider
+from llm_providers._shared import SUGGESTION_SYSTEM_PROMPT
 
 load_dotenv()  # local dev: reads .env if present, no-op otherwise
 
@@ -42,6 +43,16 @@ PROVIDERS = {
 DEFAULT_PROVIDER = "gemini"
 
 
+def _provider_fn():
+    provider_name = os.environ.get("LLM_PROVIDER", DEFAULT_PROVIDER).strip().lower()
+    if provider_name not in PROVIDERS:
+        raise ValueError(
+            f"Unknown LLM_PROVIDER '{provider_name}'. "
+            f"Valid options: {', '.join(sorted(PROVIDERS))}. See API_KEYS.md."
+        )
+    return PROVIDERS[provider_name]
+
+
 def generate_output(master_prompt):
     """Call the LLM_PROVIDER-configured provider on a confirmed master
     prompt, return the response text.
@@ -49,10 +60,12 @@ def generate_output(master_prompt):
     Raises whatever the underlying provider raises -- the caller (app.py)
     is responsible for catching and displaying these to the user.
     """
-    provider_name = os.environ.get("LLM_PROVIDER", DEFAULT_PROVIDER).strip().lower()
-    if provider_name not in PROVIDERS:
-        raise ValueError(
-            f"Unknown LLM_PROVIDER '{provider_name}'. "
-            f"Valid options: {', '.join(sorted(PROVIDERS))}. See API_KEYS.md."
-        )
-    return PROVIDERS[provider_name](master_prompt)
+    return _provider_fn()(master_prompt)
+
+
+def generate_suggestions(prompt):
+    """Call the LLM_PROVIDER-configured provider with the blank-suggestion
+    system prompt instead of the Phase 4 objective-answering one (see
+    blank_suggestions.py). Same raise/catch convention as generate_output.
+    """
+    return _provider_fn()(prompt, system_prompt=SUGGESTION_SYSTEM_PROMPT)
