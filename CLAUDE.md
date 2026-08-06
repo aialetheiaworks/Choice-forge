@@ -944,6 +944,32 @@ What happened in the 2026-07-27 session:
    too now, and the next sourcing pass should specifically target:
    generic team/role-phrased actors (not just company names), explicit
    measure/KPI phrasing, and causal/purpose context clauses.
+   **`measure` specifically diagnosed 2026-08-06** (after the failed
+   reproducibility-gap retrain above surfaced it as the worst regressor):
+   pulled every `measure` row out of `data/real_world_eval_report.json`
+   for the currently-live (round-1) model. All 4 real-world misses on the
+   13-row holdout (`rw_009`, `rw_012`, `rw_021`, `rw_027`) come back
+   `status: missing` -- the CRF never opens a span at all, so this isn't a
+   T5/normalization issue. All 4 share one shape: the measure noun phrase
+   sits in **subject position**, either right after a possessive company
+   name (`"PNC's operating target for its CET1 capital ratio is..."`,
+   `"FactSet's organic ASV growth was..."`) or after `"expects"`
+   (`"FIS expects free cash flow to double..."`). Checked
+   `choice_forge_dataset_combined_130.json` directly: across 57 explicit
+   `measure` training examples, **zero** use the possessive-subject
+   pattern and only **one** uses `"expects <measure>"` -- not enough for
+   the CRF to generalize even to a near-identical real query
+   (`rw_012`/`rw_021` both miss despite closely matching that one
+   example). Every correctly-detected real-world `measure` matches a
+   pattern the training data has plenty of instead: object-of-verb
+   (`"targets consolidated leverage"`) or trailing `"of X in/of ___"`
+   clauses. This is a genuine data-coverage gap for one specific
+   syntactic frame -- not a model-capacity or hyperparameter problem, so
+   another blind retrain sweep won't fix it (see the two failed attempts
+   directly above). **Recommended next step:** a small, targeted sourcing
+   pass of real possessive-subject and "expects X" measure examples
+   (5-10 rows), same build -> validate -> split pattern as always, then
+   retrain + re-gate -- not a broader/repeated sweep.
 2. ~~Negation-cue phrasing may not exist in real corporate language.~~
    **Corrected 2026-08-05: it does exist, the original 7-company search just
    didn't find it.** A broader search turned up real "without X" constraints
