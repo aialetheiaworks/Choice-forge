@@ -318,8 +318,42 @@ Phase 3, not a new phase:
   `blank_suggestions.parse_suggestions()` against well-formed,
   markdown-fenced, and garbage LLM output beforehand (degrades to `{}`
   safely in the last two cases, never raises).
-- Nothing committed yet this session — pending user go-ahead, same as the
-  2026-08-05 sourcing/retrain work already sitting uncommitted.
+- Committed (`900a89e`) and pushed to `origin/main`.
+
+**Same-day continuation: attempted to close the round1/round2 dataset-vs-
+model reproducibility gap flagged in the 2026-08-05 entry below.** Backed
+up the live round-1 model artifacts to the session scratchpad first.
+Rebuilt `data/seq2seq_pairs.jsonl` from the full, already-committed
+`choice_forge_dataset_combined_130.json` (confirmed identical — it was
+already built from that file), retrained the CRF fresh on the same
+130-row set, then retrained T5 with `NEGATION_OVERSAMPLE_FACTOR` reduced
+from 5 to 3 (a bounded regularization attempt, since round 2 already
+tried 5x and still regressed non-negation fields — the goal was to test
+whether the oversample multiplier itself was the cause). Note the current
+frozen holdout has grown from 10 to 13 rows since round 1's original gate
+(two round-1-sourced rows plus the round-2 Tesla row are now permanently
+in it), so the fair comparison is round-1-vs-round-3 **on today's 13-row
+set**, not against the previously-published 78.9%/67.4%/100% figures
+(which were measured against the smaller 10-row set and are no longer
+directly comparable).
+
+Round 1 (currently live) on the 13-row set: **77.78% status / 61.02%
+value / 92.31% actor**. Round 3 (fresh retrain, 3x oversample) on the
+same set: **76.07% status / 55.93% value / 100% actor** — fixed `actor`
+to 100% and improved `scope` (50%→75% value), but regressed `measure`,
+`magnitude`, `time`, and `constraints`, the same shape of regression as
+round 2. This rules out "the 5x oversample factor itself is the cause" —
+reducing it to 3x didn't fix the aggregate regression, so the real driver
+is more likely the CRF/T5-small's limited capacity redistributing
+attention across a genuinely larger, more varied 130-row set, not a
+tunable hyperparameter. **Did not promote** — restored round 1's model
+from the scratchpad backup (verified via `git status`: zero diff, exact
+byte match) and reverted the `NEGATION_OVERSAMPLE_FACTOR` code change.
+Live model is still round 1's, dataset files still reflect the full
+130-row set — the reproducibility gap remains open. Next attempt should
+probably target one specific regressing field (e.g. `measure`, which
+dropped 42.86%→14.29% value accuracy) with its own diagnostic pass rather
+than another whole-dataset retrain sweep.
 
 ## Current status (as of 2026-08-05, continued again — compound-query detection)
 
