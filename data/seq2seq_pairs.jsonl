@@ -757,3 +757,22 @@
 {"id": "rw_042", "role": "context", "input": "normalize context: to support higher volumes of activity", "target": "supporting higher volumes of activity", "gold_status": "explicit"}
 {"id": "rw_043", "role": "actor", "input": "normalize actor: Climb Global", "target": "Climb Global", "gold_status": "explicit"}
 {"id": "rw_043", "role": "context", "input": "normalize context: driven by the strength of its global platform", "target": "attributed to the strength of its global platform", "gold_status": "explicit"}
+{"id": "rw_045", "role": "actor", "input": "normalize actor: Thermo Fisher", "target": "Thermo Fisher", "gold_status": "explicit"}
+{"id": "rw_045", "role": "measure", "input": "normalize measure: adjusted operating margin", "target": "adjusted operating margin", "gold_status": "explicit"}
+{"id": "rw_045", "role": "magnitude", "input": "normalize magnitude: 22.8%; 90 basis points higher than a year ago", "target": "['22.8%', '90 basis points higher than a year ago']", "gold_status": "explicit"}
+{"id": "rw_045", "role": "time", "input": "normalize time: in the second quarter", "target": "in the second quarter", "gold_status": "explicit"}
+{"id": "rw_046", "role": "actor", "input": "normalize actor: AGCO", "target": "AGCO", "gold_status": "explicit"}
+{"id": "rw_046", "role": "measure", "input": "normalize measure: adjusted operating margin", "target": "adjusted operating margin", "gold_status": "explicit"}
+{"id": "rw_046", "role": "magnitude", "input": "normalize magnitude: 6.6%; 170 basis points lower than the prior year", "target": "['6.6%', '170 basis points lower than the prior year']", "gold_status": "explicit"}
+{"id": "rw_046", "role": "time", "input": "normalize time: in the second quarter", "target": "in the second quarter", "gold_status": "explicit"}
+{"id": "rw_047", "role": "actor", "input": "normalize actor: AGCO", "target": "AGCO", "gold_status": "explicit"}
+{"id": "rw_047", "role": "measure", "input": "normalize measure: adjusted operating margin", "target": "adjusted operating margin", "gold_status": "explicit"}
+{"id": "rw_047", "role": "magnitude", "input": "normalize magnitude: approximately 7.5%", "target": "approximately 7.5%", "gold_status": "explicit"}
+{"id": "rw_047", "role": "time", "input": "normalize time: for 2026", "target": "2026", "gold_status": "explicit"}
+{"id": "rw_048", "role": "actor", "input": "normalize actor: S&P Global", "target": "S&P Global", "gold_status": "explicit"}
+{"id": "rw_048", "role": "scope", "input": "normalize scope: Mobility division", "target": "Mobility division", "gold_status": "explicit"}
+{"id": "rw_048", "role": "measure", "input": "normalize measure: operating margin", "target": "operating margin", "gold_status": "explicit"}
+{"id": "rw_048", "role": "magnitude", "input": "normalize magnitude: expanded 150 basis points year-over-year to 40%", "target": "expanded 150 basis points year-over-year to 40%", "gold_status": "explicit"}
+{"id": "rw_050", "role": "actor", "input": "normalize actor: DexCom", "target": "DexCom", "gold_status": "explicit"}
+{"id": "rw_050", "role": "measure", "input": "normalize measure: full-year revenue", "target": "full-year revenue", "gold_status": "explicit"}
+{"id": "rw_050", "role": "magnitude", "input": "normalize magnitude: $5.18 billion to $5.25 billion; growth of 11% to 13%", "target": "['$5.18 billion to $5.25 billion', 'growth of 11% to 13%']", "gold_status": "explicit"}

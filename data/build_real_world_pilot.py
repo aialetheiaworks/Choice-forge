@@ -67,6 +67,11 @@ EFC_URL = "https://www.fool.com/earnings/call-transcripts/2026/05/06/efc-q1-2026
 TESLA_URL = "https://www.fool.com/earnings/call-transcripts/2026/01/28/tesla-tsla-q4-2025-earnings-call-transcript/"
 CLIMB_URL = "https://www.fool.com/earnings/call-transcripts/2026/04/30/climb-global-clmb-q1-2026-earnings-transcript/"
 
+TMO_URL = "https://www.fool.com/earnings/call-transcripts/2026/07/23/tmo-q2-2026-earnings-call-transcript/"
+AGCO_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/03/agco-agco-q2-2026-earnings-call-transcript/"
+SPGI_URL = "https://www.fool.com/earnings/call-transcripts/2026/04/28/sp-global-spgi-q1-2026-earnings-transcript/"
+DXCM_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/03/dexcom-dxcm-q2-2026-earnings-call-transcript/"
+
 rows = [
     row("rw_001",
         "Target is on track to open over thirty stores in 2026.",
@@ -466,6 +471,75 @@ rows = [
         actor=field("Climb Global", "explicit", 0.85, "Climb Global"),
         context=field("attributed to the strength of its global platform", "explicit", 0.75,
                        "driven by the strength of its global platform"),
+        ),
+
+    # 2026-08-08 sourcing pass: targeting the measure subject-position blind
+    # spot diagnosed 2026-08-06 (Known gap 1) -- possessive-subject phrasing
+    # ("X's <measure> is/was...") and "X expects <measure> to..." phrasing,
+    # the two shapes the CRF had near-zero training coverage for. All 4
+    # companies (Thermo Fisher, AGCO, S&P Global, DexCom) are new to the
+    # dataset, so this also avoids conflating "learned the pattern" with
+    # "memorized the company name."
+    row("rw_044",
+        "Thermo Fisher expects free cash flow to be in the range of $6.9 billion to $7.4 billion for the year.",
+        TMO_URL, "James Meyer (CFO), rephrased to third person -- 'expects X' pattern, held out for eval",
+        actor=field("Thermo Fisher", "explicit", 0.9, "Thermo Fisher"),
+        measure=field("free cash flow", "explicit", 0.85, "free cash flow"),
+        magnitude=field("in the range of $6.9 billion to $7.4 billion", "explicit", 0.85,
+                         "in the range of $6.9 billion to $7.4 billion"),
+        time=field("for the year", "explicit", 0.8, "for the year"),
+        ),
+    row("rw_045",
+        "Thermo Fisher's adjusted operating margin was 22.8% in the second quarter, 90 basis points higher than a year ago.",
+        TMO_URL, "Marc Casper (CEO) / James Meyer (CFO), rephrased to possessive-subject form",
+        actor=field("Thermo Fisher", "explicit", 0.9, "Thermo Fisher"),
+        measure=field("adjusted operating margin", "explicit", 0.85, "adjusted operating margin"),
+        magnitude=field(["22.8%", "90 basis points higher than a year ago"], "explicit", 0.85,
+                         ["22.8%", "90 basis points higher than a year ago"]),
+        time=field("in the second quarter", "explicit", 0.8, "in the second quarter"),
+        ),
+    row("rw_046",
+        "AGCO's adjusted operating margin was 6.6% in the second quarter, 170 basis points lower than the prior year.",
+        AGCO_URL, "Damon J. Audia (CFO), rephrased to possessive-subject form",
+        actor=field("AGCO", "explicit", 0.9, "AGCO"),
+        measure=field("adjusted operating margin", "explicit", 0.85, "adjusted operating margin"),
+        magnitude=field(["6.6%", "170 basis points lower than the prior year"], "explicit", 0.85,
+                         ["6.6%", "170 basis points lower than the prior year"]),
+        time=field("in the second quarter", "explicit", 0.8, "in the second quarter"),
+        ),
+    row("rw_047",
+        "AGCO expects adjusted operating margin of approximately 7.5% for 2026.",
+        AGCO_URL, "Damon J. Audia (CFO), rephrased to third person -- 'expects X' pattern",
+        actor=field("AGCO", "explicit", 0.9, "AGCO"),
+        measure=field("adjusted operating margin", "explicit", 0.85, "adjusted operating margin"),
+        magnitude=field("approximately 7.5%", "explicit", 0.85, "approximately 7.5%"),
+        time=field("2026", "explicit", 0.8, "for 2026"),
+        ),
+    row("rw_048",
+        "S&P Global's operating margin for its Mobility division expanded 150 basis points year-over-year to 40%.",
+        SPGI_URL, "Eric Aboaf (CFO), rephrased to possessive-subject form with division as scope",
+        actor=field("S&P Global", "explicit", 0.9, "S&P Global"),
+        measure=field("operating margin", "explicit", 0.85, "operating margin"),
+        scope=field("Mobility division", "explicit", 0.8, "Mobility division"),
+        magnitude=field("expanded 150 basis points year-over-year to 40%", "explicit", 0.85,
+                         "expanded 150 basis points year-over-year to 40%"),
+        ),
+    row("rw_049",
+        "DexCom's gross margin was 64.1% of revenue in the second quarter, up from 60.1% a year earlier.",
+        DXCM_URL, "Jereme Sylvain (CFO), rephrased to possessive-subject form, held out for eval",
+        actor=field("DexCom", "explicit", 0.9, "DexCom"),
+        measure=field("gross margin", "explicit", 0.85, "gross margin"),
+        magnitude=field(["64.1% of revenue", "60.1% a year earlier"], "explicit", 0.85,
+                         ["64.1% of revenue", "60.1% a year earlier"]),
+        time=field("in the second quarter", "explicit", 0.8, "in the second quarter"),
+        ),
+    row("rw_050",
+        "DexCom expects full-year revenue of $5.18 billion to $5.25 billion, representing growth of 11% to 13%.",
+        DXCM_URL, "Jereme Sylvain (CFO), rephrased to third person -- 'expects X' pattern",
+        actor=field("DexCom", "explicit", 0.9, "DexCom"),
+        measure=field("full-year revenue", "explicit", 0.85, "full-year revenue"),
+        magnitude=field(["$5.18 billion to $5.25 billion", "growth of 11% to 13%"], "explicit", 0.85,
+                         ["$5.18 billion to $5.25 billion", "growth of 11% to 13%"]),
         ),
 ]
 

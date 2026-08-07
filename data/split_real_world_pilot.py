@@ -30,6 +30,12 @@ EVAL_IDS = {
     # (rw_036, rw_039, rw_040, rw_042) taught the CRF something rw_036
     # alone did not.
     "rw_041",
+    # 2026-08-08 sourcing pass targeting the measure subject-position blind
+    # spot (Known gap 1): rw_044 (TMO, "expects X" pattern) and rw_049
+    # (DexCom, possessive-subject pattern) held out to test whether the 5
+    # training examples of these two shapes (rw_045-rw_048, rw_050) taught
+    # the CRF to open a measure span in subject position at all.
+    "rw_044", "rw_049",
 }
 
 with open("data/real_world_pilot_batch.json", encoding="utf-8") as f:

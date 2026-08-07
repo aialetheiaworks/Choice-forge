@@ -2864,5 +2864,477 @@
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/04/30/climb-global-clmb-q1-2026-earnings-transcript/",
     "_source_note": "Dale Foster (CEO), lightly trimmed -- causal context clause"
+  },
+  {
+    "id": "rw_044",
+    "input_query": "Thermo Fisher expects free cash flow to be in the range of $6.9 billion to $7.4 billion for the year.",
+    "choice": {
+      "actor": {
+        "value": "Thermo Fisher",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Thermo Fisher"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "free cash flow",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "free cash flow"
+      },
+      "magnitude": {
+        "value": "in the range of $6.9 billion to $7.4 billion",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "in the range of $6.9 billion to $7.4 billion"
+      },
+      "time": {
+        "value": "for the year",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "for the year"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/23/tmo-q2-2026-earnings-call-transcript/",
+    "_source_note": "James Meyer (CFO), rephrased to third person -- 'expects X' pattern, held out for eval"
+  },
+  {
+    "id": "rw_045",
+    "input_query": "Thermo Fisher's adjusted operating margin was 22.8% in the second quarter, 90 basis points higher than a year ago.",
+    "choice": {
+      "actor": {
+        "value": "Thermo Fisher",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Thermo Fisher"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "adjusted operating margin",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "adjusted operating margin"
+      },
+      "magnitude": {
+        "value": [
+          "22.8%",
+          "90 basis points higher than a year ago"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "22.8%",
+          "90 basis points higher than a year ago"
+        ]
+      },
+      "time": {
+        "value": "in the second quarter",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "in the second quarter"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/23/tmo-q2-2026-earnings-call-transcript/",
+    "_source_note": "Marc Casper (CEO) / James Meyer (CFO), rephrased to possessive-subject form"
+  },
+  {
+    "id": "rw_046",
+    "input_query": "AGCO's adjusted operating margin was 6.6% in the second quarter, 170 basis points lower than the prior year.",
+    "choice": {
+      "actor": {
+        "value": "AGCO",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "AGCO"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "adjusted operating margin",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "adjusted operating margin"
+      },
+      "magnitude": {
+        "value": [
+          "6.6%",
+          "170 basis points lower than the prior year"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "6.6%",
+          "170 basis points lower than the prior year"
+        ]
+      },
+      "time": {
+        "value": "in the second quarter",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "in the second quarter"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/agco-agco-q2-2026-earnings-call-transcript/",
+    "_source_note": "Damon J. Audia (CFO), rephrased to possessive-subject form"
+  },
+  {
+    "id": "rw_047",
+    "input_query": "AGCO expects adjusted operating margin of approximately 7.5% for 2026.",
+    "choice": {
+      "actor": {
+        "value": "AGCO",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "AGCO"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "adjusted operating margin",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "adjusted operating margin"
+      },
+      "magnitude": {
+        "value": "approximately 7.5%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "approximately 7.5%"
+      },
+      "time": {
+        "value": "2026",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "for 2026"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/agco-agco-q2-2026-earnings-call-transcript/",
+    "_source_note": "Damon J. Audia (CFO), rephrased to third person -- 'expects X' pattern"
+  },
+  {
+    "id": "rw_048",
+    "input_query": "S&P Global's operating margin for its Mobility division expanded 150 basis points year-over-year to 40%.",
+    "choice": {
+      "actor": {
+        "value": "S&P Global",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "S&P Global"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "Mobility division",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Mobility division"
+      },
+      "measure": {
+        "value": "operating margin",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "operating margin"
+      },
+      "magnitude": {
+        "value": "expanded 150 basis points year-over-year to 40%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "expanded 150 basis points year-over-year to 40%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/04/28/sp-global-spgi-q1-2026-earnings-transcript/",
+    "_source_note": "Eric Aboaf (CFO), rephrased to possessive-subject form with division as scope"
+  },
+  {
+    "id": "rw_049",
+    "input_query": "DexCom's gross margin was 64.1% of revenue in the second quarter, up from 60.1% a year earlier.",
+    "choice": {
+      "actor": {
+        "value": "DexCom",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "DexCom"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "gross margin",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "gross margin"
+      },
+      "magnitude": {
+        "value": [
+          "64.1% of revenue",
+          "60.1% a year earlier"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "64.1% of revenue",
+          "60.1% a year earlier"
+        ]
+      },
+      "time": {
+        "value": "in the second quarter",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "in the second quarter"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/dexcom-dxcm-q2-2026-earnings-call-transcript/",
+    "_source_note": "Jereme Sylvain (CFO), rephrased to possessive-subject form, held out for eval"
+  },
+  {
+    "id": "rw_050",
+    "input_query": "DexCom expects full-year revenue of $5.18 billion to $5.25 billion, representing growth of 11% to 13%.",
+    "choice": {
+      "actor": {
+        "value": "DexCom",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "DexCom"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": "full-year revenue",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "full-year revenue"
+      },
+      "magnitude": {
+        "value": [
+          "$5.18 billion to $5.25 billion",
+          "growth of 11% to 13%"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "$5.18 billion to $5.25 billion",
+          "growth of 11% to 13%"
+        ]
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/dexcom-dxcm-q2-2026-earnings-call-transcript/",
+    "_source_note": "Jereme Sylvain (CFO), rephrased to third person -- 'expects X' pattern"
   }
 ]

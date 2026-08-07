@@ -262,6 +262,67 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-08 — targeted `measure` sourcing pass, promoted)
+
+**2026-08-08 session:** picked up the recommended next step from the
+2026-08-06 diagnosis (Known gap 1): the live model missed `measure` on
+every real query where the measure noun phrase sat in subject position
+(possessive-subject: `"PNC's operating target for its CET1 capital ratio
+is..."`; or `"X expects <measure> to..."`), because the 130-row dataset
+had zero possessive-subject training examples and only one `"expects"`
+example.
+
+- **Sourced 7 new real rows** (`rw_044`-`rw_050`) via
+  `data/build_real_world_pilot.py`, from 4 companies new to the dataset
+  (Thermo Fisher, AGCO, S&P Global, DexCom Q1/Q2 2026 earnings calls via
+  fool.com transcripts) — deliberately new companies so the CRF can't
+  just be memorizing a company name instead of the syntactic pattern.
+  5 rows (`rw_045`-`rw_048`, `rw_050`) went to training; 2
+  (`rw_044` — TMO `"expects free cash flow to be in the range of..."`,
+  `rw_049` — DexCom `"'s gross margin was 64.1%..."`) held out in eval
+  specifically to test whether the pattern generalized, one per phrasing
+  shape. Validated via `data/validate_real_world_pilot.py` (clean on
+  first pass — no overlap/substring errors), split via
+  `data/split_real_world_pilot.py` (added the 2 new IDs to `EVAL_IDS`,
+  left every prior ID untouched), rebuilt
+  `choice_forge_dataset_combined_135.json` via
+  `data/build_combined_dataset.py` (100 original + 35 real).
+- **Backed up round-1's live model artifacts to the session scratchpad
+  first** (same safety pattern as the 2026-08-05/06 sessions), then
+  retrained CRF + T5 fresh on the full 135-row set and re-ran
+  `data/eval_on_real_world.py`. This also **closes the reproducibility
+  gap** flagged open at the end of the 2026-08-06 session (live model
+  trained on a 126-row file while the combined-dataset file on disk said
+  130) — both now reflect the same 135-row set again.
+- **Gated the result — genuine, broad improvement, promoted.** On the
+  now-15-row eval holdout (13 previous + the 2 new rows): status
+  77.78%→**80.74%**, value 62.69%→**64.18%**, actor 93.33%→**100%**.
+  The targeted field itself: measure status 66.67%→**73.33%**, value
+  44.44%→**55.56%**. Directly confirmed the fix, not just the aggregate
+  number: both held-out test rows (`rw_044`, `rw_049`) now correctly
+  detect `measure` in subject position (0.452 and 0.699 confidence)
+  where the round-1 model would have returned `missing` on this shape.
+  `object`/`scope`/`context` status all improved or held; only `time`
+  meaningfully regressed (73.33%→60.00% status) — one field paying a
+  cost from the shared CRF's decision boundaries shifting, the same
+  mechanism flagged in the 2026-08-05 negation-cue rounds, but this time
+  isolated to a single field rather than the multi-field collapse that
+  sank that earlier attempt (round 2 there regressed status *and* was
+  net-negative overall; this pass is net-positive on every headline
+  metric). Checked `seq2seq_ckpt/` disk usage before finishing —
+  `save_total_limit=2` (set 2026-08-05) held at 1.4GB, no repeat of the
+  27GB accumulation bug.
+- **New known gap surfaced by this pass, not yet addressed:** the `time`
+  regression above is real and specifically hits `"expects <measure> to
+  ... by/in/for <time>"` constructions (`rw_012`, `rw_016`, `rw_017`,
+  `rw_044` all newly miss `time` this round) — plausible that
+  reinforcing the `"expects <measure>"` opening pattern shifted the CRF's
+  attention away from the trailing time clause in that same sentence
+  shape. Worth a targeted look before the next unrelated retrain, same
+  discipline as the standalone `measure` diagnosis this pass started
+  from.
+- Nothing committed yet this session — pending go-ahead.
+
 ## Current status (as of 2026-08-06 — AI-suggested blank fills)
 
 **2026-08-06 session:** user shared a stakeholder review doc (`CHOICE
@@ -966,10 +1027,16 @@ What happened in the 2026-07-27 session:
    clauses. This is a genuine data-coverage gap for one specific
    syntactic frame -- not a model-capacity or hyperparameter problem, so
    another blind retrain sweep won't fix it (see the two failed attempts
-   directly above). **Recommended next step:** a small, targeted sourcing
+   directly above). ~~**Recommended next step:** a small, targeted sourcing
    pass of real possessive-subject and "expects X" measure examples
    (5-10 rows), same build -> validate -> split pattern as always, then
-   retrain + re-gate -- not a broader/repeated sweep.
+   retrain + re-gate -- not a broader/repeated sweep.~~ **Done 2026-08-08:**
+   sourced 7 rows (`rw_044`-`rw_050`) hitting exactly these two shapes,
+   retrained, gated. Measure status 66.67%→73.33%, value 44.44%→55.56%;
+   both held-out generalization-test rows now correctly detect measure in
+   subject position. See the 2026-08-08 Current-status entry for full
+   detail, including the `time`-field regression this pass introduced
+   (new gap 7 below).
 2. ~~Negation-cue phrasing may not exist in real corporate language.~~
    **Corrected 2026-08-05: it does exist, the original 7-company search just
    didn't find it.** A broader search turned up real "without X" constraints
@@ -1033,6 +1100,17 @@ What happened in the 2026-07-27 session:
    the CRF missed "Sales" as a second actor entirely) won't trigger the
    warning. This isn't a bug in the detector; it inherits the underlying
    data-thinness gap.
+7. **`time` regressed after the 2026-08-08 `measure` sourcing pass**
+   (73.33%→60.00% status on the 15-row holdout), specifically on
+   `"expects <measure> to ... by/in/for <time>"` sentence shapes
+   (`rw_012`, `rw_016`, `rw_017`, `rw_044` all newly miss `time`).
+   Reinforcing the `"expects <measure>"` opening plausibly shifted the
+   shared CRF's decision boundary away from the trailing time clause in
+   that same sentence — the same shared-capacity mechanism as the
+   negation-cue rounds, but isolated to one field this time rather than a
+   net-negative aggregate. Not yet diagnosed or fixed; a good candidate
+   for the next targeted (not broad-sweep) pass, following the same
+   diagnose-one-field discipline the `measure` gap above used.
 
 Full detail and reasoning for all of the above lives in git history — see
 commit `db3e52e`'s message specifically.
