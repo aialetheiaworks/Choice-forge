@@ -402,6 +402,7 @@ EXAMPLES = [
 if "query_text" not in st.session_state:
     st.session_state.query_text = ""
 st.session_state.setdefault("run_id", 0)
+st.session_state.setdefault("reject_streak", 0)
 
 
 def _apply_example():
@@ -418,6 +419,18 @@ def _apply_suggestion(role, run_id):
     checked = st.session_state.get(f"use_suggestion_{role}_{run_id}", False)
     suggestion_text = st.session_state.get("blank_suggestions", {}).get(role, "")
     st.session_state[f"field_{role}_{run_id}"] = suggestion_text if checked else ""
+
+
+def _start_rephrase(decision_key, mode_key):
+    """Pre-fills query_text with the original query so the user can tweak
+    it, same on_click-callback trick as _apply_example/_apply_suggestion --
+    setting st.session_state.query_text directly inside the main script
+    body raises StreamlitAPIException because the query_text widget has
+    already been instantiated earlier in that same pass; a callback runs
+    before the next rerun's widgets exist at all."""
+    st.session_state.query_text = st.session_state.last_query
+    for key in ("last_result", decision_key, mode_key, "llm_output", "llm_error"):
+        st.session_state.pop(key, None)
 
 
 pipe = load_pipeline()
@@ -465,8 +478,6 @@ if run and query.strip():
     st.session_state.last_query = query.strip()
     st.session_state.run_id += 1
     for key in (
-        "last_decision",
-        "last_master_prompt_final",
         "llm_output",
         "llm_error",
         "blank_suggestions",
@@ -481,187 +492,61 @@ active_provider = os.environ.get("LLM_PROVIDER", llm_client.DEFAULT_PROVIDER).st
 provider_label = active_provider.capitalize()
 
 if result:
-    section_header("Result")
-
-    found_roles = [r for r in ROLES if result[r]["status"] != "missing"]
-    avg_conf = (
-        statistics.mean(result[r]["confidence"] for r in found_roles)
-        if found_roles
-        else 0.0
-    )
-    flagged_count = sum(1 for r in ROLES if result[r]["flagged_for_review"])
-
-    st.markdown(
-        '<div class="cf-metric-row">'
-        '<div class="cf-metric">'
-        f'<div class="cf-metric-value">{len(found_roles)}/{len(ROLES)}</div>'
-        '<div class="cf-metric-label">fields found</div>'
-        "</div>"
-        '<div class="cf-metric">'
-        f'<div class="cf-metric-value">{avg_conf:.2f}</div>'
-        '<div class="cf-metric-label">avg. confidence</div>'
-        "</div>"
-        '<div class="cf-metric">'
-        f'<div class="cf-metric-value">{flagged_count}</div>'
-        '<div class="cf-metric-label">flagged</div>'
-        "</div>"
-        "</div>",
-        unsafe_allow_html=True,
-    )
-
-    cards_html = "".join(
-        _field_card_html(role, ROLE_ICONS.get(role, "🔹"), result[role]) for role in ROLES
-    )
-    st.markdown(f'<div class="cf-grid">{cards_html}</div>', unsafe_allow_html=True)
-
-    dl_col, exp_col = st.columns([1, 3])
-    dl_col.download_button(
-        "⬇️ Download JSON",
-        data=json.dumps(result, indent=2),
-        file_name="choice_forge_result.json",
-        mime="application/json",
-    )
-    with st.expander("Raw JSON"):
-        st.json(result)
-
-    st.divider()
-    section_header(
-        "Master Prompt",
-        "Fill in any blanks and correct anything the pipeline got wrong, then "
-        "Confirm or Reject. Every decision is logged and becomes training data "
-        "for a future prompt-synthesis model (Phase 5).",
-    )
-
     run_id = st.session_state.run_id
+    decision_key = f"decision_{run_id}"
+    mode_key = f"mode_{run_id}"
+    decision = st.session_state.get(decision_key)
+    mode = st.session_state.get(mode_key, "initial")
+    compound = synth["possible_compound_query"]
+
+    section_header("Here's what we understood")
     st.markdown(
         f'<div class="cf-fieldnote">{html.escape(synth["master_prompt"])}</div>',
         unsafe_allow_html=True,
     )
 
-    compound = synth["possible_compound_query"]
     if compound["is_possible_compound"]:
         st.warning(f"🔀 {compound['message']}")
 
-    if synth["blanks"]:
-        if st.button(f"💡 Suggest values for blanks ({provider_label}, unverified)"):
-            with st.spinner(f"Asking {provider_label} for suggestions..."):
-                try:
-                    st.session_state.blank_suggestions = blank_suggestions.get_suggestions(
-                        st.session_state.last_query, synth["fields"], synth["blanks"]
-                    )
-                    st.session_state.blank_suggestions_run_id = run_id
-                    st.session_state.blank_suggestions_error = None
-                except Exception as e:
-                    st.session_state.blank_suggestions = {}
-                    st.session_state.blank_suggestions_error = str(e)
-
-        if st.session_state.get("blank_suggestions_error"):
-            st.error(
-                f"Could not fetch suggestions: {st.session_state.blank_suggestions_error}"
-            )
-
-        suggestions = (
-            st.session_state.get("blank_suggestions", {})
-            if st.session_state.get("blank_suggestions_run_id") == run_id
-            else {}
+    with st.expander("🔧 See extraction details"):
+        found_roles = [r for r in ROLES if result[r]["status"] != "missing"]
+        avg_conf = (
+            statistics.mean(result[r]["confidence"] for r in found_roles)
+            if found_roles
+            else 0.0
         )
-        if suggestions:
-            st.caption(
-                "💡 AI suggestions below are **unverified guesses**, not extracted "
-                "from your query. Check a box to pre-fill that field below — you can "
-                "still edit or clear it before confirming."
-            )
-            for role in synth["blanks"]:
-                if role in suggestions:
-                    st.checkbox(
-                        f'Use AI suggestion for {role}: "{suggestions[role]}"',
-                        key=f"use_suggestion_{role}_{run_id}",
-                        on_change=_apply_suggestion,
-                        args=(role, run_id),
-                    )
-
-    with st.form(f"master_prompt_form_{run_id}"):
-        if compound["is_possible_compound"]:
-            st.checkbox(
-                "This query actually describes more than one separate decision "
-                "bundled together",
-                key=f"is_compound_{run_id}",
-            )
-        for role in ROLES:
-            f = synth["fields"][role]
-            icon = ROLE_ICONS.get(role, "🔹")
-            label = f"{icon} {role}" + (" ⚠️" if f["needs_review"] else "")
-            if f["blank"]:
-                if role in NOT_APPLICABLE_ELIGIBLE_ROLES:
-                    st.checkbox(
-                        f"Not applicable to this query — {role} was never stated",
-                        key=f"na_{role}_{run_id}",
-                    )
-                st.text_input(label, placeholder=f["text"], key=f"field_{role}_{run_id}")
-            else:
-                st.text_input(label, value=f["text"], key=f"field_{role}_{run_id}")
-
-        reject_reason = st.text_area(
-            "Reject reason (optional)", key=f"reject_reason_{run_id}"
+        flagged_count = sum(1 for r in ROLES if result[r]["flagged_for_review"])
+        st.markdown(
+            '<div class="cf-metric-row">'
+            '<div class="cf-metric">'
+            f'<div class="cf-metric-value">{len(found_roles)}/{len(ROLES)}</div>'
+            '<div class="cf-metric-label">fields found</div>'
+            "</div>"
+            '<div class="cf-metric">'
+            f'<div class="cf-metric-value">{avg_conf:.2f}</div>'
+            '<div class="cf-metric-label">avg. confidence</div>'
+            "</div>"
+            '<div class="cf-metric">'
+            f'<div class="cf-metric-value">{flagged_count}</div>'
+            '<div class="cf-metric-label">flagged</div>'
+            "</div>"
+            "</div>",
+            unsafe_allow_html=True,
         )
-
-        confirm_col, reject_col = st.columns(2)
-        confirmed = confirm_col.form_submit_button("✅ Confirm", type="primary")
-        rejected = reject_col.form_submit_button("❌ Reject")
-
-    if confirmed or rejected:
-        run_suggestions = (
-            st.session_state.get("blank_suggestions", {})
-            if st.session_state.get("blank_suggestions_run_id") == run_id
-            else {}
+        cards_html = "".join(
+            _field_card_html(role, ROLE_ICONS.get(role, "🔹"), result[role]) for role in ROLES
         )
-        final_fields = {}
-        log_fields = {}
-        for role in ROLES:
-            orig = synth["fields"][role]
-            not_applicable = (
-                role in NOT_APPLICABLE_ELIGIBLE_ROLES
-                and st.session_state.get(f"na_{role}_{run_id}", False)
-            )
-            submitted = st.session_state[f"field_{role}_{run_id}"].strip()
-            user_edited = (
-                not not_applicable
-                and bool(submitted)
-                and (orig["blank"] or submitted != orig["text"])
-            )
-            suggestion_text = run_suggestions.get(role)
-            ai_suggested = (
-                not not_applicable
-                and bool(submitted)
-                and st.session_state.get(f"use_suggestion_{role}_{run_id}", False)
-                and bool(suggestion_text)
-            )
+        st.markdown(f'<div class="cf-grid">{cards_html}</div>', unsafe_allow_html=True)
+        st.download_button(
+            "⬇️ Download JSON",
+            data=json.dumps(result, indent=2),
+            file_name="choice_forge_result.json",
+            mime="application/json",
+            key=f"download_{run_id}",
+        )
+        st.json(result)
 
-            if not_applicable:
-                resolved_text, resolved_blank = "", True
-            else:
-                resolved_text = submitted if user_edited else orig["text"]
-                resolved_blank = False if user_edited else orig["blank"]
-
-            final_fields[role] = {
-                "text": resolved_text,
-                "blank": resolved_blank,
-                "not_applicable": not_applicable,
-            }
-            log_fields[role] = {
-                "original_value": result[role]["value"],
-                "original_status": result[role]["status"],
-                "original_confidence": result[role]["confidence"],
-                "blank": resolved_blank,
-                "not_applicable": not_applicable,
-                "needs_review": orig["needs_review"],
-                "multi_span": orig["multi_span"],
-                "final_value": None if resolved_blank else resolved_text,
-                "user_edited": user_edited,
-                "ai_suggested": ai_suggested,
-                "ai_suggestion_shown": suggestion_text,
-            }
-
+    def _log_and_finish(final_fields, log_fields, resolution_path, reject_reason_text=None):
         master_prompt_final = render_sentence(final_fields)
         entry = {
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -669,8 +554,10 @@ if result:
             "fields": log_fields,
             "master_prompt_shown": synth["master_prompt"],
             "master_prompt_final": master_prompt_final,
-            "decision": "confirmed" if confirmed else "rejected",
-            "reject_reason": (reject_reason.strip() or None) if rejected else None,
+            "decision": "confirmed" if resolution_path.startswith("confirmed") else "rejected",
+            "resolution_path": resolution_path,
+            "reject_reason": reject_reason_text,
+            "reject_streak_at_decision": st.session_state.reject_streak,
             "possible_compound_query_flagged": compound["is_possible_compound"],
             "possible_compound_query_confirmed": (
                 st.session_state.get(f"is_compound_{run_id}", False)
@@ -678,29 +565,221 @@ if result:
             ),
         }
         log_correction(entry)
-
-        st.session_state.last_decision = entry["decision"]
-        st.session_state.last_master_prompt_final = master_prompt_final
-
-        if confirmed:
-            st.success(f"Confirmed:\n\n{master_prompt_final}")
+        st.session_state[decision_key] = entry["decision"]
+        st.session_state[f"master_prompt_final_{run_id}"] = master_prompt_final
+        if entry["decision"] == "confirmed":
+            st.session_state.reject_streak = 0
         else:
-            st.warning(f"Rejected:\n\n{master_prompt_final}")
+            st.session_state.reject_streak += 1
+        st.rerun()
 
-    if st.session_state.get("last_decision") == "confirmed":
-        st.divider()
-        section_header(
-            "Generate Output",
-            "Sends the confirmed master prompt to the configured LLM provider "
-            f"(currently <strong>{html.escape(provider_label)}</strong> — see "
-            "<code>API_KEYS.md</code> to switch) and returns its answer to your "
-            "original business query.",
+    if decision is None and mode == "initial":
+        if synth["blanks"]:
+            st.info(
+                f"{len(synth['blanks'])} field(s) still need your input: "
+                f"{', '.join(synth['blanks'])}."
+            )
+            if st.button("✏️ Fill in the blanks", type="primary", key=f"notquite_{run_id}"):
+                st.session_state[mode_key] = "editing"
+                st.rerun()
+        else:
+            st.markdown("**Does this capture what you meant?**")
+            yes_col, no_col = st.columns(2)
+            if yes_col.button("✅ Yes, this is right", type="primary", key=f"yes_{run_id}"):
+                final_fields, log_fields = {}, {}
+                for role in ROLES:
+                    orig = synth["fields"][role]
+                    final_fields[role] = {
+                        "text": orig["text"], "blank": orig["blank"], "not_applicable": False,
+                    }
+                    log_fields[role] = {
+                        "original_value": result[role]["value"],
+                        "original_status": result[role]["status"],
+                        "original_confidence": result[role]["confidence"],
+                        "blank": orig["blank"],
+                        "not_applicable": False,
+                        "needs_review": orig["needs_review"],
+                        "multi_span": orig["multi_span"],
+                        "final_value": None if orig["blank"] else orig["text"],
+                        "user_edited": False,
+                        "ai_suggested": False,
+                        "ai_suggestion_shown": None,
+                    }
+                _log_and_finish(final_fields, log_fields, "confirmed_as_is")
+            if no_col.button("✏️ Not quite — let me fix it", key=f"notquite_{run_id}"):
+                st.session_state[mode_key] = "editing"
+                st.rerun()
+
+    elif decision is None and mode == "editing":
+        if synth["blanks"]:
+            if st.button(f"💡 Suggest values for blanks ({provider_label}, unverified)", key=f"suggest_{run_id}"):
+                with st.spinner(f"Asking {provider_label} for suggestions..."):
+                    try:
+                        st.session_state.blank_suggestions = blank_suggestions.get_suggestions(
+                            st.session_state.last_query, synth["fields"], synth["blanks"]
+                        )
+                        st.session_state.blank_suggestions_run_id = run_id
+                        st.session_state.blank_suggestions_error = None
+                    except Exception as e:
+                        st.session_state.blank_suggestions = {}
+                        st.session_state.blank_suggestions_error = str(e)
+
+            if st.session_state.get("blank_suggestions_error"):
+                st.error(
+                    f"Could not fetch suggestions: {st.session_state.blank_suggestions_error}"
+                )
+
+            suggestions = (
+                st.session_state.get("blank_suggestions", {})
+                if st.session_state.get("blank_suggestions_run_id") == run_id
+                else {}
+            )
+            if suggestions:
+                st.caption(
+                    "💡 AI suggestions below are **unverified guesses**, not extracted "
+                    "from your query. Check a box to pre-fill that field — you can "
+                    "still edit or clear it before continuing."
+                )
+                for role in synth["blanks"]:
+                    if role in suggestions:
+                        st.checkbox(
+                            f'Use AI suggestion for {role}: "{suggestions[role]}"',
+                            key=f"use_suggestion_{role}_{run_id}",
+                            on_change=_apply_suggestion,
+                            args=(role, run_id),
+                        )
+
+        with st.form(f"edit_form_{run_id}"):
+            st.caption("Update anything that's wrong below, then continue.")
+            if compound["is_possible_compound"]:
+                st.checkbox(
+                    "This query actually describes more than one separate decision "
+                    "bundled together",
+                    key=f"is_compound_{run_id}",
+                )
+            for role in ROLES:
+                f = synth["fields"][role]
+                icon = ROLE_ICONS.get(role, "🔹")
+                label = f"{icon} {role}" + (" ⚠️" if f["needs_review"] else "")
+                if f["blank"]:
+                    if role in NOT_APPLICABLE_ELIGIBLE_ROLES:
+                        st.checkbox(
+                            f"Not applicable to this query — {role} was never stated",
+                            key=f"na_{role}_{run_id}",
+                        )
+                    st.text_input(label, placeholder=f["text"], key=f"field_{role}_{run_id}")
+                else:
+                    st.text_input(label, value=f["text"], key=f"field_{role}_{run_id}")
+
+            reject_reason = st.text_area(
+                "If you're going to start over, what went wrong? (optional)",
+                key=f"reject_reason_{run_id}",
+            )
+
+            cont_col, reject_col = st.columns(2)
+            continue_clicked = cont_col.form_submit_button("Continue with my corrections", type="primary")
+            start_over_clicked = reject_col.form_submit_button("This is way off — start over")
+
+        if continue_clicked or start_over_clicked:
+            run_suggestions = (
+                st.session_state.get("blank_suggestions", {})
+                if st.session_state.get("blank_suggestions_run_id") == run_id
+                else {}
+            )
+            final_fields, log_fields = {}, {}
+            for role in ROLES:
+                orig = synth["fields"][role]
+                not_applicable = (
+                    role in NOT_APPLICABLE_ELIGIBLE_ROLES
+                    and st.session_state.get(f"na_{role}_{run_id}", False)
+                )
+                submitted = st.session_state[f"field_{role}_{run_id}"].strip()
+                user_edited = (
+                    not not_applicable
+                    and bool(submitted)
+                    and (orig["blank"] or submitted != orig["text"])
+                )
+                suggestion_text = run_suggestions.get(role)
+                ai_suggested = (
+                    not not_applicable
+                    and bool(submitted)
+                    and st.session_state.get(f"use_suggestion_{role}_{run_id}", False)
+                    and bool(suggestion_text)
+                )
+
+                if not_applicable:
+                    resolved_text, resolved_blank = "", True
+                else:
+                    resolved_text = submitted if user_edited else orig["text"]
+                    resolved_blank = False if user_edited else orig["blank"]
+
+                final_fields[role] = {
+                    "text": resolved_text,
+                    "blank": resolved_blank,
+                    "not_applicable": not_applicable,
+                }
+                log_fields[role] = {
+                    "original_value": result[role]["value"],
+                    "original_status": result[role]["status"],
+                    "original_confidence": result[role]["confidence"],
+                    "blank": resolved_blank,
+                    "not_applicable": not_applicable,
+                    "needs_review": orig["needs_review"],
+                    "multi_span": orig["multi_span"],
+                    "final_value": None if resolved_blank else resolved_text,
+                    "user_edited": user_edited,
+                    "ai_suggested": ai_suggested,
+                    "ai_suggestion_shown": suggestion_text,
+                }
+
+            if continue_clicked:
+                _log_and_finish(final_fields, log_fields, "confirmed_with_edits")
+            else:
+                _log_and_finish(
+                    final_fields, log_fields, "rejected", reject_reason.strip() or None
+                )
+
+    elif decision == "rejected":
+        st.warning("Thanks — this helps us improve future results.")
+        streak = st.session_state.reject_streak
+        st.markdown("**What would you like to do?**")
+        retry_col, bypass_col = st.columns(2)
+        retry_col.button(
+            "🔁 Rephrase and try again",
+            key=f"retry_{run_id}",
+            on_click=_start_rephrase,
+            args=(decision_key, mode_key),
         )
-        if st.button(f"🚀 Send to {provider_label}"):
+        st.caption("Tip: try naming who's responsible, a specific number, and a deadline.")
+
+        if streak >= 2:
+            if bypass_col.button("➡️ Just answer my original question directly", key=f"bypass_{run_id}"):
+                with st.spinner(f"Asking {provider_label} directly..."):
+                    try:
+                        st.session_state[f"bypass_output_{run_id}"] = llm_client.generate_output(
+                            st.session_state.last_query
+                        )
+                        st.session_state[f"bypass_error_{run_id}"] = None
+                    except Exception as e:
+                        st.session_state[f"bypass_output_{run_id}"] = None
+                        st.session_state[f"bypass_error_{run_id}"] = str(e)
+            bypass_col.caption("Skips CHOICE's structured understanding step.")
+
+        if st.session_state.get(f"bypass_error_{run_id}"):
+            st.error(f"{provider_label} call failed: {st.session_state[f'bypass_error_{run_id}']}")
+        elif st.session_state.get(f"bypass_output_{run_id}"):
+            st.info("Direct answer — structured understanding skipped.")
+            st.markdown(st.session_state[f"bypass_output_{run_id}"])
+
+    if decision == "confirmed":
+        st.success(f"Got it:\n\n{st.session_state.get(f'master_prompt_final_{run_id}', '')}")
+        st.divider()
+        section_header("Answer")
+        if st.button(f"🚀 Send to {provider_label}", key=f"send_{run_id}"):
             with st.spinner(f"Calling {provider_label}..."):
                 try:
                     st.session_state.llm_output = llm_client.generate_output(
-                        st.session_state.last_master_prompt_final
+                        st.session_state[f"master_prompt_final_{run_id}"]
                     )
                     st.session_state.llm_error = None
                 except Exception as e:
@@ -716,15 +795,14 @@ if result:
             st.markdown(st.session_state.llm_output)
 
 st.divider()
-st.caption(
-    "This is v1, trained on 126 rows (100 synthetic + 26 real, hand-sourced from public "
-    "earnings calls and shareholder letters). Measured against the original frozen 10-row "
-    "real-world holdout: 78.9% field status accuracy, 67.4% value accuracy, 100% "
-    "actor-detection accuracy. `actor` and `time` are the most reliable fields. `measure`, "
-    "`scope`, and `context` are still data-thin, negated constraints (\"without increasing X\") "
-    "are real but not yet reliably detected, and `intent` can come back short or low-confidence "
-    "on multi-clause queries — that's the model correctly signalling it isn't sure, not a "
-    "display bug. A query that looks like it bundles more than one decision (e.g. two actors, "
-    "two intents) gets flagged above the form instead of silently guessing how they pair up. "
-    "Flag anything that looks wrong so it can go into the next training round."
-)
+with st.expander("About this model"):
+    st.caption(
+        "v1, trained on 135 rows (100 synthetic + 35 real, hand-sourced from public "
+        "earnings calls and shareholder letters). Measured against a frozen 15-row "
+        "real-world holdout: 79.3% field status accuracy, 68.7% value accuracy, 100% "
+        "actor-detection accuracy. `object`, `intent`, `scope`, and `context` are still "
+        "the most data-thin fields — `intent` in particular can come back short or "
+        "low-confidence on multi-clause queries, which is the model correctly signalling "
+        "it isn't sure, not a display bug. Flag anything that looks wrong so it can go "
+        "into the next training round."
+    )

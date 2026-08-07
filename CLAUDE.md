@@ -262,6 +262,94 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-08, continued again — confirm/reject redesign)
+
+**Same-day continuation:** user flagged real, concrete UX problems after
+using the Phase 3 UI directly — nobody could tell the reject feature
+existed or what it actually meant to reject, and (the important part)
+rejecting produced nothing: no fallback, no next step. Read the actual
+`app.py` code before proposing anything and confirmed this in the code,
+not just from the report: `st.warning("Rejected: ...")` was the entire
+reject behavior — the "Generate Output" section was gated on
+`last_decision == "confirmed"` only, so a rejected query (even one where
+every field had been carefully corrected) hit a dead end. This directly
+contradicts the Product-vision section's own Step 1 item 6, written
+2026-07-29 and never built: "If not, a fallback path is needed... this
+accept/reject signal is exactly the correction-capture data the
+self-learning flywheel needs."
+
+Planned via `EnterPlanMode` (approved plan saved at
+`~/.claude/plans/moonlit-wibbling-tulip.md`), then implemented, entirely
+within `app.py` — `prompt_synthesis.py`, `correction_log.py`,
+`llm_client.py`, and the pipeline/model layer needed no changes.
+
+- **Restructured the whole confirm/reject section into a real state
+  machine** (`initial` → `editing` → `confirmed`/`rejected`, keyed per
+  `run_id` the same way existing widgets already were). The raw 9-field
+  grid, confidence gauges, metric row, and JSON download — everything
+  that used to render unconditionally above the fold — moved into a
+  single collapsed `st.expander("🔧 See extraction details")`. The
+  master-prompt sentence is now the first thing shown, under a plain
+  "Here's what we understood" heading.
+- **If there are no blanks**, the user sees a direct "Does this capture
+  what you meant?" with two buttons — "✅ Yes, this is right" (confirms
+  immediately, no form to submit) or "✏️ Not quite — let me fix it". **If
+  blanks exist**, "Yes, this is right" is never offered at all — showing
+  it would let someone one-click-confirm a sentence still containing
+  literal `[actor — please fill in]` text, so only "✏️ Fill in the
+  blanks" appears, forcing the edit form open. This wasn't explicitly
+  speced but is a direct, low-risk consequence of the same "never assume
+  a value for an empty field" principle already governing every other
+  blank-handling decision in this codebase.
+- **Real fallback loop on true reject**, per the user's explicit
+  answer when asked what to hand back at that moment: "This is way off
+  — start over" logs the rejection and increments a session-level
+  `reject_streak`. The first reject offers only "🔁 Rephrase and try
+  again" (pre-fills the query box with the original text + a one-line
+  tip). Only once `reject_streak >= 2` — two rejects with no successful
+  confirm in between — does "➡️ Just answer my original question
+  directly" appear, clearly labeled "Skips CHOICE's structured
+  understanding step," calling `llm_client.generate_output()` on the
+  **raw query**, not the broken master prompt. Confirming (as-is or with
+  edits) resets the streak to 0.
+- **Logging schema extended, additively** (`correction_log.py` itself is
+  unchanged — it just writes whatever dict it's given): every entry now
+  carries `resolution_path` (`confirmed_as_is` / `confirmed_with_edits` /
+  `rejected`) and `reject_streak_at_decision`, a real upgrade over the
+  prior flat confirmed/rejected boolean for whatever eventually trains
+  Phase 5.
+- **Caught and fixed a real bug via live testing, not just code review**:
+  the first version of the "Rephrase and try again" button set
+  `st.session_state.query_text` directly inside the button's `if
+  st.button(...):` block, which raised `StreamlitAPIException` — the
+  `query_text` widget had already been instantiated earlier in that same
+  script pass. Fixed by moving the mutation into a proper `on_click`
+  callback (`_start_rephrase`), the same pattern `_apply_example()` and
+  `_apply_suggestion()` already used correctly elsewhere in this file.
+  Would not have been caught by reading the code alone — only surfaced
+  by actually clicking through the flow in a live `streamlit run`
+  session via browser automation.
+- **Verified live, every branch, in a real running session**: blanks
+  present → only "Fill in the blanks" shown (no premature "Yes, this is
+  right"); edit → "This is way off — start over" → only rephrase offered
+  (streak 1); rephrase → re-run → edit → reject again → bypass button
+  now appears (streak 2) → clicked it → real Gemini call fired on the
+  *raw query* and returned a genuinely relevant answer (confirms it
+  wasn't sending the placeholder-filled master prompt by mistake); edit
+  → "Continue with my corrections" (actor filled in, constraints/context
+  marked not-applicable) → correctly rendered sentence with the
+  not-applicable clauses cleanly dropped → "Answer" section appeared
+  with a working "Send to Gemini" button. Checked
+  `data/corrections_log.jsonl` after each step — `resolution_path`,
+  `reject_streak_at_decision`, `not_applicable`, and `user_edited` all
+  came through exactly as designed.
+- Footer caption (previously stale — was still citing 126-row/13-row-set
+  numbers from two sessions ago) rewritten with today's real 135-row/
+  15-row-holdout figures and folded into a small "About this model"
+  expander instead of running unconditionally on every page load.
+- Nothing committed yet this session — pending go-ahead, same as the
+  retrain work above.
+
 ## Current status (as of 2026-08-08 — targeted `measure` sourcing pass, promoted)
 
 **2026-08-08 session:** picked up the recommended next step from the
