@@ -312,16 +312,76 @@ example.
   metric). Checked `seq2seq_ckpt/` disk usage before finishing —
   `save_total_limit=2` (set 2026-08-05) held at 1.4GB, no repeat of the
   27GB accumulation bug.
-- **New known gap surfaced by this pass, not yet addressed:** the `time`
-  regression above is real and specifically hits `"expects <measure> to
-  ... by/in/for <time>"` constructions (`rw_012`, `rw_016`, `rw_017`,
-  `rw_044` all newly miss `time` this round) — plausible that
-  reinforcing the `"expects <measure>"` opening pattern shifted the CRF's
-  attention away from the trailing time clause in that same sentence
-  shape. Worth a targeted look before the next unrelated retrain, same
-  discipline as the standalone `measure` diagnosis this pass started
-  from.
-- Nothing committed yet this session — pending go-ahead.
+- **New known gap surfaced by this pass, diagnosed and fixed same
+  session (see continuation below):** the `time` regression above looked
+  at first like it hit 4 rows (`rw_012`, `rw_016`, `rw_017`, `rw_044`),
+  but comparing directly against the round-1 model (restored from the
+  scratchpad backup) showed 3 of those were **pre-existing misses**, not
+  new — only `rw_035` and `rw_044` actually flipped from correct to
+  wrong. Root-caused to a real annotation bug in this session's own new
+  rows, not a generic capacity-sharing effect. Full fix in the
+  continuation entry immediately below.
+
+**Same-day continuation: root-caused and fixed the `time` regression
+above, rather than accepting it as an unavoidable trade-off.** Comparing
+the promoted model against the restored round-1 model on the identical
+15-row holdout isolated the regression to exactly 2 rows (`rw_035`,
+`rw_044`), not the 4 initially suspected — `rw_012`/`rw_016`/`rw_017`
+were already wrong under round-1 too. Inspecting `rw_044`'s full
+prediction showed why: `magnitude` had absorbed `"for the year"` whole
+(`"$6.9 billion to $7.4 billion for the year"`), leaving nothing for
+`time` to claim.
+
+- **Found the actual cause: an annotation inconsistency in this
+  session's own new rows.** The established dataset convention (see
+  `rw_010`, `rw_020`) splits a bare number into `magnitude` and puts any
+  trailing comparison/timing clause into `time` — e.g. `"up
+  approximately 13%"` (magnitude) + `"compared to 2025"` (context). This
+  session's `rw_045`/`rw_046`/`rw_049` broke that convention, bundling
+  the whole comparison clause (`"90 basis points higher than a year
+  ago"`) into a single `magnitude` value instead of splitting it. That
+  taught the CRF that tokens ending in `"...year"` can continue a
+  `magnitude` span, which is exactly what made it swallow `rw_044`'s
+  genuine trailing `"for the year"` clause into `magnitude` instead of
+  opening a new `time` span, and made it spuriously fire `time` on `"of
+  the year"` inside `rw_035`'s unrelated `constraints` clause.
+- **Fixed the 3 rows' annotation** to match the established convention
+  (bare number in `magnitude`, comparison anchor in `time`), rebuilt,
+  re-validated, re-split, and retrained fresh on the corrected 135-row
+  set (labeled round 3 below to distinguish from the round-2 model this
+  replaces).
+- **Gated round 3 against round 2 on the identical (corrected) holdout —
+  a genuine trade-off, not a clean win, decided and documented rather
+  than left ambiguous.** Round 3: 79.26% status / **68.66%** value.
+  Round 2: 80.74% status / 65.67% value. Directly confirmed the target
+  fix: both `rw_044` and `rw_049` now match `time` **verbatim** against
+  gold (previously `rw_044` returned nothing). The status dip traces to
+  4 single-row flips concentrated in low-n fields (`object`: 6 rows,
+  `scope`: 4 rows) — e.g. D.R. Horton's `"consolidated leverage"` now
+  spuriously filling `object`, FactSet's Americas/APAC/EMEA list
+  dropping from `scope` — plausible model-capacity noise from the
+  re-annotation shifting boundaries, not a new systemic failure mode
+  (unlike the 2026-08-05 round-2 negation-cue attempt, which regressed
+  measure/magnitude/time/constraints *together*, a clear sign of genuine
+  conflict rather than noise).
+  **Decision: promoted round 3.** Reasoning: (1) leaving the annotation
+  bug in place would corrupt every future retrain on this dataset, not
+  just this one; (2) shipping round 2 would leave this session's actual
+  goal only half-verified, since `rw_044`/`rw_049` — the two rows built
+  specifically to test the `measure` fix generalized — still failed on
+  an adjacent field; (3) value accuracy, arguably the more meaningful
+  metric under this project's reasoning-integrity philosophy (is the
+  extracted content actually *right*, not just present), improved more
+  than status declined. Verified round 3 reproduces identically from a
+  cold model-swap before finalizing (same discipline as every prior
+  promotion this project has made).
+- `role_tagger.joblib` / `value_synthesizer/model.safetensors` now
+  reflect round 3. Round 2's artifacts remain backed up in the session
+  scratchpad if this decision needs revisiting.
+- Committed locally (not round-2's earlier commit — a fresh commit with
+  round 3's corrected data + model on top). **Still not pushed** — same
+  blocker as the 2026-08-04 session: the `alethiaworks` deploy key needs
+  `ssh-add`, which needs the user's passphrase.
 
 ## Current status (as of 2026-08-06 — AI-suggested blank fills)
 

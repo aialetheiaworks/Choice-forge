@@ -992,20 +992,26 @@
       "magnitude": {
         "value": [
           "64.1% of revenue",
-          "60.1% a year earlier"
+          "60.1%"
         ],
         "status": "explicit",
         "confidence": 0.85,
         "source_text": [
           "64.1% of revenue",
-          "60.1% a year earlier"
+          "60.1%"
         ]
       },
       "time": {
-        "value": "in the second quarter",
+        "value": [
+          "in the second quarter",
+          "a year earlier"
+        ],
         "status": "explicit",
         "confidence": 0.8,
-        "source_text": "in the second quarter"
+        "source_text": [
+          "in the second quarter",
+          "a year earlier"
+        ]
       },
       "constraints": {
         "value": null,
@@ -1023,6 +1029,6 @@
     "objective_status": "sufficient",
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/dexcom-dxcm-q2-2026-earnings-call-transcript/",
-    "_source_note": "Jereme Sylvain (CFO), rephrased to possessive-subject form, held out for eval"
+    "_source_note": "Jereme Sylvain (CFO), rephrased to possessive-subject form, held out for eval -- magnitude/time split, same fix as rw_045/rw_046"
   }
 ]

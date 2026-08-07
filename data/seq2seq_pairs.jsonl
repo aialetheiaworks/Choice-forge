@@ -759,12 +759,12 @@
 {"id": "rw_043", "role": "context", "input": "normalize context: driven by the strength of its global platform", "target": "attributed to the strength of its global platform", "gold_status": "explicit"}
 {"id": "rw_045", "role": "actor", "input": "normalize actor: Thermo Fisher", "target": "Thermo Fisher", "gold_status": "explicit"}
 {"id": "rw_045", "role": "measure", "input": "normalize measure: adjusted operating margin", "target": "adjusted operating margin", "gold_status": "explicit"}
-{"id": "rw_045", "role": "magnitude", "input": "normalize magnitude: 22.8%; 90 basis points higher than a year ago", "target": "['22.8%', '90 basis points higher than a year ago']", "gold_status": "explicit"}
-{"id": "rw_045", "role": "time", "input": "normalize time: in the second quarter", "target": "in the second quarter", "gold_status": "explicit"}
+{"id": "rw_045", "role": "magnitude", "input": "normalize magnitude: 22.8%; 90 basis points", "target": "['22.8%', '90 basis points']", "gold_status": "explicit"}
+{"id": "rw_045", "role": "time", "input": "normalize time: in the second quarter; a year ago", "target": "['in the second quarter', 'a year ago']", "gold_status": "explicit"}
 {"id": "rw_046", "role": "actor", "input": "normalize actor: AGCO", "target": "AGCO", "gold_status": "explicit"}
 {"id": "rw_046", "role": "measure", "input": "normalize measure: adjusted operating margin", "target": "adjusted operating margin", "gold_status": "explicit"}
-{"id": "rw_046", "role": "magnitude", "input": "normalize magnitude: 6.6%; 170 basis points lower than the prior year", "target": "['6.6%', '170 basis points lower than the prior year']", "gold_status": "explicit"}
-{"id": "rw_046", "role": "time", "input": "normalize time: in the second quarter", "target": "in the second quarter", "gold_status": "explicit"}
+{"id": "rw_046", "role": "magnitude", "input": "normalize magnitude: 6.6%; 170 basis points", "target": "['6.6%', '170 basis points']", "gold_status": "explicit"}
+{"id": "rw_046", "role": "time", "input": "normalize time: in the second quarter; the prior year", "target": "['in the second quarter', 'the prior year']", "gold_status": "explicit"}
 {"id": "rw_047", "role": "actor", "input": "normalize actor: AGCO", "target": "AGCO", "gold_status": "explicit"}
 {"id": "rw_047", "role": "measure", "input": "normalize measure: adjusted operating margin", "target": "adjusted operating margin", "gold_status": "explicit"}
 {"id": "rw_047", "role": "magnitude", "input": "normalize magnitude: approximately 7.5%", "target": "approximately 7.5%", "gold_status": "explicit"}

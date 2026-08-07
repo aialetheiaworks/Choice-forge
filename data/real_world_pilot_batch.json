@@ -2966,20 +2966,26 @@
       "magnitude": {
         "value": [
           "22.8%",
-          "90 basis points higher than a year ago"
+          "90 basis points"
         ],
         "status": "explicit",
         "confidence": 0.85,
         "source_text": [
           "22.8%",
-          "90 basis points higher than a year ago"
+          "90 basis points"
         ]
       },
       "time": {
-        "value": "in the second quarter",
+        "value": [
+          "in the second quarter",
+          "a year ago"
+        ],
         "status": "explicit",
         "confidence": 0.8,
-        "source_text": "in the second quarter"
+        "source_text": [
+          "in the second quarter",
+          "a year ago"
+        ]
       },
       "constraints": {
         "value": null,
@@ -2997,7 +3003,7 @@
     "objective_status": "sufficient",
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/07/23/tmo-q2-2026-earnings-call-transcript/",
-    "_source_note": "Marc Casper (CEO) / James Meyer (CFO), rephrased to possessive-subject form"
+    "_source_note": "Marc Casper (CEO) / James Meyer (CFO), rephrased to possessive-subject form -- magnitude/time split to match the rw_010/rw_020 convention (bare number in magnitude, comparison anchor in time) after 2026-08-08 diagnosis showed bundling them taught the CRF to swallow trailing time clauses into magnitude"
   },
   {
     "id": "rw_046",
@@ -3036,20 +3042,26 @@
       "magnitude": {
         "value": [
           "6.6%",
-          "170 basis points lower than the prior year"
+          "170 basis points"
         ],
         "status": "explicit",
         "confidence": 0.85,
         "source_text": [
           "6.6%",
-          "170 basis points lower than the prior year"
+          "170 basis points"
         ]
       },
       "time": {
-        "value": "in the second quarter",
+        "value": [
+          "in the second quarter",
+          "the prior year"
+        ],
         "status": "explicit",
         "confidence": 0.8,
-        "source_text": "in the second quarter"
+        "source_text": [
+          "in the second quarter",
+          "the prior year"
+        ]
       },
       "constraints": {
         "value": null,
@@ -3067,7 +3079,7 @@
     "objective_status": "sufficient",
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/agco-agco-q2-2026-earnings-call-transcript/",
-    "_source_note": "Damon J. Audia (CFO), rephrased to possessive-subject form"
+    "_source_note": "Damon J. Audia (CFO), rephrased to possessive-subject form -- magnitude/time split, same fix as rw_045"
   },
   {
     "id": "rw_047",
@@ -3234,20 +3246,26 @@
       "magnitude": {
         "value": [
           "64.1% of revenue",
-          "60.1% a year earlier"
+          "60.1%"
         ],
         "status": "explicit",
         "confidence": 0.85,
         "source_text": [
           "64.1% of revenue",
-          "60.1% a year earlier"
+          "60.1%"
         ]
       },
       "time": {
-        "value": "in the second quarter",
+        "value": [
+          "in the second quarter",
+          "a year earlier"
+        ],
         "status": "explicit",
         "confidence": 0.8,
-        "source_text": "in the second quarter"
+        "source_text": [
+          "in the second quarter",
+          "a year earlier"
+        ]
       },
       "constraints": {
         "value": null,
@@ -3265,7 +3283,7 @@
     "objective_status": "sufficient",
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/dexcom-dxcm-q2-2026-earnings-call-transcript/",
-    "_source_note": "Jereme Sylvain (CFO), rephrased to possessive-subject form, held out for eval"
+    "_source_note": "Jereme Sylvain (CFO), rephrased to possessive-subject form, held out for eval -- magnitude/time split, same fix as rw_045/rw_046"
   },
   {
     "id": "rw_050",
