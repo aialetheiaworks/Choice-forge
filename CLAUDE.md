@@ -382,6 +382,20 @@ prediction showed why: `magnitude` had absorbed `"for the year"` whole
   round 3's corrected data + model on top). **Still not pushed** — same
   blocker as the 2026-08-04 session: the `alethiaworks` deploy key needs
   `ssh-add`, which needs the user's passphrase.
+- **Live-tested round 3 on genuinely fresh queries, not just the frozen
+  eval set** (same discipline as the 2026-08-05 session's live A/B test)
+  — three queries with zero overlap with any training/eval row: (1)
+  `"Verizon's operating margin was 24.3% in the third quarter, driven by
+  cost discipline."` (possessive-subject measure, a company never in the
+  dataset) correctly split into `measure`/`magnitude`/`time`/`context`
+  with no swallowing; (2) `"Nike expects gross margin to expand by 150
+  basis points for the full year."` (the `"expects X"` shape, also a new
+  company) same clean split, confirming the fix generalizes beyond the
+  4 sourced companies; (3) an unrelated general marketing query (no
+  finance framing at all) confirmed actor/intent/scope/time and the
+  negation-cue constraint pattern (`"without increasing the overall ad
+  spend"`) still work correctly — no regression outside the earnings-call
+  domain this pass focused on.
 
 ## Current status (as of 2026-08-06 — AI-suggested blank fills)
 
