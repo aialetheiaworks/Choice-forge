@@ -18,6 +18,7 @@ Run:
     enterprise accounts within the next sprint."
 """
 
+import ast
 import sys
 
 from pipeline import Pipeline, ROLES, MIN_JOIN_OPEN_CONFIDENCE
@@ -48,6 +49,47 @@ BLANK_PROMPTS = {
 }
 
 
+def humanize_value(value):
+    """A multi-span field's value is a list -- either a real Python list
+    (source_text, straight from the CRF spans) or a string that literally
+    contains Python-list-repr syntax like "['a', 'b']" (T5's normalized
+    output: build_seq2seq_pairs.py trains multi-value targets in that exact
+    str(list) format, so T5 generates it verbatim as text, not as real
+    structured data). str()-ing either one straight into user-facing text
+    leaks broken-looking bracket/quote syntax (found 2026-08-09 live-testing
+    the app -- both the master-prompt sentence and the extraction-detail
+    field cards were showing e.g. "['in the West', 'in the East']"
+    literally). Parse it back into a real list and join as natural prose."""
+    if isinstance(value, list):
+        items = value
+    elif isinstance(value, str) and value.startswith("[") and value.endswith("]"):
+        try:
+            parsed = ast.literal_eval(value)
+            items = parsed if isinstance(parsed, list) else None
+        except (ValueError, SyntaxError):
+            items = None
+        if items is None:
+            # T5 doesn't reliably quote items that contain characters like
+            # "%" (ast.literal_eval chokes on bare "12%" as invalid Python),
+            # so fall back to a plain comma-split inside the brackets rather
+            # than leaving the raw "[12%, 9%, 15%]" text unparsed.
+            inner = value[1:-1]
+            items = [p.strip().strip("'\"") for p in inner.split(",")] if inner.strip() else []
+            if not items:
+                return value
+    else:
+        return str(value)
+
+    items = [str(v) for v in items if str(v).strip()]
+    if not items:
+        return value if isinstance(value, str) else ""
+    if len(items) == 1:
+        return items[0]
+    if len(items) == 2:
+        return f"{items[0]} and {items[1]}"
+    return ", ".join(items[:-1]) + f", and {items[-1]}"
+
+
 def _is_blank(field_result):
     return (
         field_result["status"] == "missing"
@@ -68,7 +110,7 @@ def build_fields(result):
         blank = _is_blank(r)
         multi_span = r.get("multi_span", False)
         fields[role] = {
-            "text": BLANK_PROMPTS[role] if blank else str(r["value"]),
+            "text": BLANK_PROMPTS[role] if blank else humanize_value(r["value"]),
             "blank": blank,
             # a single template slot can't safely disambiguate multiple
             # surviving spans (e.g. two actors) -- surface for review

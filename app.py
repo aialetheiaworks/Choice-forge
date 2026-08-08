@@ -25,6 +25,7 @@ from correction_log import log_correction
 from pipeline import Pipeline, ROLES
 from prompt_synthesis import (
     NOT_APPLICABLE_ELIGIBLE_ROLES,
+    humanize_value,
     render_sentence,
     synthesize_master_prompt,
 )
@@ -363,8 +364,8 @@ def _field_card_html(role, icon, r):
     else:
         conf = r["confidence"]
         tier, tier_label = confidence_tier(conf)
-        value_display = html.escape(str(r["value"]))
-        source_display = html.escape(str(r["source_text"]))
+        value_display = html.escape(humanize_value(r["value"]))
+        source_display = html.escape(humanize_value(r["source_text"]))
         note = ""
         if r["flagged_for_review"]:
             note = f'<div class="cf-note cf-note-flag">⚠ flagged — {html.escape(r["guard_note"])}</div>'
