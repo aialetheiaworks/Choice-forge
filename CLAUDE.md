@@ -262,6 +262,327 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-09 — senior-dev/architect plan audit)
+
+**New session, user request: evaluate actual product state against the
+agreed plan and expected outcomes, flag any needed plan changes, proceed
+on anything low-risk without waiting for sign-off.** Pulled real numbers
+rather than trusting the prose status entries above at face value.
+
+- **Phase 6 gate, condition 2, checked directly: still not met, and not
+  trending toward met.** `data/corrections_log.jsonl` has exactly 18
+  entries, all dated 2026-08-03 through 2026-08-07, all traceable to this
+  project's own documented live-testing sessions above — zero real
+  external usage. Two full sessions of work have happened since
+  (2026-08-08's two sessions) with no new entries. Condition 1 (targeted
+  sourcing + measured improvement) is genuinely met, repeatedly. Condition
+  2 is not, and nothing in the current plan actually drives it forward —
+  building more extraction-layer fixes doesn't get anyone outside this
+  session using the app. **This is a decision point for the user, not
+  something to resolve unilaterally**: either get real usage before
+  Phase 6 (share the Streamlit app with even one other person), or
+  consciously revise what "real usage" means for a single-operator
+  project instead of leaving the gate silently unmet indefinitely.
+- **Found and fixed a real, previously-unchecked assumption: the Phase 2
+  confidence-calibration audit (2026-07-29, round-1 model, 10-row
+  holdout) was never re-run after ~5 retrains and holdout growth to 15
+  rows.** The whole "never assume a value for an empty field" design
+  rests on that one-time finding ("confidence separates right from wrong
+  for every field except intent"). Built `data/check_confidence_calibration.py`
+  (reads `data/real_world_eval_report.json`, flags any WRONG prediction
+  at or above `pipeline.MIN_JOIN_OPEN_CONFIDENCE` — the exact blank
+  threshold `prompt_synthesis.py` uses) as a **repeatable script**, same
+  convention as every other audit tool in `data/`, so this becomes a
+  standing per-retrain check instead of a one-time finding that silently
+  goes stale again.
+  Ran it against the current (round 4) model. Raw output flagged 5 wrong
+  predictions at/above threshold across `object`, `intent`, `magnitude`
+  (×2), `constraints` — but hand-checking each one (small n makes this
+  feasible, and necessary: the eval harness's own docstring already
+  flags its loose substring-match scoring as "a coarse proxy, not
+  exact-match paraphrase scoring") separated real findings from scoring
+  artifacts:
+  - **2 were false alarms from the scoring proxy, not real calibration
+    failures** — `rw_017` magnitude (`"approximately $50 billion"` vs
+    gold `"about $50 billion"`) and `rw_021` constraints (`"retain
+    rental inventory..."` vs gold `"keep rental inventory..."`) are
+    synonym paraphrases the loose-match scorer counts as wrong but a
+    human reader wouldn't.
+  - **`rw_016` intent is the already-known, already-documented
+    hallucination gap** — not a new finding, just reconfirmed.
+  - **2 are genuinely new, and one is more serious than anything
+    currently on the Known gaps list**: `rw_034` object span-selection
+    error (picked the causal reason `"production rates"` instead of the
+    actual subject `"Engineered Composites segment"`, at 0.582
+    confidence) — related to the existing actor/object thinness gap
+    (Known gap 0), not wholly new. **`rw_027` magnitude: T5 silently
+    altered the literal digits of extracted numbers** —
+    `"7.0%"→"7.2%"`, `"10.0%"→"100%"` (a 10x factual distortion from a
+    dropped decimal point), `"5.0%"→"5.10%"` — at 0.556 confidence,
+    above the blank threshold, would render as confident, unflagged fact
+    in the product UI. This is categorically worse than the known
+    text-hallucination gaps: it corrupts numbers, which read as precise
+    and are the least likely thing a user double-checks. New Known gap 8
+    below.
+  - **Sample sizes remain small per field** (n=3 for intent/constraints,
+    n=1 for context) — directional, not statistically definitive, same
+    honest caveat the original 2026-07-29 audit carried. But directional
+    "confidence-separates-correctness" no longer holds cleanly for
+    `object`/`magnitude` the way it did for the round-1 model, and that
+    matters regardless of exact n given what's built on top of it.
+- **No automated test suite exists anywhere in this repo** — zero
+  `test_*.py` files. The project's hardest invariants (never train on
+  the frozen holdout, `source_text` must be an exact substring, no
+  cross-role span overlap, blank-threshold behavior) are currently
+  enforced only by remembering to run the right one-off script each
+  session, not by anything that fails a build automatically. Flagged as
+  real tech debt, **not fixed this session** — deliberately left as a
+  decision for the user rather than assumed, since it's a real scope/time
+  investment, unlike the calibration script above which was small,
+  additive, and directly protected an already-stated safety design.
+- Confirmed **no regression on the disk-space constraint** flagged
+  2026-08-05 — `seq2seq_ckpt/` is back to a stable 1.4GB
+  (`save_total_limit=2` holding as intended), not re-accumulating.
+- **Assessment, stated plainly:** Phases 1-4 are real, working, and
+  meaningfully iterated on — the plan has been followed faithfully and
+  the extraction-layer retrain discipline (backup → retrain → gate →
+  document, never touch the holdout) has held across every session
+  without exception, including this one. The gap isn't process, it's
+  that **two foundational checks were assumed-valid instead of
+  re-verified as the system evolved** (usage-volume for the Phase 6
+  gate, confidence calibration for the blank-threshold safety design) —
+  exactly the kind of drift a solo, session-by-session build is prone to
+  without an explicit recurring checklist. **No phase-plan overhaul
+  recommended** — Phases 1-4 architecture, the gate-before-Phase-6
+  structure, and the batched-retrain discipline are all still sound.
+  Recommended addition, small and additive: run
+  `data/check_confidence_calibration.py` alongside
+  `data/eval_on_real_world.py` after every future retrain, so this
+  doesn't go stale silently again.
+
+## Current status (as of 2026-08-09, continued — live QA session, found and fixed a real rendering bug)
+
+**Same-session continuation:** user asked me to actually run the app and
+drive it myself via Chrome, rather than reason about it from code alone.
+Flagged upfront that me driving the browser is still solo/self-testing
+from this session's perspective — it doesn't move the Phase 6 usage-gate
+finding above, which specifically needs usage from outside this session.
+Did it anyway as another live QA pass, which is genuinely useful on its
+own.
+
+- Launched `streamlit run app.py` locally, drove it via
+  `claude-in-chrome` in the user's actual Chrome.
+- **Deliberately tested a fresh 3-way-magnitude-join query** (`"Our
+  regional sales grew 12% in the West, 9% in the East, and 15% in the
+  North this quarter."`) to see gap 8 (the digit-corruption bug found
+  earlier this session) live. The digits weren't corrupted this
+  particular time — consistent with gap 8 being an unseen-shape
+  hallucination, not deterministic — but this run surfaced a **different,
+  more visible bug**: both `magnitude` (`"[12%, 9%, 15%]"`) and `scope`
+  (`"['in the West', 'in the East']"`) rendered raw Python-list-repr
+  syntax directly in the master-prompt sentence — the exact "Here's what
+  we understood" text a user reads first — and in the extraction-detail
+  field cards.
+- **Root-caused precisely**: `build_seq2seq_pairs.py` trains T5's
+  multi-value normalization targets as literal `str(python_list)` text
+  (e.g. target `"['new customers acquired', 'blended CAC']"`), so T5
+  generates that bracket/quote syntax verbatim as its output string —
+  confirmed via `pipeline.py` inspection that no `ast.literal_eval` or
+  equivalent parsing ever converts it back to a real list downstream.
+  `prompt_synthesis.py`'s `build_fields()` (`"text": ... str(r["value"])`)
+  and `app.py`'s `_field_card_html()` (`str(r["value"])`,
+  `str(r["source_text"])`) both passed this straight into user-facing
+  HTML/text unchanged. This directly undermines the Product Vision's
+  explicit Phase 1 goal — "a well-formed, business-grade prompt scaffold,
+  not just a template dump of the fields" — on any query where a field
+  has more than one surviving span, which is common (scope/magnitude/time
+  regularly have 2-3 values in real queries).
+- **Fixed at the rendering layer only, not retrained**: added
+  `prompt_synthesis.humanize_value()` — parses a list or list-repr string
+  back into real items (via `ast.literal_eval`, with a plain comma-split
+  fallback for cases T5 leaves unquoted, e.g. `"[12%, 9%, 15%]"` where
+  bare `%` breaks Python literal syntax) and joins them as natural prose
+  (`"12%, 9%, and 15%"`, `"in the West and in the East"`). Wired into both
+  `build_fields()` (covers the master-prompt sentence and the edit-form
+  pre-fill, since both read from `fields[role]["text"]`) and `app.py`'s
+  field-card display (`value_display`/`source_display`). Deliberately did
+  **not** touch `correction_log.py`'s `original_value` logging — that
+  correctly keeps the raw, true extracted value for data provenance;
+  only the display layer needed fixing. Hand-tested edge cases (empty
+  list, malformed brackets, single-item list, real list vs. list-repr
+  string, `None`) before wiring it in.
+- **Verified the fix live, restarting Streamlit fresh to clear a stale
+  module-cache reload** (first hot-reload attempt threw
+  `ImportError: cannot import name 'humanize_value'` even though the
+  file was correct on disk — Streamlit's non-watchdog file poller
+  desynced; a full process restart cleared it cleanly): re-ran the same
+  3-way query end to end. Master-prompt sentence, edit-form fields, and
+  the final confirmed "Got it" sentence all render clean natural prose
+  now, zero brackets or quotes anywhere. Confirmed
+  `data/corrections_log.jsonl`'s new entry is correct on both sides —
+  `original_value` still shows the raw `"[12%, 9%, 15%]"` /
+  `"['in the West', 'in the East']"` (provenance preserved) while
+  `final_value` shows the humanized text (`"12%, 9%, and 15%"`, `"in the
+  West and in the East"`) — confirming the fix is scoped to display only,
+  as intended.
+- Stopped the local Streamlit server and closed the browser tab when
+  done — nothing left running.
+- **Not committed yet**, same as everything else this session.
+
+## Current status (as of 2026-08-09, continued again — gap 8 sourcing pass, round 5, partial fix)
+
+**Same-session continuation, user asked to keep going and fix gaps
+without further check-ins.** Targeted Known gap 8 (T5 magnitude digit
+corruption on 3-way joins) since it was already precisely root-caused
+earlier this session.
+
+- **Sourced one real 3-way-magnitude quote** (`rw_051`, F5 Q2 2026:
+  `"F5's revenue grew 3% in the Americas, 22% in EMEA, and 19% in
+  APAC year over year."`) — same Americas/EMEA/APAC percentage-split
+  shape as `rw_027` (the eval-holdout row this gap was diagnosed from),
+  but a different company so the fix couldn't just memorize FactSet's
+  numbers. Validated clean, split (train-only, `rw_051` not added to
+  `EVAL_IDS`), rebuilt `choice_forge_dataset_combined_136.json` (100 + 36),
+  confirmed via `git diff` the frozen holdout stayed byte-identical.
+  Backed up round-4 model artifacts to scratchpad first.
+- **Retrained CRF + T5, gated against the 15-row holdout — net positive,
+  promoted, but with an important honesty caveat found only by checking
+  the raw prediction, not trusting the eval script's summary number.**
+  Aggregate: status 82.22%→**83.70%**, value 68.66%→**70.15%**. Real,
+  confirmed fixes: `rw_017`'s hallucinated `object` (`"full-year
+  guidance"`) now correctly returns missing; `rw_017` `magnitude` now
+  matches gold exactly (`"about $50 billion"`, previously a synonym
+  near-miss). One regression, concentrated entirely in `rw_035`
+  (Albany International) — already flagged in the 2026-08-08 round-3
+  entry as a noisy low-n row from the annotation re-split, not a new
+  systemic issue.
+  **The eval script initially reported `magnitude` at 100% value
+  accuracy — this is partly a scoring-methodology artifact, caught by
+  checking the raw prediction instead of trusting the summary table**:
+  `rw_027`'s prediction is `['7.20%', '10.10%', '5.0%']` against gold
+  `['7.0%', '10.0%', '5.0%']` — 2 of 3 numbers are still measurably wrong
+  (formatting-level corruption now, not the prior 10x `"10.0%"→"100%"`
+  distortion, but still wrong), yet `loose_value_match` scores the whole
+  joined string as correct because the third value (`'5.0%'`) happens to
+  appear as a substring of it. **This is a real, generalizable weakness
+  in `data/eval_on_real_world.py`'s scoring for multi-value fields** —
+  it can pass a partially-wrong list as fully correct if any single
+  element matches — flagged here rather than silently trusted, and worth
+  fixing in the harness itself before the next multi-value-heavy gap.
+- **Precisely characterized how much gap 8 actually improved, via direct
+  `pipe.synthesize()` calls on fresh (non-training) 3-way inputs rather
+  than assuming the eval number told the whole story**: whole-number
+  percentage joins are now clean (`"14%; 6%; 21%"` →
+  `"['14%', '6%', '21%']"`, exact), but **decimal percentage joins still
+  lose precision** (`"2.5%; 18.5%; 9.5%"` → `"['2.5%', '18%', '9.5%']"` —
+  `18.5%` silently became `18%`; the original failing case, `rw_027`
+  itself, still corrupts 2 of 3 values when re-run directly). **One
+  training example generalized partially, not fully** — it taught the
+  3-way-join *shape* but not decimal-precision preservation within it.
+  This is the same lesson this project already learned once for the
+  negation-cue constraint gap (2026-08-05: one example taught the CRF
+  nothing; it took 4-5 diverse examples to actually generalize) —
+  recurring here for a different field and a different model (T5, not
+  CRF), same underlying mechanism (a reinforced pattern needs enough
+  diverse examples to generalize, not just one).
+- **Decision: promoted anyway.** Net aggregate is genuinely positive on
+  both tracked metrics, the one regression is in an already-known noisy
+  row, and severity of the original bug (10x factual distortions) is
+  confirmed gone even where the fix is incomplete. Re-ran
+  `data/check_confidence_calibration.py` — no new dangerous
+  (wrong-but-above-threshold) findings introduced.
+  `role_tagger.joblib`/`value_synthesizer/model.safetensors` now reflect
+  round 5; round 4's artifacts backed up to scratchpad.
+- **Gap 8 status: improved, not closed.** Known gap 8 below updated to
+  reflect this precisely rather than marking it resolved — whoever picks
+  it up next should source 2-3 more diverse 3-way (and ideally 4-way)
+  magnitude examples, specifically including decimal percentages and
+  dollar amounts, not just whole-number percentages like `rw_051`.
+- **Not committed yet**, same as everything else this session.
+
+## Current status (as of 2026-08-08, continued yet again — gap 7 diagnosis, round 4)
+
+**New-session continuation, picked from the Known gaps list per user request.**
+Diagnosed and partially fixed Known gap 7 (the `time`-field regression the
+round-3 `measure` sourcing pass introduced), following the same
+diagnose-one-field discipline the `measure` gap itself used.
+
+- **Confirmed gap 7 was still open on the live (round 3) model**, not
+  assumed from the prior session's notes: pulled the actual `time`-field
+  numbers out of `data/real_world_eval_report.json` directly — 66.67%
+  status (10/15), below the pre-regression 73.33% baseline. Verified
+  `rw_044`/`rw_049` (the two rows round 3's annotation fix explicitly
+  targeted) were genuinely fixed and matched gold verbatim, confirming
+  the report reflects round 3 as documented. 5 rows still failed:
+  3 false negatives (`rw_012`, `rw_016`, `rw_017` — gold `time` present,
+  predicted `missing`) and 2 false positives (`rw_027`, `rw_035` — gold
+  `time` missing, predicted a spurious span).
+- **Root-caused the 3 false negatives to two distinct CRF span-boundary
+  bugs**, both new patterns not seen in training: (1) `rw_012`'s
+  `magnitude` span swallowed a leading `"by 2028"` time clause whole
+  (`"by 2028 to more than $3 billion"`) — the mirror-image of the
+  trailing-clause bug round 3 already fixed; (2) `rw_016`/`rw_017`'s
+  `object` span swallowed a leading bare time-adjective directly modifying
+  the following noun with no preposition (`"third quarter common stock
+  dividend"`, `"full-year guidance"` — the latter is actually a
+  hallucinated `object` span entirely, since gold has `object: missing`
+  there).
+- **Found a real, provable annotation bug behind failure mode (2)**: this
+  same session's own `rw_050` (`"DexCom expects full-year revenue of
+  $5.18 billion..."`, sourced in the 2026-08-08 `measure` pass) had
+  `measure.value = "full-year revenue"` bundling the bare time-adjective
+  whole, with `time: missing` — directly contradicting the established
+  convention the eval holdout itself uses (`rw_017`'s gold splits
+  `measure="net interest income"` / `time="full-year"`). This is the same
+  *kind* of bug as the `rw_045`/`046`/`049` magnitude-swallowing-time bug
+  fixed earlier the same day, just recurring in a different row the
+  earlier fix pass didn't touch. Fixed in `data/build_real_world_pilot.py`
+  (source of truth) — `measure="revenue"`, added `time="full-year"` — then
+  regenerated `real_world_pilot_batch.json` via the script,
+  re-validated (clean, zero errors), re-split (holdout confirmed
+  byte-identical via `git diff` — `rw_050` is a training-only row, never
+  touched the frozen holdout), rebuilt
+  `choice_forge_dataset_combined_135.json` (same row count, only content
+  changed).
+- **Tested empirically before sourcing more data, per this project's own
+  "never assume a retrain helped" discipline** — retrained CRF + T5 fresh
+  on the fixed 135-row set and re-ran `data/eval_on_real_world.py` to see
+  whether the single annotation fix was enough, before spending effort
+  sourcing new rows for a hypothesis that might not have been necessary.
+  Result: it wasn't enough — `rw_016`/`rw_017` still miss `time`
+  (unchanged, still `missing`), confirming the object-role variant of this
+  bug genuinely needs its own training signal, not just a measure-role
+  fix. But the fix wasn't wasted: it had a real, unplanned side effect —
+  diffing every field's `status_correct` between round 3 and this retrain
+  showed exactly 4 flips, **all fixes, zero regressions**: `rw_027.scope`
+  and three `rw_035` fields (`object`/`scope`/`context`) all corrected.
+  Net result: **status 79.26%→82.22%, value unchanged at 68.66%** — a
+  clean, unambiguous improvement with no trade-off to weigh, unlike every
+  prior retrain this project has gated. **Promoted — this is now the live
+  model** (`role_tagger.joblib` / `value_synthesizer/model.safetensors`).
+  Round 3's artifacts backed up to the session scratchpad first, per the
+  standing safety pattern, in case this decision needs revisiting.
+- **Searched for real sourcing material to fix the remaining object-role
+  gap, concluded genuinely data-scarce rather than under-searched**: 8 web
+  searches plus full-transcript fetches of Quaker Chemical, Newell Brands,
+  and a second pass over Wells Fargo's own transcript, specifically
+  hunting for a bare time-adjective directly modifying an object-type noun
+  (not measure) in real corporate speech. The one recurring real pattern
+  that matches syntactically — "quarterly dividend" (PNC, Alphabet,
+  Portland General) — turned out to be a *frequency* adjective ("paid
+  every quarter"), not a *time-point* adjective ("this quarter"), and
+  doesn't actually fit this schema's `time` semantics even if reused; the
+  only real time-point match found (Wells Fargo's own sentence) is
+  `rw_016`'s exact eval-holdout sentence, unusable as training data by the
+  standing "never train on holdout" rule. Declined to force a
+  borderline/ambiguous match into training data — the whole point of this
+  session's `rw_050` fix was correcting exactly that kind of weak
+  annotation. **`rw_012`/`rw_016`/`rw_017`'s failure mode remains
+  genuinely open** — see Known gap 7 below, refined with this session's
+  precise root-cause finding for whoever picks it up next.
+- Nothing committed yet this session — pending user go-ahead, same as
+  every prior local-only session.
+
 ## Current status (as of 2026-08-08, continued again — confirm/reject redesign)
 
 **Same-day continuation:** user flagged real, concrete UX problems after
@@ -1262,17 +1583,90 @@ What happened in the 2026-07-27 session:
    the CRF missed "Sales" as a second actor entirely) won't trigger the
    warning. This isn't a bug in the detector; it inherits the underlying
    data-thinness gap.
-7. **`time` regressed after the 2026-08-08 `measure` sourcing pass**
-   (73.33%→60.00% status on the 15-row holdout), specifically on
-   `"expects <measure> to ... by/in/for <time>"` sentence shapes
-   (`rw_012`, `rw_016`, `rw_017`, `rw_044` all newly miss `time`).
-   Reinforcing the `"expects <measure>"` opening plausibly shifted the
-   shared CRF's decision boundary away from the trailing time clause in
-   that same sentence — the same shared-capacity mechanism as the
-   negation-cue rounds, but isolated to one field this time rather than a
-   net-negative aggregate. Not yet diagnosed or fixed; a good candidate
-   for the next targeted (not broad-sweep) pass, following the same
-   diagnose-one-field discipline the `measure` gap above used.
+7. **`time` still under-detects on the live (round 4) model — 66.67%
+   status on the 15-row holdout, below the pre-regression 73.33%
+   baseline.** `rw_044` (round 3's target) is fixed; `rw_012`/`rw_016`/
+   `rw_017` are not, and root-caused precisely by the 2026-08-08
+   continuation session (see Current status above) to **two distinct CRF
+   span-boundary bugs**, not a single shared-capacity effect: (1)
+   `magnitude` swallows a leading `"by <year>"` time clause whole when it
+   directly precedes a dollar figure (`rw_012`: `"by 2028 to more than $3
+   billion"` predicted as one `magnitude` span) — the mirror-image of the
+   trailing-clause bug round 3 already fixed for `rw_044`/`rw_049`; (2)
+   `object` swallows a leading bare time-adjective with no preposition
+   directly before its noun (`rw_016`: `"third quarter common stock
+   dividend"`; `rw_017`: `object` hallucinates `"full-year guidance"`
+   entirely, gold is `missing` there). Fixing an analogous `measure`-role
+   annotation bug in `rw_050` (see Current status) did NOT fix either —
+   confirmed empirically via retrain+eval before assuming it would — so
+   this needs its own **object-role and magnitude-role** training
+   signal, not just measure-role. **Sourcing attempt already made and
+   came up empty**, not just unattempted: 8 real-earnings-call searches +
+   3 full-transcript fetches found no usable non-eval-overlapping real
+   example of a bare time-adjective directly modifying an object-type
+   noun — the one real recurring match, `"quarterly dividend"`, is a
+   *frequency* adjective, not a *time-point* one, and doesn't fit this
+   field's semantics even if forced in. Next session should either widen
+   the source corpus beyond earnings calls (shareholder letters, press
+   releases, a different sourcing domain entirely) or accept this as a
+   real long-tail gap and prioritize elsewhere — forcing a weak/ambiguous
+   annotation to close it would repeat the exact mistake `rw_050`'s bug
+   just came from.
+8. **T5 can silently alter the literal digits of a `magnitude` value, not
+   just paraphrase it — found 2026-08-09 via the confidence-calibration
+   re-audit** (see Current status above, `data/check_confidence_calibration.py`).
+   `rw_027`: gold `["7.0%", "10.0%", "5.0%"]` came back as `["7.2%",
+   "100%", "5.10%"]` at 0.556 confidence — above the 0.4 blank threshold,
+   so this renders as confident, unflagged fact in the product UI. The
+   `"10.0%"→"100%"` case is a dropped-decimal-point, 10x factual error,
+   not a cosmetic paraphrase difference (unlike the false-alarm cases the
+   same audit also surfaced, e.g. `"about"`→`"approximately"`). This is
+   more severe than the existing `intent`-hallucination gap because
+   numbers read as precise and are the value type a user is least likely
+   to sanity-check by eye. **Root-caused precisely, same session**: ran
+   `Pipeline.extract()` directly and confirmed the CRF's raw spans are
+   perfect (`'7.0%'`, `'10.0%'`, `'5.0%'`, 0.637-0.856 open confidence)
+   — the corruption is 100% in `Pipeline.synthesize()`'s T5 call. Called
+   `pipe.synthesize("magnitude", ...)` directly: each value normalizes
+   correctly alone (`'7.0%'→'7.0%'`, `'10.0%'→'10.0%'`,
+   `'5.0%'→'5.0%'`, all high confidence), but the exact joined input
+   `pipeline.py` actually sends (`"7.0%; 10.0%; 5.0%"`, `; `-joined
+   per-multi-span handling) comes back as `"['7.2%', '100%',
+   '5.10%']"` — confirming T5 is the sole culprit, not the CRF. Checked
+   `data/seq2seq_pairs.jsonl` directly: T5 **was** trained on
+   `;`-joined multi-value `magnitude` inputs (21 pairs), so the
+   list-string output format itself isn't the problem — but **every one
+   of those 21 pairs is a 2-value join**; zero are 3-way joins.
+   `rw_027` is a 3-way join, the first one T5-small has ever had to
+   produce at inference time, and it hallucinated digits rather than
+   reproducing them faithfully — the same "reinforced pattern doesn't
+   generalize to an unseen shape" mechanism as the `measure`/`time`
+   fixes above, just found in T5 training data instead of CRF training
+   data. **Partially fixed 2026-08-09 (round 5)** — sourced one real
+   3-way example (`rw_051`, F5's Americas/EMEA/APAC revenue split),
+   retrained, gated net-positive (see Current status above). But checking
+   the raw prediction directly (not just the eval script's summary
+   number, which has its own scoring blind spot on multi-value fields —
+   see Current status) shows the fix is real but incomplete:
+   **whole-number percentage 3-way joins are now clean**
+   (`"14%; 6%; 21%"` → exact), **decimal percentage joins still lose
+   precision** (`"2.5%; 18.5%; 9.5%"` → `18.5%` silently becomes `18%`),
+   and `rw_027` itself, re-run directly, still corrupts 2 of 3 values
+   (`7.0%`/`10.0%` → `7.20%`/`10.10%`) — smaller formatting-level errors
+   now, not the original 10x `"10.0%"→"100%"` distortion, but still
+   wrong. **One example taught the 3-way-join shape but not
+   decimal-precision preservation within it** — the same "one example
+   isn't enough to generalize" lesson this project already learned for
+   the negation-cue constraint gap (2026-08-05), recurring here for T5
+   instead of the CRF. **Next step, still open**: source 2-3 more
+   diverse 3-way (and ideally 4-way) `magnitude` examples specifically
+   covering decimal percentages and dollar amounts, not just
+   whole-number percentages like `rw_051`. Also worth fixing
+   independently: `data/eval_on_real_world.py`'s `loose_value_match`
+   scores a multi-value prediction as fully correct if ANY single
+   element substring-matches ANY gold element — it doesn't actually
+   check the whole list element-by-element, so it can silently overstate
+   accuracy on exactly this kind of partial fix.
 
 Full detail and reasoning for all of the above lives in git history — see
 commit `db3e52e`'s message specifically.
