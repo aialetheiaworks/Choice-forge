@@ -8818,5 +8818,85 @@
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/dexcom-dxcm-q2-2026-earnings-call-transcript/",
     "_source_note": "Jereme Sylvain (CFO), rephrased to third person -- 'expects X' pattern. 2026-08-08 fix: 'full-year' was originally bundled whole into measure (measure='full-year revenue', time=missing), contradicting the established convention of splitting a bare time-adjective into its own time span (see rw_017's holdout gold: measure='net interest income', time='full-year'). That bug taught the CRF the wrong lesson and caused time false-negatives on rw_016/rw_017 -- corrected to split time from measure like every other row."
+  },
+  {
+    "id": "rw_051",
+    "input_query": "F5's revenue grew 3% in the Americas, 22% in EMEA, and 19% in APAC year over year.",
+    "choice": {
+      "actor": {
+        "value": "F5",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "F5"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": [
+          "Americas",
+          "EMEA",
+          "APAC"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "in the Americas",
+          "in EMEA",
+          "in APAC"
+        ]
+      },
+      "measure": {
+        "value": "revenue",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "revenue"
+      },
+      "magnitude": {
+        "value": [
+          "3%",
+          "22%",
+          "19%"
+        ],
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": [
+          "3%",
+          "22%",
+          "19%"
+        ]
+      },
+      "time": {
+        "value": "year over year",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "year over year"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/04/28/f5-ffiv-q2-2026-earnings-call-transcript/",
+    "_source_note": "Cooper Werner (CFO), condensed from 4 sentences to 1 and rephrased to possessive-subject form -- real 3-way magnitude join (Known gap 8), same shape as rw_027 (Americas/EMEA/APAC percentages) but a different company so the CRF/T5 can't just memorize FactSet's numbers."
   }
 ]

@@ -72,6 +72,14 @@ AGCO_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/03/agco-agco-
 SPGI_URL = "https://www.fool.com/earnings/call-transcripts/2026/04/28/sp-global-spgi-q1-2026-earnings-transcript/"
 DXCM_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/03/dexcom-dxcm-q2-2026-earnings-call-transcript/"
 
+# 2026-08-09 sourcing pass: targeting Known gap 8 (T5 corrupts magnitude
+# digits on 3-way joins -- e.g. "10.0%"->"100%" -- because
+# data/seq2seq_pairs.jsonl had zero 3-way joined magnitude training pairs,
+# only 2-way). This is a T5-layer gap, not a CRF/real-text gap, so one new
+# real 3-way example (a new company, not rw_027's exact FactSet sentence,
+# which is eval-locked) is enough to teach the pattern.
+FFIV_URL = "https://www.fool.com/earnings/call-transcripts/2026/04/28/f5-ffiv-q2-2026-earnings-call-transcript/"
+
 rows = [
     row("rw_001",
         "Target is on track to open over thirty stores in 2026.",
@@ -543,11 +551,31 @@ rows = [
         ),
     row("rw_050",
         "DexCom expects full-year revenue of $5.18 billion to $5.25 billion, representing growth of 11% to 13%.",
-        DXCM_URL, "Jereme Sylvain (CFO), rephrased to third person -- 'expects X' pattern",
+        DXCM_URL, "Jereme Sylvain (CFO), rephrased to third person -- 'expects X' pattern. "
+             "2026-08-08 fix: 'full-year' was originally bundled whole into measure "
+             "(measure='full-year revenue', time=missing), contradicting the established "
+             "convention of splitting a bare time-adjective into its own time span (see "
+             "rw_017's holdout gold: measure='net interest income', time='full-year'). That "
+             "bug taught the CRF the wrong lesson and caused time false-negatives on "
+             "rw_016/rw_017 -- corrected to split time from measure like every other row.",
         actor=field("DexCom", "explicit", 0.9, "DexCom"),
-        measure=field("full-year revenue", "explicit", 0.85, "full-year revenue"),
+        measure=field("revenue", "explicit", 0.85, "revenue"),
         magnitude=field(["$5.18 billion to $5.25 billion", "growth of 11% to 13%"], "explicit", 0.85,
                          ["$5.18 billion to $5.25 billion", "growth of 11% to 13%"]),
+        time=field("full-year", "explicit", 0.8, "full-year"),
+        ),
+    row("rw_051",
+        "F5's revenue grew 3% in the Americas, 22% in EMEA, and 19% in APAC year over year.",
+        FFIV_URL, "Cooper Werner (CFO), condensed from 4 sentences to 1 and rephrased to "
+             "possessive-subject form -- real 3-way magnitude join (Known gap 8), same shape "
+             "as rw_027 (Americas/EMEA/APAC percentages) but a different company so the CRF/T5 "
+             "can't just memorize FactSet's numbers.",
+        actor=field("F5", "explicit", 0.9, "F5"),
+        measure=field("revenue", "explicit", 0.85, "revenue"),
+        scope=field(["Americas", "EMEA", "APAC"], "explicit", 0.85,
+                    ["in the Americas", "in EMEA", "in APAC"]),
+        magnitude=field(["3%", "22%", "19%"], "explicit", 0.9, ["3%", "22%", "19%"]),
+        time=field("year over year", "explicit", 0.8, "year over year"),
         ),
 ]
 

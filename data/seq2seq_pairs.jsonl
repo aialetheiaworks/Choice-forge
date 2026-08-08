@@ -774,5 +774,11 @@
 {"id": "rw_048", "role": "measure", "input": "normalize measure: operating margin", "target": "operating margin", "gold_status": "explicit"}
 {"id": "rw_048", "role": "magnitude", "input": "normalize magnitude: expanded 150 basis points year-over-year to 40%", "target": "expanded 150 basis points year-over-year to 40%", "gold_status": "explicit"}
 {"id": "rw_050", "role": "actor", "input": "normalize actor: DexCom", "target": "DexCom", "gold_status": "explicit"}
-{"id": "rw_050", "role": "measure", "input": "normalize measure: full-year revenue", "target": "full-year revenue", "gold_status": "explicit"}
+{"id": "rw_050", "role": "measure", "input": "normalize measure: revenue", "target": "revenue", "gold_status": "explicit"}
 {"id": "rw_050", "role": "magnitude", "input": "normalize magnitude: $5.18 billion to $5.25 billion; growth of 11% to 13%", "target": "['$5.18 billion to $5.25 billion', 'growth of 11% to 13%']", "gold_status": "explicit"}
+{"id": "rw_050", "role": "time", "input": "normalize time: full-year", "target": "full-year", "gold_status": "explicit"}
+{"id": "rw_051", "role": "actor", "input": "normalize actor: F5", "target": "F5", "gold_status": "explicit"}
+{"id": "rw_051", "role": "scope", "input": "normalize scope: in the Americas; in EMEA; in APAC", "target": "['Americas', 'EMEA', 'APAC']", "gold_status": "explicit"}
+{"id": "rw_051", "role": "measure", "input": "normalize measure: revenue", "target": "revenue", "gold_status": "explicit"}
+{"id": "rw_051", "role": "magnitude", "input": "normalize magnitude: 3%; 22%; 19%", "target": "['3%', '22%', '19%']", "gold_status": "explicit"}
+{"id": "rw_051", "role": "time", "input": "normalize time: year over year", "target": "year over year", "gold_status": "explicit"}
