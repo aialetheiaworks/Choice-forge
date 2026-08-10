@@ -80,6 +80,51 @@ DXCM_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/03/dexcom-dxc
 # which is eval-locked) is enough to teach the pattern.
 FFIV_URL = "https://www.fool.com/earnings/call-transcripts/2026/04/28/f5-ffiv-q2-2026-earnings-call-transcript/"
 
+# 2026-08-10 sourcing pass: continuing Known gap 8. Re-running
+# data/eval_on_real_world.py after fixing a real scoring bug (see
+# eval_on_real_world.py's module docstring -- the old scorer marked a
+# multi-value magnitude prediction fully correct if ANY single gold
+# element substring-matched anywhere in the whole joined prediction
+# string) revealed the round-5 fix from 2026-08-09 was narrower than it
+# looked: T5 still corrupts decimal dollar-per-share amounts inside a
+# joined magnitude, not just 3-way percentage joins -- direct
+# pipe.synthesize() tests found "$0.50"->"$50" (rw_016, already in the
+# frozen holdout, now correctly scored as wrong), "$0.75"->garbled
+# "$100, $100,", "$1.25"->"$1,25". All 21 pre-existing 2-way-join
+# training pairs use whole-dollar or $X.X0-and-up values (e.g. "$2 per
+# share", "$700K", "$4.10") -- none exercise a sub-dollar decimal
+# per-share amount, which is exactly rw_016's shape and exactly what's
+# broken. 3 new real examples below target that gap specifically, each a
+# different decimal-precision shape so one example doesn't just teach
+# "$0.XX" as a memorized literal: single-digit cents + whole percent
+# (Equinox Gold), two-digit cents + decimal percent (Alpine Income), and
+# a >$1 decimal + an inexact "over X%" qualifier (Ares). All 3 go to
+# training, not eval -- rw_016 (already frozen in the eval holdout) is
+# the generalization test for whether this actually fixes the pattern,
+# so no new eval row is needed for this specific gap.
+EQX_URL = "https://ca.investing.com/news/transcripts/earnings-call-transcript-equinox-gold-rises-on-merger-higher-dividend-in-q2-2026-93CH-4783210"
+PINE_URL = "https://www.investing.com/news/transcripts/earnings-call-transcript-alpine-income-beats-q2-2026-estimates-lifts-dividend-93CH-4812003"
+ARES_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/03/ares-ares-q2-2026-earnings-call-transcript/"
+
+# 2026-08-10 sourcing pass, continued: Known gap 7 (object swallows a
+# leading bare time-adjective with no preposition -- rw_016's "third
+# quarter common stock dividend", rw_017's hallucinated "full-year
+# guidance"). The 2026-08-08 session searched 8 real-earnings-call
+# queries + 3 full transcripts and found nothing usable -- the one
+# recurring match ("quarterly dividend") is a frequency adjective, not a
+# time-point one. This pass found the real thing: "third quarter
+# dividend" (Imperial Oil) and "third quarter 26 dividend" (Employers
+# Holdings) -- same bare-time-adjective-directly-before-object-noun
+# shape as rw_016, two different companies, neither overlapping
+# rw_016's own Wells Fargo sentence. Still only 2 examples of this
+# specific object-role pattern (rw_050 already gave the CRF one
+# measure-role example of the same underlying shape) -- per this
+# project's repeated "one example doesn't generalize" finding, this is
+# progress, not a guaranteed fix; see CLAUDE.md Known gap 7 for the
+# honest caveat.
+IMO_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/07/imperial-oil-imo-q2-2026-earnings-call-transcript/"
+EIG_URL = "https://www.theglobeandmail.com/investing/markets/stocks/EIG-N/pressreleases/3730847/employers-holdings-eig-q2-2026-earnings-call-transcript/"
+
 rows = [
     row("rw_001",
         "Target is on track to open over thirty stores in 2026.",
@@ -576,6 +621,66 @@ rows = [
                     ["in the Americas", "in EMEA", "in APAC"]),
         magnitude=field(["3%", "22%", "19%"], "explicit", 0.9, ["3%", "22%", "19%"]),
         time=field("year over year", "explicit", 0.8, "year over year"),
+        ),
+
+    row("rw_052",
+        "Equinox Gold's board approved a 50% increase to its annual dividend to $0.09 per share.",
+        EQX_URL, "Darren Pylot (President & COO), rephrased to third person -- single-digit-cents "
+             "decimal + whole percent, targeting Known gap 8's decimal-dollar-join corruption",
+        actor=field("Equinox Gold", "explicit", 0.9, "Equinox Gold"),
+        intent=field("increase the dividend", "explicit", 0.8, "increase"),
+        object=field("annual dividend", "explicit", 0.85, "annual dividend"),
+        magnitude=field(["50%", "$0.09 per share"], "explicit", 0.9, ["50%", "$0.09 per share"]),
+        ),
+    row("rw_053",
+        "Alpine Income Property Trust's board has authorized a 6.7% increase in its quarterly common "
+        "dividend to $0.32 per share beginning in the third quarter of 2026.",
+        PINE_URL, "John Albright (President & CEO), rephrased to third person -- two-digit-cents "
+             "decimal + decimal percent, targeting Known gap 8",
+        actor=field("Alpine Income Property Trust", "explicit", 0.9, "Alpine Income Property Trust"),
+        intent=field("increase the dividend", "explicit", 0.8, "increase"),
+        object=field("quarterly common dividend", "explicit", 0.85, "quarterly common dividend"),
+        magnitude=field(["6.7%", "$0.32 per share"], "explicit", 0.9, ["6.7%", "$0.32 per share"]),
+        time=field("beginning in the third quarter of 2026", "explicit", 0.8,
+                    "beginning in the third quarter of 2026"),
+        ),
+    row("rw_054",
+        "Ares Management declared a quarterly dividend of $1.35 per share on its Class A and nonvoting "
+        "common stock, representing an increase of over 20% over its dividend for the same quarter a "
+        "year ago.",
+        ARES_URL, "Greg Mason (Co-Head of Public Markets, Investor Relations), rephrased to third "
+             "person -- decimal dollar over $1 + an inexact 'over X%' qualifier, targeting Known gap 8",
+        actor=field("Ares Management", "explicit", 0.9, "Ares Management"),
+        intent=field("increase the dividend", "explicit", 0.75, "increase"),
+        object=field("quarterly dividend", "explicit", 0.85, "quarterly dividend"),
+        magnitude=field(["$1.35 per share", "over 20%"], "explicit", 0.9, ["$1.35 per share", "over 20%"]),
+        time=field("for the same quarter a year ago", "explicit", 0.75, "for the same quarter a year ago"),
+        ),
+
+    row("rw_055",
+        "Imperial Oil declared a third quarter dividend of $0.87 per share.",
+        IMO_URL, "Dan Lyons (SVP, Finance & Administration), rephrased to third person -- bare "
+             "time-adjective directly before an object noun ('third quarter dividend'), same shape "
+             "as rw_016 but a different company, targeting Known gap 7",
+        actor=field("Imperial Oil", "explicit", 0.9, "Imperial Oil"),
+        intent=field("declare a dividend", "explicit", 0.75, "declared"),
+        object=field("dividend", "explicit", 0.8, "dividend"),
+        time=field("third quarter", "explicit", 0.75, "third quarter"),
+        magnitude=field("$0.87 per share", "explicit", 0.9, "$0.87 per share"),
+        ),
+    row("rw_056",
+        "Employers Holdings' Board of Directors declared a third quarter 26 dividend of $0.34 per "
+        "share, consistent with the 6.5% increase it implemented last quarter.",
+        EIG_URL, "Katherine Holt Antonello (CEO), rephrased to third person -- same 'third quarter "
+             "<object>' shape as rw_055/rw_016, targeting Known gap 7; also a second real example "
+             "for Known gap 8 (decimal per-share magnitude, $0.34)",
+        actor=field("Employers Holdings", "explicit", 0.9, "Employers Holdings"),
+        intent=field("declare a dividend", "explicit", 0.75, "declared"),
+        object=field("dividend", "explicit", 0.8, "dividend"),
+        time=field("third quarter 26", "explicit", 0.7, "third quarter 26"),
+        magnitude=field("$0.34 per share", "explicit", 0.85, "$0.34 per share"),
+        context=field("consistent with the prior 6.5% dividend increase", "explicit", 0.7,
+                       "consistent with the 6.5% increase it implemented last quarter"),
         ),
 ]
 

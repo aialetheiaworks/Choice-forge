@@ -49,17 +49,15 @@ BLANK_PROMPTS = {
 }
 
 
-def humanize_value(value):
+def parse_value_items(value):
     """A multi-span field's value is a list -- either a real Python list
     (source_text, straight from the CRF spans) or a string that literally
     contains Python-list-repr syntax like "['a', 'b']" (T5's normalized
     output: build_seq2seq_pairs.py trains multi-value targets in that exact
     str(list) format, so T5 generates it verbatim as text, not as real
-    structured data). str()-ing either one straight into user-facing text
-    leaks broken-looking bracket/quote syntax (found 2026-08-09 live-testing
-    the app -- both the master-prompt sentence and the extraction-detail
-    field cards were showing e.g. "['in the West', 'in the East']"
-    literally). Parse it back into a real list and join as natural prose."""
+    structured data). Parses either back into a real list of item strings.
+    Shared by humanize_value() (display) and eval_on_real_world.py's
+    scoring (needs each element individually, not the joined string)."""
     if isinstance(value, list):
         items = value
     elif isinstance(value, str) and value.startswith("[") and value.endswith("]"):
@@ -75,12 +73,20 @@ def humanize_value(value):
             # than leaving the raw "[12%, 9%, 15%]" text unparsed.
             inner = value[1:-1]
             items = [p.strip().strip("'\"") for p in inner.split(",")] if inner.strip() else []
-            if not items:
-                return value
+    elif value in (None, ""):
+        items = []
     else:
-        return str(value)
+        return [str(value)]
+    return [str(v) for v in items if str(v).strip()]
 
-    items = [str(v) for v in items if str(v).strip()]
+
+def humanize_value(value):
+    """Join a field's value (see parse_value_items) as natural prose for
+    user-facing text, instead of leaking raw list/bracket syntax (found
+    2026-08-09 live-testing the app -- both the master-prompt sentence and
+    the extraction-detail field cards were showing e.g. "['in the West',
+    'in the East']" literally)."""
+    items = parse_value_items(value)
     if not items:
         return value if isinstance(value, str) else ""
     if len(items) == 1:

@@ -782,3 +782,28 @@
 {"id": "rw_051", "role": "measure", "input": "normalize measure: revenue", "target": "revenue", "gold_status": "explicit"}
 {"id": "rw_051", "role": "magnitude", "input": "normalize magnitude: 3%; 22%; 19%", "target": "['3%', '22%', '19%']", "gold_status": "explicit"}
 {"id": "rw_051", "role": "time", "input": "normalize time: year over year", "target": "year over year", "gold_status": "explicit"}
+{"id": "rw_052", "role": "actor", "input": "normalize actor: Equinox Gold", "target": "Equinox Gold", "gold_status": "explicit"}
+{"id": "rw_052", "role": "object", "input": "normalize object: annual dividend", "target": "annual dividend", "gold_status": "explicit"}
+{"id": "rw_052", "role": "intent", "input": "normalize intent: increase", "target": "increase the dividend", "gold_status": "explicit"}
+{"id": "rw_052", "role": "magnitude", "input": "normalize magnitude: 50%; $0.09 per share", "target": "['50%', '$0.09 per share']", "gold_status": "explicit"}
+{"id": "rw_053", "role": "actor", "input": "normalize actor: Alpine Income Property Trust", "target": "Alpine Income Property Trust", "gold_status": "explicit"}
+{"id": "rw_053", "role": "object", "input": "normalize object: quarterly common dividend", "target": "quarterly common dividend", "gold_status": "explicit"}
+{"id": "rw_053", "role": "intent", "input": "normalize intent: increase", "target": "increase the dividend", "gold_status": "explicit"}
+{"id": "rw_053", "role": "magnitude", "input": "normalize magnitude: 6.7%; $0.32 per share", "target": "['6.7%', '$0.32 per share']", "gold_status": "explicit"}
+{"id": "rw_053", "role": "time", "input": "normalize time: beginning in the third quarter of 2026", "target": "beginning in the third quarter of 2026", "gold_status": "explicit"}
+{"id": "rw_054", "role": "actor", "input": "normalize actor: Ares Management", "target": "Ares Management", "gold_status": "explicit"}
+{"id": "rw_054", "role": "object", "input": "normalize object: quarterly dividend", "target": "quarterly dividend", "gold_status": "explicit"}
+{"id": "rw_054", "role": "intent", "input": "normalize intent: increase", "target": "increase the dividend", "gold_status": "explicit"}
+{"id": "rw_054", "role": "magnitude", "input": "normalize magnitude: $1.35 per share; over 20%", "target": "['$1.35 per share', 'over 20%']", "gold_status": "explicit"}
+{"id": "rw_054", "role": "time", "input": "normalize time: for the same quarter a year ago", "target": "for the same quarter a year ago", "gold_status": "explicit"}
+{"id": "rw_055", "role": "actor", "input": "normalize actor: Imperial Oil", "target": "Imperial Oil", "gold_status": "explicit"}
+{"id": "rw_055", "role": "object", "input": "normalize object: dividend", "target": "dividend", "gold_status": "explicit"}
+{"id": "rw_055", "role": "intent", "input": "normalize intent: declared", "target": "declare a dividend", "gold_status": "explicit"}
+{"id": "rw_055", "role": "magnitude", "input": "normalize magnitude: $0.87 per share", "target": "$0.87 per share", "gold_status": "explicit"}
+{"id": "rw_055", "role": "time", "input": "normalize time: third quarter", "target": "third quarter", "gold_status": "explicit"}
+{"id": "rw_056", "role": "actor", "input": "normalize actor: Employers Holdings", "target": "Employers Holdings", "gold_status": "explicit"}
+{"id": "rw_056", "role": "object", "input": "normalize object: dividend", "target": "dividend", "gold_status": "explicit"}
+{"id": "rw_056", "role": "intent", "input": "normalize intent: declared", "target": "declare a dividend", "gold_status": "explicit"}
+{"id": "rw_056", "role": "magnitude", "input": "normalize magnitude: $0.34 per share", "target": "$0.34 per share", "gold_status": "explicit"}
+{"id": "rw_056", "role": "time", "input": "normalize time: third quarter 26", "target": "third quarter 26", "gold_status": "explicit"}
+{"id": "rw_056", "role": "context", "input": "normalize context: consistent with the 6.5% increase it implemented last quarter", "target": "consistent with the prior 6.5% dividend increase", "gold_status": "explicit"}

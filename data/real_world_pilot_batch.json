@@ -3434,5 +3434,343 @@
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/04/28/f5-ffiv-q2-2026-earnings-call-transcript/",
     "_source_note": "Cooper Werner (CFO), condensed from 4 sentences to 1 and rephrased to possessive-subject form -- real 3-way magnitude join (Known gap 8), same shape as rw_027 (Americas/EMEA/APAC percentages) but a different company so the CRF/T5 can't just memorize FactSet's numbers."
+  },
+  {
+    "id": "rw_052",
+    "input_query": "Equinox Gold's board approved a 50% increase to its annual dividend to $0.09 per share.",
+    "choice": {
+      "actor": {
+        "value": "Equinox Gold",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Equinox Gold"
+      },
+      "object": {
+        "value": "annual dividend",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "annual dividend"
+      },
+      "intent": {
+        "value": "increase the dividend",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "increase"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": [
+          "50%",
+          "$0.09 per share"
+        ],
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": [
+          "50%",
+          "$0.09 per share"
+        ]
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://ca.investing.com/news/transcripts/earnings-call-transcript-equinox-gold-rises-on-merger-higher-dividend-in-q2-2026-93CH-4783210",
+    "_source_note": "Darren Pylot (President & COO), rephrased to third person -- single-digit-cents decimal + whole percent, targeting Known gap 8's decimal-dollar-join corruption"
+  },
+  {
+    "id": "rw_053",
+    "input_query": "Alpine Income Property Trust's board has authorized a 6.7% increase in its quarterly common dividend to $0.32 per share beginning in the third quarter of 2026.",
+    "choice": {
+      "actor": {
+        "value": "Alpine Income Property Trust",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Alpine Income Property Trust"
+      },
+      "object": {
+        "value": "quarterly common dividend",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "quarterly common dividend"
+      },
+      "intent": {
+        "value": "increase the dividend",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "increase"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": [
+          "6.7%",
+          "$0.32 per share"
+        ],
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": [
+          "6.7%",
+          "$0.32 per share"
+        ]
+      },
+      "time": {
+        "value": "beginning in the third quarter of 2026",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "beginning in the third quarter of 2026"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.investing.com/news/transcripts/earnings-call-transcript-alpine-income-beats-q2-2026-estimates-lifts-dividend-93CH-4812003",
+    "_source_note": "John Albright (President & CEO), rephrased to third person -- two-digit-cents decimal + decimal percent, targeting Known gap 8"
+  },
+  {
+    "id": "rw_054",
+    "input_query": "Ares Management declared a quarterly dividend of $1.35 per share on its Class A and nonvoting common stock, representing an increase of over 20% over its dividend for the same quarter a year ago.",
+    "choice": {
+      "actor": {
+        "value": "Ares Management",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Ares Management"
+      },
+      "object": {
+        "value": "quarterly dividend",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "quarterly dividend"
+      },
+      "intent": {
+        "value": "increase the dividend",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "increase"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": [
+          "$1.35 per share",
+          "over 20%"
+        ],
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": [
+          "$1.35 per share",
+          "over 20%"
+        ]
+      },
+      "time": {
+        "value": "for the same quarter a year ago",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "for the same quarter a year ago"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/03/ares-ares-q2-2026-earnings-call-transcript/",
+    "_source_note": "Greg Mason (Co-Head of Public Markets, Investor Relations), rephrased to third person -- decimal dollar over $1 + an inexact 'over X%' qualifier, targeting Known gap 8"
+  },
+  {
+    "id": "rw_055",
+    "input_query": "Imperial Oil declared a third quarter dividend of $0.87 per share.",
+    "choice": {
+      "actor": {
+        "value": "Imperial Oil",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Imperial Oil"
+      },
+      "object": {
+        "value": "dividend",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "dividend"
+      },
+      "intent": {
+        "value": "declare a dividend",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "declared"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "$0.87 per share",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "$0.87 per share"
+      },
+      "time": {
+        "value": "third quarter",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "third quarter"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/07/imperial-oil-imo-q2-2026-earnings-call-transcript/",
+    "_source_note": "Dan Lyons (SVP, Finance & Administration), rephrased to third person -- bare time-adjective directly before an object noun ('third quarter dividend'), same shape as rw_016 but a different company, targeting Known gap 7"
+  },
+  {
+    "id": "rw_056",
+    "input_query": "Employers Holdings' Board of Directors declared a third quarter 26 dividend of $0.34 per share, consistent with the 6.5% increase it implemented last quarter.",
+    "choice": {
+      "actor": {
+        "value": "Employers Holdings",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Employers Holdings"
+      },
+      "object": {
+        "value": "dividend",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "dividend"
+      },
+      "intent": {
+        "value": "declare a dividend",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "declared"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "$0.34 per share",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "$0.34 per share"
+      },
+      "time": {
+        "value": "third quarter 26",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "third quarter 26"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": "consistent with the prior 6.5% dividend increase",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "consistent with the 6.5% increase it implemented last quarter"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.theglobeandmail.com/investing/markets/stocks/EIG-N/pressreleases/3730847/employers-holdings-eig-q2-2026-earnings-call-transcript/",
+    "_source_note": "Katherine Holt Antonello (CEO), rephrased to third person -- same 'third quarter <object>' shape as rw_055/rw_016, targeting Known gap 7; also a second real example for Known gap 8 (decimal per-share magnitude, $0.34)"
   }
 ]

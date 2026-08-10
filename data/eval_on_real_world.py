@@ -15,6 +15,16 @@ Scoring, per field, per row:
     coarse proxy, not exact-match paraphrase scoring (T5's job is
     paraphrase, so exact string match would be too strict) -- flagged
     clearly in the output as approximate.
+  - Multi-value fields (gold is a list of >1 item, e.g. a 3-way magnitude
+    join): scored element-by-element via parse_value_items(), not as one
+    substring check against the whole joined prediction string. Found
+    2026-08-09 (Known gap 8 audit): the old `any(loose_value_match(whole
+    pred string, gv) for gv in gold_vals)` marked a prediction fully
+    correct if ANY single gold element happened to substring-match
+    anywhere in the joined pred string, so a 3-way join with 2 of 3 values
+    silently wrong (e.g. rw_027: pred ['7.20%','100%','5.0%'] vs gold
+    ['7.0%','10.0%','5.0%']) still scored as 100% correct. Now requires
+    every gold element to match some individual predicted item.
 """
 
 import json
@@ -23,6 +33,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pipeline import Pipeline, ROLES
+from prompt_synthesis import parse_value_items
 
 
 def norm(s):
@@ -34,6 +45,19 @@ def loose_value_match(pred, gold):
     if not p or not g:
         return False
     return p == g or p in g or g in p
+
+
+def value_matches_gold(pred_value, gold_vals):
+    """gold_vals is always a list (single-value fields are wrapped by the
+    caller). For a single gold value, this is the original loose substring
+    check against the whole pred string. For multiple gold values (a real
+    multi-value field), every gold element must match some individually
+    parsed predicted item -- see module docstring for why the old
+    whole-string check overstated accuracy here."""
+    if len(gold_vals) <= 1:
+        return any(loose_value_match(pred_value, gv) for gv in gold_vals)
+    pred_items = parse_value_items(pred_value)
+    return all(any(loose_value_match(pi, gv) for pi in pred_items) for gv in gold_vals)
 
 
 def main():
@@ -64,7 +88,7 @@ def main():
                 field_stats[role]["gold_present"] += 1
                 gold_val = gold["value"]
                 gold_vals = gold_val if isinstance(gold_val, list) else [gold_val]
-                value_correct = any(loose_value_match(p["value"], gv) for gv in gold_vals) if not pred_missing else False
+                value_correct = value_matches_gold(p["value"], gold_vals) if not pred_missing else False
                 field_stats[role]["value_correct"] += int(value_correct)
 
             report["fields"][role] = {

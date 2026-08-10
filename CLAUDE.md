@@ -262,6 +262,122 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-10 — eval scoring fix + gap 7/8 sourcing pass, not promoted)
+
+**New session, user request: pick up from where the 2026-08-09 session left
+off and fix the two open Known gaps (7, 8) without further check-ins where
+possible.** Confirmed repo state matched CLAUDE.md exactly before starting
+(clean, at `e41c7b1`, 4 commits ahead of origin — same as last documented).
+
+- **Fixed a real, previously-flagged scoring bug in
+  `data/eval_on_real_world.py` before doing anything else**, since it
+  directly affects how any further retrain gets gated. The old
+  `loose_value_match` scored a multi-value field correct if ANY single
+  gold element substring-matched anywhere in the whole joined prediction
+  string — so a 3-way join with 2 of 3 values wrong (exactly `rw_027`,
+  the row Known gap 8 was diagnosed from) still scored 100% correct.
+  Extracted `prompt_synthesis.humanize_value()`'s list-parsing logic into
+  a new shared `parse_value_items()` (pure refactor, verified
+  byte-identical `humanize_value()` output on 7 hand-picked edge cases
+  before wiring it in), and added `value_matches_gold()` to
+  `eval_on_real_world.py`: for multi-value gold, every gold element must
+  now match some individually-parsed predicted item, not just the whole
+  string once.
+- **Re-ran the eval with the fixed scorer against the live (round 5)
+  model to get an honest current baseline before any retraining.**
+  Real, previously-hidden numbers: **status 83.70% (unchanged), value
+  61.19% (down from the previously-reported 70.15%, which was inflated by
+  the scoring bug)**. Directly confirmed via the raw predictions this
+  wasn't a regression, just honesty: `rw_027` (magnitude, 2 of 3 values
+  wrong) and a **newly surfaced case, `rw_016`** (magnitude
+  `['11%','$0.50 per share']` → predicted `['11%','$50 per share']`, a
+  100x digit-corruption error at 0.465 confidence, above the blank
+  threshold) both flipped from incorrectly-scored-correct to
+  correctly-scored-wrong.
+- **This changed the understanding of Known gap 8 significantly.**
+  `rw_016`'s corruption proved the bug isn't limited to 3-way percentage
+  joins losing decimal precision (the 2026-08-09 characterization) — it's
+  a broader T5 failure on **decimal dollar-per-share amounts inside any
+  joined multi-value magnitude**, including plain 2-way joins. Confirmed
+  directly via `pipe.synthesize('magnitude', ...)` calls: `$0.50` alone
+  normalizes perfectly (0.97 confidence), but the moment it's joined with
+  another value it corrupts (`$0.50`→`$50`, `$0.75`→garbled `"$100,
+  '$100,'"`, `$1.25`→`$1,25`), all at 0.85-0.98 confidence — confidently
+  wrong, not a rare hallucination. Checked training data: the one
+  existing 2-way training pair with this exact shape (`"18%; $2 per
+  share"`) uses a whole dollar amount, not a decimal — every one of the
+  21 pre-existing 2-way-join pairs does. Zero training coverage for a
+  sub-dollar-decimal value inside a join, same root cause as the 3-way
+  gap, just a wider blast radius than previously known.
+- **Sourced 5 new real, source-verified rows** (`rw_052`-`rw_056`) via
+  `data/build_real_world_pilot.py`, validated clean, split (all 5
+  train-only — `rw_016`, already frozen in the eval holdout, is the
+  generalization test, so no new eval row was needed): 3 targeting gap 8
+  (Equinox Gold, Alpine Income Property Trust, Ares Management — real
+  dividend-increase quotes chosen for 3 different decimal-precision
+  shapes: single-digit cents, two-digit cents + decimal percent, >$1
+  decimal + an inexact "over X%" qualifier) and 2 targeting gap 7
+  (Imperial Oil, Employers Holdings — both real "declared a third
+  quarter dividend" quotes, the exact bare-time-adjective-before-object
+  pattern the 2026-08-09 session searched 8 queries and 3 transcripts for
+  and came up empty on). Confirmed via `git diff` the frozen holdout
+  stayed byte-identical through the split. Rebuilt
+  `choice_forge_dataset_combined_141.json` (100 + 41).
+- **Retrained CRF + T5 on the full 141-row set, gated against the
+  restored round-5 backup using the fixed scorer — failed the gate, not
+  promoted.** Backed up round 5's artifacts first, per the standing
+  pattern. Result: **status 83.70%→80.00%, value 61.19%→56.72%** — net
+  negative on both tracked metrics. Diagnosed why via a full row-by-row
+  diff against the round-5-with-fixed-scorer report (not just the
+  aggregate number): the retrain delivered two real, verified fixes
+  (`rw_016` magnitude now matches gold exactly — `$0.50` no longer
+  corrupts; `rw_016` time now correctly detects `"third quarter"`) but at
+  the cost of **regressing an earlier, already-gated fix** — Known gap 1
+  (measure subject-position detection, fixed and promoted 2026-08-08) —
+  on both `rw_012` and `rw_044` (`rw_044` is literally the row built
+  specifically to test that fix): `"free cash flow"` now gets mislabeled
+  `object` instead of `measure` on both. Also lost `rw_029`'s
+  actor/scope (both previously correct, now missing entirely) and
+  `rw_034`'s multi-span scope detection (3-item list → 1 item). Same
+  "one shared CRF, reinforcing one pattern shifts decision boundaries
+  elsewhere" mechanism this project has hit repeatedly (2026-08-05
+  negation-cue rounds, 2026-08-08 measure/time rounds) — confirmed, not
+  assumed, by direct comparison.
+- **Decision: did not promote.** Restored round 5's `role_tagger.joblib`
+  / `value_synthesizer/model.safetensors` from the backup and verified
+  via diff the restored eval report is byte-identical to the
+  pre-retrain baseline. Round 6's artifacts and eval report are saved to
+  the session scratchpad (not the repo) in case a future session wants
+  to pick this up. **Known reproducibility gap, same shape as
+  2026-08-05's, flagged explicitly rather than hidden:** the dataset
+  files on disk (`choice_forge_dataset_combined_141.json`,
+  `data/real_world_training_augment.json`, 41 rows) now reflect all 5
+  new sourced rows, but the **live model artifacts are still round 5's**
+  (trained on the 136-row set). The data is real, validated, and worth
+  keeping regardless of this retrain's outcome; whoever retrains next
+  should do so from the current 141-row combined file.
+- **Recommended next step for gap 7/8, left for a future session rather
+  than force-fixed here:** don't retrain on all 5 new rows together again
+  — isolate which addition (gap 7's dividend-declaration rows, gap 8's
+  decimal-magnitude rows, or just general capacity redistribution from
+  +5 rows) actually causes the measure/object confusion, most likely by
+  retraining on each sub-batch separately against the same holdout, or by
+  adding 1-2 more reinforcing `"expects <measure>"` examples alongside
+  next time to counteract the shift the same way earlier sessions
+  countered similar regressions.
+- **Deliberately left untouched, per CLAUDE.md's own standing note that
+  these are decision points for the user, not something to resolve
+  unilaterally:** the missing automated test suite, and the Phase 6
+  gate's condition 2 (real external usage — `data/corrections_log.jsonl`
+  still shows zero entries since 2026-08-07).
+- **Not committed yet** — the scoring fix (`prompt_synthesis.py`,
+  `data/eval_on_real_world.py`), the 5 new sourced rows (all of
+  `data/build_real_world_pilot.py`'s downstream files), and this
+  CLAUDE.md update are all still local, uncommitted changes, pending a
+  go-ahead. `role_tagger.joblib`/`value_synthesizer/` are unchanged from
+  the last commit (round 5 restored to byte-identical), so nothing model-
+  related needs re-committing.
+
 ## Current status (as of 2026-08-09 — senior-dev/architect plan audit)
 
 **New session, user request: evaluate actual product state against the
@@ -1611,7 +1727,22 @@ What happened in the 2026-07-27 session:
    releases, a different sourcing domain entirely) or accept this as a
    real long-tail gap and prioritize elsewhere — forcing a weak/ambiguous
    annotation to close it would repeat the exact mistake `rw_050`'s bug
-   just came from.
+   just came from. **2026-08-10 update: real examples found, but the
+   retrain that included them wasn't promoted.** Widening past earnings
+   calls wasn't even needed — 2 real "declared a third quarter dividend"
+   quotes (Imperial Oil, Employers Holdings; `rw_055`/`rw_056`) turned up
+   in a differently-worded search, the exact bare-time-adjective pattern.
+   Sourced, validated, and retrained alongside 3 gap-8 rows in the same
+   batch — the `rw_016` `time` false-negative this gap was diagnosed from
+   is now genuinely fixed on that retrain (`"third quarter"` correctly
+   detected). But the retrain wasn't promoted (see Current status,
+   2026-08-10): it regressed the already-fixed Known gap 1 (measure
+   subject-position) on `rw_012`/`rw_044`, a net-negative trade overall.
+   The data and the row-level fix are real; they're just sitting in a
+   non-promoted retrain in the session scratchpad rather than live. Next
+   session should retry with `rw_055`/`rw_056` isolated from the gap-8
+   rows (or paired with a reinforcing measure-pattern example) rather
+   than assuming this combination will work again.
 8. **T5 can silently alter the literal digits of a `magnitude` value, not
    just paraphrase it — found 2026-08-09 via the confidence-calibration
    re-audit** (see Current status above, `data/check_confidence_calibration.py`).
@@ -1661,12 +1792,29 @@ What happened in the 2026-07-27 session:
    instead of the CRF. **Next step, still open**: source 2-3 more
    diverse 3-way (and ideally 4-way) `magnitude` examples specifically
    covering decimal percentages and dollar amounts, not just
-   whole-number percentages like `rw_051`. Also worth fixing
-   independently: `data/eval_on_real_world.py`'s `loose_value_match`
-   scores a multi-value prediction as fully correct if ANY single
-   element substring-matches ANY gold element — it doesn't actually
-   check the whole list element-by-element, so it can silently overstate
-   accuracy on exactly this kind of partial fix.
+   whole-number percentages like `rw_051`. **2026-08-10 update: the
+   `eval_on_real_world.py` scoring fix flagged above is done** — it now
+   requires every gold element to match some individually-parsed
+   predicted item, not just any single one anywhere in the joined
+   string — and re-running it against the (still-live, round 5) model
+   revealed the gap is bigger than previously understood: it's not just
+   3-way percentage joins, it's **any joined multi-value magnitude
+   touching a decimal dollar-per-share amount**, 2-way included.
+   `rw_016` (already in the frozen holdout) was the proof: `$0.50`→`$50`,
+   a 100x digit-corruption error at 0.465 confidence, previously scored
+   as correct by the old buggy scorer. Direct `pipe.synthesize()` tests
+   confirmed the pattern generalizes across decimal shapes — `$0.75`
+   comes back as garbled `"$100, '$100,'"`, `$1.25` as `$1,25` — all at
+   0.85-0.98 confidence, so this renders as *more* confidently wrong
+   than the original 3-way-join finding, not less. 3 new real dividend
+   examples sourced (`rw_052`-`rw_054`, see Current status) targeting 3
+   different decimal-precision shapes, retrained alongside the 2 gap-7
+   rows above — genuinely fixed `rw_016`'s magnitude exactly on that
+   retrain, but the retrain wasn't promoted for unrelated reasons (see
+   Current status). **Still open**: retry this sourcing with the batch
+   isolated from the gap-7 rows to see if the fix holds without the
+   gap-1 regression; the training data itself is sound and doesn't need
+   to be resourced.
 
 Full detail and reasoning for all of the above lives in git history — see
 commit `db3e52e`'s message specifically.

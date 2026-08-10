@@ -63,7 +63,7 @@
         "pred_status": "explicit",
         "pred_conf": 0.389,
         "status_correct": true,
-        "value_correct": true,
+        "value_correct": false,
         "flagged": false
       },
       "time": {
@@ -354,7 +354,7 @@
         "pred_status": "explicit",
         "pred_conf": 0.465,
         "status_correct": true,
-        "value_correct": true,
+        "value_correct": false,
         "flagged": false
       },
       "time": {
@@ -562,7 +562,7 @@
         "pred_status": "explicit",
         "pred_conf": 0.985,
         "status_correct": true,
-        "value_correct": true,
+        "value_correct": false,
         "flagged": false
       },
       "constraints": {
@@ -760,7 +760,7 @@
         "pred_status": "explicit",
         "pred_conf": 0.908,
         "status_correct": true,
-        "value_correct": true,
+        "value_correct": false,
         "flagged": false
       },
       "constraints": {
@@ -830,7 +830,7 @@
         "pred_status": "explicit",
         "pred_conf": 0.515,
         "status_correct": true,
-        "value_correct": true,
+        "value_correct": false,
         "flagged": false
       },
       "measure": {
@@ -854,7 +854,7 @@
         "pred_status": "explicit",
         "pred_conf": 0.75,
         "status_correct": true,
-        "value_correct": true,
+        "value_correct": false,
         "flagged": false
       },
       "time": {
