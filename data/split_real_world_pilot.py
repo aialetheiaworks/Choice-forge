@@ -36,6 +36,12 @@ EVAL_IDS = {
     # training examples of these two shapes (rw_045-rw_048, rw_050) taught
     # the CRF to open a measure span in subject position at all.
     "rw_044", "rw_049",
+    # 2026-08-12 sourcing pass targeting Known gap 9 (actor misrouted into
+    # time on "by <X>" phrases): rw_061 (BP, "a search committee of the
+    # Board") held out to test whether the 4 training examples
+    # (rw_057-rw_060, all "by <named person>") generalize to an
+    # organizational-noun actor, not just a repeat of the trained shape.
+    "rw_061",
 }
 
 with open("data/real_world_pilot_batch.json", encoding="utf-8") as f:

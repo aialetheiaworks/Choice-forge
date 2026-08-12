@@ -807,3 +807,11 @@
 {"id": "rw_056", "role": "magnitude", "input": "normalize magnitude: $0.34 per share", "target": "$0.34 per share", "gold_status": "explicit"}
 {"id": "rw_056", "role": "time", "input": "normalize time: third quarter 26", "target": "third quarter 26", "gold_status": "explicit"}
 {"id": "rw_056", "role": "context", "input": "normalize context: consistent with the 6.5% increase it implemented last quarter", "target": "consistent with the prior 6.5% dividend increase", "gold_status": "explicit"}
+{"id": "rw_057", "role": "actor", "input": "normalize actor: Giles Platford", "target": "Giles Platford", "gold_status": "explicit"}
+{"id": "rw_057", "role": "object", "input": "normalize object: IBU", "target": "IBU", "gold_status": "explicit"}
+{"id": "rw_058", "role": "actor", "input": "normalize actor: Lauren Duprey", "target": "Lauren Duprey", "gold_status": "explicit"}
+{"id": "rw_058", "role": "object", "input": "normalize object: Transformation Office", "target": "Transformation Office", "gold_status": "explicit"}
+{"id": "rw_059", "role": "actor", "input": "normalize actor: Elaine Shannon", "target": "Elaine Shannon", "gold_status": "explicit"}
+{"id": "rw_059", "role": "object", "input": "normalize object: Global Supply & Quality", "target": "Global Supply & Quality", "gold_status": "explicit"}
+{"id": "rw_060", "role": "actor", "input": "normalize actor: Natalie Furney", "target": "Natalie Furney", "gold_status": "explicit"}
+{"id": "rw_060", "role": "object", "input": "normalize object: Global Legal, Ethics & Compliance", "target": "Global Legal, Ethics & Compliance", "gold_status": "explicit"}

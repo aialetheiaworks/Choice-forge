@@ -1474,5 +1474,101 @@
         "flagged": false
       }
     }
+  },
+  {
+    "id": "rw_061",
+    "query": "The appointment of Meg O'Neill follows a search process overseen by a search committee of the Board.",
+    "fields": {
+      "actor": {
+        "gold_value": "a search committee of the Board",
+        "gold_status": "explicit",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": false,
+        "value_correct": false,
+        "flagged": false
+      },
+      "object": {
+        "gold_value": "Meg O'Neill",
+        "gold_status": "explicit",
+        "pred_value": "appointment of Meg O'Neill; a search process",
+        "pred_status": "explicit",
+        "pred_conf": 0.446,
+        "status_correct": true,
+        "value_correct": true,
+        "flagged": false
+      },
+      "intent": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "follow-up follow-up follow-up follow-up follow-up follow-up follow-up follow-up follow-up follow-up follow-",
+        "pred_status": "explicit",
+        "pred_conf": 0.243,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "scope": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "measure": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "magnitude": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "time": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": "search committee of the Board",
+        "pred_status": "explicit",
+        "pred_conf": 0.243,
+        "status_correct": false,
+        "value_correct": null,
+        "flagged": false
+      },
+      "constraints": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      },
+      "context": {
+        "gold_value": null,
+        "gold_status": "missing",
+        "pred_value": null,
+        "pred_status": "missing",
+        "pred_conf": 0.0,
+        "status_correct": true,
+        "value_correct": null,
+        "flagged": false
+      }
+    }
   }
 ]

@@ -3772,5 +3772,325 @@
     "required_followups": [],
     "_source_url": "https://www.theglobeandmail.com/investing/markets/stocks/EIG-N/pressreleases/3730847/employers-holdings-eig-q2-2026-earnings-call-transcript/",
     "_source_note": "Katherine Holt Antonello (CEO), rephrased to third person -- same 'third quarter <object>' shape as rw_055/rw_016, targeting Known gap 7; also a second real example for Known gap 8 (decimal per-share magnitude, $0.34)"
+  },
+  {
+    "id": "rw_057",
+    "input_query": "The newly established IBU will be led by Giles Platford, current president of the Plasma-Derived Therapies Business Unit.",
+    "choice": {
+      "actor": {
+        "value": "Giles Platford",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Giles Platford"
+      },
+      "object": {
+        "value": "IBU",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "IBU"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.takeda.com/newsroom/newsreleases/2026/changes-to-organizational-structure-and-executive-leadership-team-for-fy2026/",
+    "_source_note": "Takeda FY2026 org-structure release (2026-01-29), verbatim -- passive 'X will be led by <person>' construction, targeting Known gap 9"
+  },
+  {
+    "id": "rw_058",
+    "input_query": "The Transformation Office will be led by Lauren Duprey, who is the current chief human resources officer.",
+    "choice": {
+      "actor": {
+        "value": "Lauren Duprey",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Lauren Duprey"
+      },
+      "object": {
+        "value": "Transformation Office",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "Transformation Office"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.takeda.com/newsroom/newsreleases/2026/changes-to-organizational-structure-and-executive-leadership-team-for-fy2026/",
+    "_source_note": "Takeda FY2026 org-structure release, lightly trimmed (dropped trailing '(CHRO)' parenthetical) -- same gap-9 shape as rw_057"
+  },
+  {
+    "id": "rw_059",
+    "input_query": "Global Supply & Quality will be led by current Global Quality Officer Elaine Shannon.",
+    "choice": {
+      "actor": {
+        "value": "Elaine Shannon",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Elaine Shannon"
+      },
+      "object": {
+        "value": "Global Supply & Quality",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "Global Supply & Quality"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.takeda.com/newsroom/newsreleases/2026/changes-to-organizational-structure-and-executive-leadership-team-for-fy2026/",
+    "_source_note": "Takeda FY2026 org-structure release, verbatim -- same gap-9 shape"
+  },
+  {
+    "id": "rw_060",
+    "input_query": "Global Legal, Ethics & Compliance will be led by current Global General Counsel Natalie Furney.",
+    "choice": {
+      "actor": {
+        "value": "Natalie Furney",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Natalie Furney"
+      },
+      "object": {
+        "value": "Global Legal, Ethics & Compliance",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "Global Legal, Ethics & Compliance"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.takeda.com/newsroom/newsreleases/2026/changes-to-organizational-structure-and-executive-leadership-team-for-fy2026/",
+    "_source_note": "Takeda FY2026 org-structure release, verbatim -- same gap-9 shape"
+  },
+  {
+    "id": "rw_061",
+    "input_query": "The appointment of Meg O'Neill follows a search process overseen by a search committee of the Board.",
+    "choice": {
+      "actor": {
+        "value": "a search committee of the Board",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "a search committee of the Board"
+      },
+      "object": {
+        "value": "Meg O'Neill",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Meg O'Neill"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.oilandgasonline.com/doc/bp-p-l-c-announces-leadership-transition-0001",
+    "_source_note": "BP CEO transition release (2025-12-17), trimmed at a clause boundary (dropped the trailing ', assisted by an independent recruitment firm, as part of the Board's long-term succession planning' clause) -- held out for eval as the gap-9 generalization test: an organizational-committee actor after 'by', not a named person like rw_057-rw_060"
   }
 ]

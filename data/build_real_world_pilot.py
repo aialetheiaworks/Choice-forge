@@ -125,6 +125,25 @@ ARES_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/03/ares-ares-
 IMO_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/07/imperial-oil-imo-q2-2026-earnings-call-transcript/"
 EIG_URL = "https://www.theglobeandmail.com/investing/markets/stocks/EIG-N/pressreleases/3730847/employers-holdings-eig-q2-2026-earnings-call-transcript/"
 
+# 2026-08-12 sourcing pass: targeting Known gap 9 (found via the same day's
+# 36-sentence adversarial eval -- a passive "X will be Y by <organization>"
+# construction gets the organization/person routed into `time` instead of
+# `actor`, and the real time value vanishes). Root-caused directly against
+# choice_forge_dataset_combined_141.json before sourcing anything: 29
+# training examples teach "by <X>" -> time, and every single one of them is
+# date-shaped ("by the end of Q3", "by March 2027", "by Ramadan", ...) --
+# zero counter-examples where X is a person or organization. This batch adds
+# exactly that missing contrast. rw_057-rw_060 are 4 real, verbatim
+# "will be led by <named person>" sentences from one dated Takeda press
+# release (different business units, same syntactic shape, so the pattern
+# gets repetition without the CRF just memorizing one sentence). rw_061 is
+# held out for eval specifically because its actor is an organizational
+# noun phrase ("a search committee of the Board"), not a named person like
+# rw_057-rw_060 -- a genuine generalization test, not just a repeat of the
+# training shape.
+TAKEDA_URL = "https://www.takeda.com/newsroom/newsreleases/2026/changes-to-organizational-structure-and-executive-leadership-team-for-fy2026/"
+BP_URL = "https://www.oilandgasonline.com/doc/bp-p-l-c-announces-leadership-transition-0001"
+
 rows = [
     row("rw_001",
         "Target is on track to open over thirty stores in 2026.",
@@ -681,6 +700,43 @@ rows = [
         magnitude=field("$0.34 per share", "explicit", 0.85, "$0.34 per share"),
         context=field("consistent with the prior 6.5% dividend increase", "explicit", 0.7,
                        "consistent with the 6.5% increase it implemented last quarter"),
+        ),
+
+    row("rw_057",
+        "The newly established IBU will be led by Giles Platford, current president of the Plasma-Derived Therapies Business Unit.",
+        TAKEDA_URL, "Takeda FY2026 org-structure release (2026-01-29), verbatim -- passive "
+             "'X will be led by <person>' construction, targeting Known gap 9",
+        actor=field("Giles Platford", "explicit", 0.85, "Giles Platford"),
+        object=field("IBU", "explicit", 0.75, "IBU"),
+        ),
+    row("rw_058",
+        "The Transformation Office will be led by Lauren Duprey, who is the current chief human resources officer.",
+        TAKEDA_URL, "Takeda FY2026 org-structure release, lightly trimmed (dropped trailing "
+             "'(CHRO)' parenthetical) -- same gap-9 shape as rw_057",
+        actor=field("Lauren Duprey", "explicit", 0.85, "Lauren Duprey"),
+        object=field("Transformation Office", "explicit", 0.75, "Transformation Office"),
+        ),
+    row("rw_059",
+        "Global Supply & Quality will be led by current Global Quality Officer Elaine Shannon.",
+        TAKEDA_URL, "Takeda FY2026 org-structure release, verbatim -- same gap-9 shape",
+        actor=field("Elaine Shannon", "explicit", 0.85, "Elaine Shannon"),
+        object=field("Global Supply & Quality", "explicit", 0.75, "Global Supply & Quality"),
+        ),
+    row("rw_060",
+        "Global Legal, Ethics & Compliance will be led by current Global General Counsel Natalie Furney.",
+        TAKEDA_URL, "Takeda FY2026 org-structure release, verbatim -- same gap-9 shape",
+        actor=field("Natalie Furney", "explicit", 0.85, "Natalie Furney"),
+        object=field("Global Legal, Ethics & Compliance", "explicit", 0.75, "Global Legal, Ethics & Compliance"),
+        ),
+    row("rw_061",
+        "The appointment of Meg O'Neill follows a search process overseen by a search committee of the Board.",
+        BP_URL, "BP CEO transition release (2025-12-17), trimmed at a clause boundary (dropped "
+             "the trailing ', assisted by an independent recruitment firm, as part of the "
+             "Board's long-term succession planning' clause) -- held out for eval as the gap-9 "
+             "generalization test: an organizational-committee actor after 'by', not a named "
+             "person like rw_057-rw_060",
+        actor=field("a search committee of the Board", "explicit", 0.75, "a search committee of the Board"),
+        object=field("Meg O'Neill", "explicit", 0.8, "Meg O'Neill"),
         ),
 ]
 

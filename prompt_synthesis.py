@@ -115,6 +115,18 @@ def build_fields(result):
         r = result[role]
         blank = _is_blank(r)
         multi_span = r.get("multi_span", False)
+        # pipeline.py can silently drop a real second (or third) span from a
+        # multi-value join when it falls below MIN_JOIN_OPEN_CONFIDENCE --
+        # it records this in guard_note/flagged_for_review, but does NOT
+        # lower the surviving value's own confidence (that capping only
+        # happens for polarity-guard corrections, checked before the drop
+        # logic runs -- see pipeline.py's Pipeline.run()). So a field that
+        # lost real, stated information (e.g. a second constraint clause)
+        # can still read as high-confidence and sail past the blank
+        # threshold with no visible signal (CLAUDE.md Known gap 10, found
+        # 2026-08-12). Treat a recorded drop as its own review trigger,
+        # independent of confidence.
+        dropped_values = bool(r.get("flagged_for_review")) and "dropped" in (r.get("guard_note") or "")
         fields[role] = {
             "text": BLANK_PROMPTS[role] if blank else humanize_value(r["value"]),
             "blank": blank,
@@ -123,7 +135,8 @@ def build_fields(result):
             # rather than silently rendering the "; "-joined text as if it
             # were one value, same reasoning as ALWAYS_REVIEW_ROLES.
             "multi_span": multi_span,
-            "needs_review": blank or role in ALWAYS_REVIEW_ROLES or multi_span,
+            "dropped_values": dropped_values,
+            "needs_review": blank or role in ALWAYS_REVIEW_ROLES or multi_span or dropped_values,
             "confidence": r["confidence"],
             "status": r["status"],
             # never set by the pipeline -- only the user, at confirm time,

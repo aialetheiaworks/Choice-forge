@@ -262,6 +262,183 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-12 — 36-sentence adversarial eval, hand-scored, no code changes)
+
+**New session, user request: run a structured adversarial eval — 18
+previously-flagged regression sentences plus 18 fresh adversarial
+sentences (9 categories × 2), score all 36 × 9 fields by hand against a
+5-label rubric (correct / wrong / hallucinated / critical-number-error /
+correctly-missing), and reconcile findings against the Known gaps list.**
+Explicitly an eval/documentation task, not a fix task — no pipeline code
+was changed this session, per this project's own standing discipline
+(source real data → retrain → gate, never patch extraction logic off
+synthetic adversarial examples alone).
+
+- **Found the entry point and ran both batches directly**, no browser
+  automation needed: `Pipeline().run(text)` in `pipeline.py` is a clean,
+  already-importable function returning the 9-field JSON — confirms this
+  tool does have a real non-UI interface (not a gap in itself). Wrote a
+  throwaway script (session scratchpad, not committed) that loads
+  `Pipeline()` once and runs all 36 sentences through it in a single
+  process.
+- **Regression batch (18 sentences):** every previously-named bug pattern
+  from the spec reproduced at least once — actor word-padding
+  ("Operations"→"Operations team"), canonical-intent hallucination ("cut"
+  →"reduce costs" even when topically unrelated, "grew"→"grow sales"),
+  magnitude/time confusion ("by two days"/"by 25%" routed to `time`
+  instead of `magnitude`), silent multi-value drops (a dividend
+  comparison figure, a second constraint clause), causal-context failures,
+  and the exact previously-cited outright fabrication
+  (`time: "full-year recruitment"` on a sentence never mentioning
+  recruitment) reproduced byte-for-byte.
+- **Fresh batch (18 sentences, 9 categories × 2)** surfaced several new,
+  more specific characterizations than the existing Known gaps entries
+  had — full detail written into gaps 0, 3, 6, 8 (extended) and two new
+  entries, gap 9 and gap 10, below. Headlines: `context` fails in *both*
+  directions (misses real causal clauses AND false-positive-dumps the
+  whole sentence into `context` on plain non-causal sentences); actor
+  gets lost/swapped into `object` specifically based on sentence
+  position, not just generic phrasing; a passive-voice `"by <org>"`
+  phrase gets misrouted entirely into `time`, replacing a real actor's
+  name with what reads like a deadline; the silent-multi-value-drop
+  pattern (previously magnitude-only) also hits `constraints`; and a new
+  malformed/truncated magnitude-value rendering bug (not digit
+  corruption, actually broken output syntax) on a "same figure restated
+  in two units" join shape.
+- **Scored all 324 cells (36 × 9) by hand** — see the session's full
+  report for the per-sentence table. Aggregate accuracy
+  ((correct + correctly-missing) / 36) per field, worst to best:
+  **`intent` 33.3%, `object` 38.9%, `actor` 50.0%, `measure` 50.0%,
+  `magnitude` 63.9%, `context` 66.7%, `scope` 72.2%, `time` 75.0%,
+  `constraints` 94.4%**. Totals: **6 hallucinated cells, 1
+  critical-number-error cell, 121 wrong cells** out of 324. `intent`
+  scoring worst (and by a wide margin) is the single most important
+  number here — it's also the field most likely to be read at a glance
+  and trusted, and per the 2026-07-29 Phase 2 audit it's *already* the
+  one field always forced into `mandatory_review` regardless of
+  confidence specifically because of this known unreliability — this
+  session's numbers make the case for keeping that safeguard, not for
+  loosening it.
+- **Safety read, stated plainly:** not safe to hand to an unsupervised
+  business user today. The single biggest risk isn't the raw miss rate —
+  missing fields render as visible `[please fill in]` blanks by design
+  (Phase 1's whole safety model) — it's the fields that come back
+  **confidently wrong with no visual distinction from a correct one**,
+  chiefly the `intent`-hallucination pattern (a warehouse-throughput
+  query rendering as "increase sales", a gross-margin query rendering as
+  "move to new locations"). `intent`'s mandatory-review flag is the
+  existing mitigation; whether it's sufficient depends on whether users
+  actually read and correct an always-flagged field instead of rubber-
+  stamping it, which this session couldn't test (no real external usage
+  yet — same Phase 6 gate condition still unmet as of 2026-08-09).
+- **Deliberately did not touch pipeline code, retrain anything, or touch
+  `data/real_world_eval_holdout.json`** — this was diagnostic, and per
+  the standing rule the holdout only grows via the deliberate
+  build→validate→split pipeline. The 36 sentences are one-off evidence,
+  not a new permanent regression guard (see gap 4's 2026-08-12 note).
+- CLAUDE.md's Known gaps list updated in place (gaps 0, 3, 4, 6, 8
+  extended with this session's more specific findings; gaps 9 and 10
+  added new) rather than a separate report file, per this file's own
+  standing preference for one living status doc.
+- Nothing else changed — `role_tagger.joblib`/`value_synthesizer/` are
+  untouched, git state is whatever it was at the end of the 2026-08-10/
+  2026-08-11 sessions.
+
+## Current status (as of 2026-08-12, continued — gap-10 safety net shipped; gap-9 sourcing pass attempted, not promoted)
+
+**Same-day continuation.** User asked to move from diagnosis into an actual
+fix pass, prioritized by real business risk. Picked the two most tractable
+findings from the adversarial eval above: gap 10 (silent multi-value drop,
+fixable at the code level with no retrain) and gap 9 (actor misrouted into
+`time` on passive "by \<X\>" phrases, fixable via targeted real-data
+sourcing).
+
+- **Gap 10 fixed at the code level, verified, no retrain needed.** Traced
+  the exact mechanism in `pipeline.py`: when a multi-value join drops a
+  real second span for falling below `MIN_JOIN_OPEN_CONFIDENCE`, it sets
+  `flagged_for_review=True` and a `guard_note` — but the confidence-capping
+  step (`if flagged: confidence = min(confidence, 0.3)`) runs *before* the
+  drop is detected, so the surviving value keeps its original (often high)
+  confidence and clears the blank threshold with no visible signal.
+  `prompt_synthesis.py` never read `flagged_for_review` at all.
+  `build_fields()` now computes `dropped_values` (true when
+  `flagged_for_review` is set and the guard_note mentions a drop) and folds
+  it into `needs_review` — the same ⚠️ mechanism `app.py`'s edit form
+  already uses for `multi_span`/blank fields, so no UI changes were needed.
+  Verified two ways: the exact regression-eval sentence with a dropped
+  constraint clause now shows `dropped_values: True, needs_review: True`
+  at confidence 0.904 (previously invisible); a plain sentence with no drop
+  shows `dropped_values: False` everywhere (no false positives).
+- **Gap 9: root-caused precisely before sourcing anything.** Checked
+  `choice_forge_dataset_combined_141.json` directly — 29 training examples
+  teach "by \<X\>" → `time`, and every one of the 29 is date-shaped ("by
+  the end of Q3", "by March 2027", "by Ramadan", ...). Zero
+  counter-examples where X is a person or organization. This fully
+  explains the over-generalization found in the adversarial eval.
+- **Sourced 5 real, verified quotes** (`rw_057`-`rw_061`): 4 from one dated
+  Takeda press release (2026-01-29, org-structure announcement), each a
+  real "\<Business Unit\> will be led by \<named person\>" sentence — same
+  syntactic shape, different business units, so the pattern gets
+  repetition without memorizing one sentence. `rw_061` (BP CEO-transition
+  release, 2025-12-17, trimmed at a clause boundary but 100% verbatim for
+  the portion used) held out for eval specifically because its actor is an
+  organizational noun phrase ("a search committee of the Board"), not a
+  named person — a genuine generalization test. Validated clean via
+  `data/validate_real_world_pilot.py`, split (confirmed via `git diff`
+  the pre-existing 15 holdout rows stayed byte-identical, only `rw_061`
+  appended), rebuilt `choice_forge_dataset_combined_145.json` (100 + 45).
+- **Retrained CRF + T5, gated against the pre-retrain baseline on the new
+  16-row holdout — real partial fix on the target, but net-negative
+  overall, not promoted.** Backed up round-5 artifacts first (233MB,
+  scratchpad). Target-row result on `rw_061`, checked directly rather than
+  trusting the aggregate number: `time` flipped from incorrectly capturing
+  `"search committee of the Board"` to correctly `missing`, and `actor`
+  flipped from `missing` to `explicit` status (though the value itself —
+  `"appointment"` instead of `"a search committee of the Board"` — didn't
+  fully generalize to the org-noun shape from person-name training
+  examples, a real but partial win). Aggregate `actor`/`time` status both
+  improved (93.75%→100%, 62.5%→87.5%). But diffing every field's
+  `value_correct` against the pre-retrain baseline showed **8 regressions
+  against 2 fixes**: `object` broke on 4 previously-correct rows
+  (`rw_003`, `rw_016`, `rw_041`, `rw_061` itself), plus `magnitude`
+  (`rw_017`, `rw_022`) and `constraints` (`rw_041`). Net: overall value
+  accuracy **60.87%→52.17%**, status flat at 82.64%. Same "reinforcing one
+  role's boundary shifts the shared CRF's decisions elsewhere" mechanism
+  this project has hit repeatedly. **Notable cross-session finding:**
+  `rw_044`'s `measure` (`"free cash flow"`) broke the exact same way it
+  broke in the 2026-08-10 session's unrelated retrain attempt — strong
+  evidence this specific row/pattern is unusually fragile to *any*
+  shared-CRF capacity shift, not something specific to either session's
+  particular new data.
+- **Decision: not promoted.** Net value-accuracy regression is real and
+  larger than the target improvement. Restored round 5's
+  `role_tagger.joblib`/`value_synthesizer/` from the backup; `git status`
+  confirms byte-identical to the last commit (`0d26e4a`). **Round 6's
+  artifacts were not separately saved to scratchpad before restoring**
+  (unlike some prior sessions) — the decision was unambiguous enough that
+  this was judged not worth the disk cost, and the exact data/steps to
+  reproduce a similar retrain are fully preserved
+  (`choice_forge_dataset_combined_145.json`, this entry's exact commands)
+  if a future session wants to revisit it, though T5 fine-tuning isn't
+  seeded so it won't be byte-identical.
+- **Recommended next step, left for a future session:** isolate whether
+  it's specifically the 4 Takeda `object`-role examples (short business-
+  unit-name spans, a shape the dataset had little of) causing the `object`
+  regression, by retraining with `rw_057`-`rw_060` but *without* their
+  `object` annotations (actor-only), or by retraining just the CRF (not
+  T5) to see if the regression is CRF-side or T5-side. The gap-9 fix
+  itself is real and worth keeping — it just needs to stop costing
+  `object` accuracy to be worth promoting.
+- `prompt_synthesis.py`'s gap-10 fix **is** worth keeping independent of
+  the gap-9 retrain outcome — it's pure code, already verified, and safe
+  to commit on its own.
+- **Not committed yet** — `prompt_synthesis.py` (gap-10 fix),
+  `data/build_real_world_pilot.py` / `split_real_world_pilot.py` (5 new
+  sourced rows), the regenerated dataset/holdout files, and this CLAUDE.md
+  update are all local, uncommitted. Model artifacts are unchanged from
+  the last commit (round 5 restored to byte-identical), so nothing model-
+  related needs re-committing.
+
 ## Current status (as of 2026-08-10 — eval scoring fix + gap 7/8 sourcing pass, not promoted)
 
 **New session, user request: pick up from where the 2026-08-09 session left
@@ -1598,6 +1775,38 @@ What happened in the 2026-07-27 session:
    than, its known 28.6% value accuracy); `context` specifically misses
    causal ("because X") and purpose ("to hit X") clauses — a concrete
    target for the next real-data sourcing pass, not just "context is thin."
+   **2026-08-12 update, from a 36-sentence hand-scored adversarial eval
+   (18 regression + 18 fresh, see that session's Current-status entry):**
+   two sharper, more actionable characterizations of this same gap.
+   (a) **`context` fails in both directions, not just by missing causal
+   clauses.** On genuine causal/purpose cues ("because X", "driven by
+   X", "in order to X") it left `context` blank 5 of 5 times tested
+   (sentences 11, 17, 18, 35, 36 of that eval) — confirms the original
+   framing. But it *also* false-positives: on 4 short, plain, entirely
+   non-causal sentences (e.g. "IT patched the vulnerability.") it dumped
+   the **entire source sentence** verbatim into `context` while every
+   other field — including fields that were trivially extractable
+   (actor "IT", object "the vulnerability", intent "patched") — came
+   back blank. And on a compound "while X" sentence (two coordinate
+   actions, not cause-and-effect) it labeled the second clause as
+   `context` outright. Net effect: `context`'s trigger condition looks
+   closer to "grab whatever trailing/subordinate-clause-shaped text is
+   left over" than "detect causal/purpose language" — it just as often
+   fires on the wrong thing as it fails to fire on the right thing.
+   (b) **Actor is lost or swapped into `object` based on sentence
+   position, independent of whether the actor phrase itself is generic.**
+   The original finding was that *generic/thin* actor phrasing
+   ("Tier-1 support team") gets missed. This eval found clearly-named,
+   non-generic actors ("the procurement team", "the legal team",
+   "manufacturing") reliably lost or merged into `object` specifically
+   when they're *not* sentence-initial — after an opening subordinate
+   clause, mid-sentence in a "while X" compound, or as the second half of
+   a two-actor sentence (sentences 4, 18, 29, 30, 35 of that eval all
+   show the real actor phrase landing in `object` instead, sometimes
+   paired with the real object in the same multi-span field). This is a
+   distinct, more concrete root cause than "actor is thinly trained" —
+   it points at sentence position/clause structure as the trigger, not
+   just data volume.
 1. **`measure`, `scope`, `context` roles still thin**, even in the real
    30-row batch (scope: 4 rows total). Need more real sourcing targeted
    specifically at these. Per item 0 above, `actor` belongs on this list
@@ -1654,9 +1863,43 @@ What happened in the 2026-07-27 session:
    two legitimate actions in one sentence produces a fused, partly
    hallucinated intent value). May be a T5-small capacity ceiling rather
    than a pure data-volume problem — not yet disentangled from the data gap.
+   **2026-08-12 update, same 36-sentence adversarial eval as gap 0 above:**
+   `intent` was the single worst-scoring field in the eval (33.3%
+   correct-or-correctly-missing across 36 sentences, worst of all 9) —
+   5 outright hallucinations and 19 further wrong values out of 36. More
+   useful than the raw rate: the hallucinations resolve to a **small,
+   fixed vocabulary of canned output strings** ("reduce costs",
+   "increase sales", "grow sales", "move to new locations") that appear
+   to fire off surface verb-lemma matching (any "cut"/"cutting" →
+   "reduce costs"; any "grow"/"grew" → "grow sales") regardless of the
+   sentence's real topic — sometimes landing coincidentally plausible
+   (a shipping-cost "cut" really is a cost reduction) and sometimes
+   wildly disconnected (a **gross-margin-percentage** sentence with
+   "moved from 41.2% to 44.7%" came back with intent `"move to new
+   locations"` — inventing a facilities-relocation concept with zero
+   basis in a pure financial-metrics sentence; a **warehouse-throughput**
+   sentence came back `"increase sales"`; a **quarterly-revenue** report
+   came back `"grow sales"`). Confirms the "canned template, not
+   genuine topic understanding" theory more concretely than "T5-small
+   capacity ceiling" did. Also **reconfirmed the exact previously-known
+   `time: "full-year recruitment"` outright fabrication verbatim**
+   (sentence 14, "Full-year backlog for the industrial equipment unit
+   reached $1.4 billion." — "recruitment" appears nowhere in the source)
+   — still reproduces unchanged.
 4. **Eval set has no compound/conditional-clause query yet**, so the
    join-coherence fix (item 2 above) is verified on a hand-written example
-   but not reflected in the tracked eval score.
+   but not reflected in the tracked eval score. **2026-08-12 note:** the
+   36-sentence adversarial eval referenced in gaps 0/3/6/8/9/10 covers
+   this shape extensively (2 explicit compound sentences plus several
+   long run-ons bundling 5+ fields), but it was a standalone, hand-scored
+   pass — those 36 sentences were **not** added to
+   `data/real_world_eval_holdout.json` (no gold-label JSON was built,
+   and per the standing safety rule that file only grows via the
+   deliberate build→validate→split pipeline, not an ad-hoc adversarial
+   script). This gap — no compound/conditional query in the *tracked,
+   scored* eval set — is therefore still technically open; the 36-row
+   batch is one-off diagnostic evidence, not a permanent regression
+   guard.
 5. **Longer-term, agreed direction: self-learning correction flywheel.**
    Now scoped in full under "Product vision" above — capture stakeholder
    corrections via `app.py`'s fill-in-blank/confirm-reject flow, prioritize
@@ -1698,7 +1941,14 @@ What happened in the 2026-07-27 session:
    (as happened with "Marketing... while Sales..." in live testing, where
    the CRF missed "Sales" as a second actor entirely) won't trigger the
    warning. This isn't a bug in the detector; it inherits the underlying
-   data-thinness gap.
+   data-thinness gap. **2026-08-12 update, same 36-sentence adversarial
+   eval as gap 0:** reconfirms this exact caveat, with more repro cases.
+   6 of the eval's compound/multi-actor sentences (1, 19, 20, 29, 30, 35)
+   had two genuine actors but the CRF only ever surfaced one span for
+   `actor` — never `multi_span` — so `detect_possible_compound_query()`
+   never had a chance to fire on any of them. No new detector work
+   needed here; this is purely more evidence that the detector's ceiling
+   is set by gap 0's actor-detection gap, not a flaw of its own logic.
 7. **`time` still under-detects on the live (round 4) model — 66.67%
    status on the 15-row holdout, below the pre-regression 73.33%
    baseline.** `rw_044` (round 3's target) is fixed; `rw_012`/`rw_016`/
@@ -1815,6 +2065,90 @@ What happened in the 2026-07-27 session:
    isolated from the gap-7 rows to see if the fix holds without the
    gap-1 regression; the training data itself is sound and doesn't need
    to be resourced.
+   **2026-08-12 update, from the 36-sentence adversarial eval (gap 0):**
+   found a new, arguably worse failure mode on a 3-value join where two
+   of the three mentions are the *same* fact restated in different units
+   ("Gross margin moved from 41.2% to 44.7%, **a 3.5 point improvement**,
+   in the specialty foods division" — 44.7-41.2=3.5 is a restatement, not
+   a third distinct value). The returned `magnitude` value was
+   `"['from 41.2% to 44.7%', '3.5%', 'from 41.2% to 44.7%', '"` — a
+   **truncated, dangling, malformed list-repr string** (unterminated
+   quote, duplicated first element) that would render as visibly broken
+   text in the product UI, not just a wrong-but-well-formed value. It
+   also silently converted "3.5 point[s]" (percentage-*points*, a
+   difference) into `"3.5%"` (a percentage value) — a unit-type
+   conflation on top of the malformed rendering. This looks like a
+   genuinely new symptom (broken/truncated generation, not digit
+   substitution) rather than a rendering-layer gap — the 2026-08-09
+   `humanize_value()` fix for list-repr display doesn't help here because
+   the underlying string isn't valid list syntax to begin with. Whoever
+   picks up gap 8's decimal-join sourcing next should add this "same
+   value restated in two units" shape to the target list, not just plain
+   3-way/4-way decimal and dollar joins.
+
+9. **New 2026-08-12, from the 36-sentence adversarial eval (see that
+   session's Current-status entry):** a passive-voice `"... will be
+   finalized by <organization>"` construction gets the real actor
+   captured into the **`time` field**, not `actor` — and the real time
+   value disappears entirely. Exact repro: `"Year-end headcount will be
+   finalized by the HR team."` returned `time: "HR team"` (source span
+   `"by the HR team"`) while `actor` came back `missing` and the real
+   time value ("Year-end") never appears anywhere in the output. Likely
+   cause: `"by <X>"` is a strong, CRF-learned signal for a deadline
+   ("by year-end", "by Q3", "by 2028") and the model over-generalized it
+   to any `"by <noun phrase>"`, without checking whether `<X>` is
+   date-shaped or organization-shaped. Distinct from gap 7 (`time`
+   *under*-detecting real dates) — this is `time` *over*-triggering on
+   the wrong entity type entirely. Severity note: this is one of the
+   worse individual-field failures found in the eval, since it's not
+   merely wrong or blank — a real actor's name rendered under a
+   "Deadline:"-style label is actively misleading in a way a blank field
+   isn't. **2026-08-12 update, same day, continued session:** root-caused
+   precisely (29/29 training examples of "by \<X\>" → time are date-shaped,
+   zero counter-examples), sourced 5 real quotes (`rw_057`-`rw_061`) and
+   retrained. Partial, real fix confirmed on the held-out generalization
+   row: `time` stopped mis-capturing the org phrase, `actor` status
+   flipped correct — but the exact actor *value* didn't fully generalize
+   from person-name training examples to an organizational-noun test case
+   (predicted `"appointment"` instead of `"a search committee of the
+   Board"`). **Not promoted** — the retrain regressed `object` on 4
+   previously-correct rows (likely from the 4 training examples' short
+   business-unit-name `object` spans reshaping that role's boundaries),
+   net value accuracy 60.87%→52.17%. Round 5 restored. The sourced data
+   (`rw_057`-`rw_061`) is real and kept; next attempt should retrain with
+   those rows' `object` annotations removed (actor-only) to isolate
+   whether that's what's causing the `object` regression, per the
+   2026-08-12 continued Current-status entry.
+
+10. **New 2026-08-12, from the same adversarial eval:** the "silent
+    multi-value drop" failure mode documented under gap 8 is **not
+    magnitude-specific** — it also hits `constraints`, a field where a
+    silent drop is arguably more consequential, since a dropped
+    constraint changes what the master prompt is actually asking for,
+    not just how a number is formatted. Confirmed on 3 sentences with two
+    real, distinct, joined constraint clauses: `"...without reducing
+    delivery speed guarantees, subject to approval from the regional
+    operations director"` kept only the first clause; `"...without
+    discounting annual contracts, pending approval from the VP of
+    customer success"` likewise kept only the first. In both cases the
+    second clause never appears anywhere in the output — the pipeline's
+    internal `guard_note`/`flagged_for_review` machinery does record that
+    a span was dropped (so the information isn't destroyed at the code
+    level), but nothing in `app.py` or `prompt_synthesis.py` currently
+    surfaces "this field may be incomplete" to the end user the way
+    `multi_span` does for successfully-joined multi-value fields — a
+    dropped span is invisible instead of flagged. Worth considering
+    whether `prompt_synthesis.py` should treat a `dropped_note`-flagged
+    field the same way it treats `multi_span` (mandatory review) rather
+    than letting it render as an ordinary, fully-trustworthy value.
+    **Fixed 2026-08-12, same day, continued session** — exactly that:
+    `build_fields()` now computes `dropped_values` (true when
+    `flagged_for_review` is set and `guard_note` mentions a drop) and
+    folds it into `needs_review`, reusing the existing ⚠️ UI mechanism.
+    Pure code change, no retrain, verified against both the exact repro
+    sentence above (now correctly flagged at 0.904 confidence, previously
+    invisible) and a clean sentence with no drop (no false positives).
+    Not yet committed.
 
 Full detail and reasoning for all of the above lives in git history — see
 commit `db3e52e`'s message specifically.
