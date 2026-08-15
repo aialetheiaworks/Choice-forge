@@ -262,6 +262,71 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-16 — found why real-usage correction data never arrives; CLAUDE.md sync-up)
+
+**New session.** User reported the app had genuinely been handed to a real
+external user and that the results were disappointing — this should have
+been the thing that finally satisfies the Phase 6 gate's condition 2 (real,
+non-solo usage). Verified everything against the actual repo state rather
+than taking the report at face value, since that's exactly the gap this
+project has flagged and left unverified for weeks.
+
+- **CLAUDE.md itself was stale.** `git log` showed two commits past what
+  this file documented: `0cf0fb1` (the gap-10 silent-drop fix from the
+  2026-08-12 continuation session, which this file still described as
+  "not committed yet") and a completely undocumented `f8f2e08` ("Disable
+  Streamlit file watcher to silence transformers/torchvision log noise").
+  Both are real, already on `main`, already pushed (`git status` showed a
+  clean tree, up to date with `origin/main`). This entry corrects that —
+  no outstanding uncommitted work from the 2026-08-12 sessions remains.
+- **The `f8f2e08` commit message is itself important evidence**: it refers
+  to "hosted app logs" being flooded with noise, which only makes sense if
+  the app has actually been running live on Streamlit Community Cloud and
+  receiving real traffic — consistent with the user's claim that a real
+  person used it.
+- **But `data/corrections_log.jsonl` still shows exactly 21 entries, every
+  one of them traceable by timestamp and query text to solo sessions
+  already documented in this file (2026-08-03 through 2026-08-12) — zero
+  entries distinguishable as coming from an outside user.** Checked
+  `correction_log.py` directly to find out why: it writes via plain
+  `open(LOG_PATH, "a")` to a path relative to the app's own directory
+  (`data/corrections_log.jsonl`) — no database, no cloud storage, no sync
+  mechanism of any kind (confirmed via grep: no `st.secrets`/persistence/
+  database/S3 references anywhere in `app.py` or `llm_client.py`).
+- **Root cause, high confidence: this is a real, previously-unflagged
+  architectural gap, not a data-collection oversight.** A Streamlit
+  Community Cloud deployment runs in its own container with its own
+  ephemeral filesystem, entirely separate from this local git checkout.
+  Every confirm/reject/edit a real hosted-app user makes gets appended to
+  a file inside *that* container — which is never committed, never
+  pushed, and is wiped on the next redeploy or container restart. The
+  file is even git-tracked locally, which makes a cloud-to-repo sync
+  structurally impossible as currently built (there's no code path that
+  would ever push a container-local file back to GitHub). This has
+  almost certainly been true since the app was first deployed (see the
+  2026-08-04 status entry on Streamlit Cloud deployment groundwork) —
+  meaning **every real-user correction/rejection generated on the hosted
+  app to date has been silently lost**, including whatever the user is
+  describing as "disappointing." The disappointment itself is very
+  plausibly real (consistent with the 33-50% intent/object/actor accuracy
+  found in the 2026-08-12 adversarial eval below) — it just left no trace
+  anywhere this project can read.
+- **Consequence for the Agreed build order's Phase 6 gate:** condition 2
+  ("real usage generating actual correction-log volume") cannot currently
+  be satisfied no matter how much real usage happens, until logging is
+  fixed to write somewhere that survives the hosted container and reaches
+  this repo (options not yet evaluated: a small external database,
+  cloud object storage, or an in-app "export/download log" affordance the
+  operator pulls periodically) — this is now the actual blocker, not lack
+  of users.
+- **Not resolved this session** — diagnosed and documented, not fixed.
+  Fixing the persistence path is a real design decision (which backing
+  store, how it's authenticated, whether `correction_log.py`'s interface
+  changes) that should be made deliberately rather than patched in a
+  rush, and the user's actual account of what the real user experienced
+  (which queries, what broke, any screenshots) is still needed and hasn't
+  been provided yet — asked for directly, not yet answered.
+
 ## Current status (as of 2026-08-12 — 36-sentence adversarial eval, hand-scored, no code changes)
 
 **New session, user request: run a structured adversarial eval — 18
