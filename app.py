@@ -500,6 +500,17 @@ if result:
     mode = st.session_state.get(mode_key, "initial")
     compound = synth["possible_compound_query"]
 
+    if decision is not None:
+        log_status = st.session_state.get(f"log_status_{run_id}")
+        if log_status and log_status["method"] != "github":
+            st.warning(
+                "Your correction was saved locally on this server, not to the "
+                "permanent record — if this server restarts before someone "
+                "exports it, it will be lost. "
+                f"(Reason: {log_status['error']})",
+                icon="⚠️",
+            )
+
     section_header("Here's what we understood")
     st.markdown(
         f'<div class="cf-fieldnote">{html.escape(synth["master_prompt"])}</div>',
@@ -565,7 +576,7 @@ if result:
                 if compound["is_possible_compound"] else None
             ),
         }
-        log_correction(entry)
+        st.session_state[f"log_status_{run_id}"] = log_correction(entry)
         st.session_state[decision_key] = entry["decision"]
         st.session_state[f"master_prompt_final_{run_id}"] = master_prompt_final
         if entry["decision"] == "confirmed":

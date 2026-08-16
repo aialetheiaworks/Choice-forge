@@ -248,6 +248,24 @@ user's own name, mobile number, and email are mandatory.
      instead of an informal intent that scope-creep could quietly skip.
   This gate does not block continued Phase 1-4 hardening, deployment, or
   real-data sourcing work in the meantime — only the *start* of Phase 6.
+  **Condition 2, reclassified 2026-08-16:** every session from 2026-08-09
+  through 2026-08-16 reported condition 2 as "not met, not enough real
+  usage yet." That framing was wrong. A real user *did* use the hosted
+  app in this window — the correction data just never survived to reach
+  `data/corrections_log.jsonl`, because of the persistence bug described
+  in Known gap 11 below (every correction from the hosted deployment was
+  written to that container's ephemeral filesystem and discarded on the
+  next redeploy/restart). Condition 2 was never a traffic shortfall; it
+  was a data-loss bug. Fixed 2026-08-16 (see Known gap 11) — corrections
+  now commit straight to this repo via the GitHub Contents API, so they
+  survive redeploys. **Condition 2's actual remaining requirement, as of
+  the fix:** some minimum volume of real (post-2026-08-16) corrections
+  need to actually accumulate and be retained — e.g. a rough floor of
+  15-20 real entries, mirroring the "20-30 new rows" batch-retrain
+  trigger this file already uses elsewhere — before treating condition 2
+  as satisfied. The pre-fix entries in `data/corrections_log.jsonl`
+  (21 as of 2026-08-16, all traceable to solo-testing sessions already
+  documented in this file) do not count toward that floor.
 - **Phase 6** (later, unscoped) — Step 2 / Horizon: build the Intent
   Classifier + wire up the Knowledge Bucket Library and tooltip assembly.
 - **Phase 7** (later, unscoped) — Step 3 / Guide: alternative comparison
@@ -319,13 +337,72 @@ project has flagged and left unverified for weeks.
   cloud object storage, or an in-app "export/download log" affordance the
   operator pulls periodically) — this is now the actual blocker, not lack
   of users.
-- **Not resolved this session** — diagnosed and documented, not fixed.
-  Fixing the persistence path is a real design decision (which backing
-  store, how it's authenticated, whether `correction_log.py`'s interface
-  changes) that should be made deliberately rather than patched in a
-  rush, and the user's actual account of what the real user experienced
-  (which queries, what broke, any screenshots) is still needed and hasn't
-  been provided yet — asked for directly, not yet answered.
+- **Diagnosed, not yet fixed, at this point in the session** — the actual
+  fix landed in the same-day continuation immediately below, once the
+  user specified the persistence approach directly rather than leaving it
+  for this session to pick unilaterally. The user's actual account of
+  what the real hosted user experienced was asked for twice and never
+  provided (a follow-up message described a full adversarial-eval task
+  spec, not real-user results — see the continuation below); since the
+  underlying corrections are permanently unrecoverable regardless, this
+  session moved on to fixing the persistence bug itself rather than
+  continuing to wait on unretrievable detail.
+
+**Same-day continuation: fixed the persistence bug (Known gap 11), per an
+explicit spec from the user** (reuse GitHub as the durability layer rather
+than provisioning a new database/service, since this repo is already the
+system of record for corrections).
+
+- `correction_log.py` rewritten: `log_correction()` now tries the GitHub
+  Contents API first (`GET` current content+SHA → append one JSON line →
+  `PUT` with that SHA, committed with a `chore: log correction from hosted
+  session {timestamp}` message), authenticated via `GITHUB_TOKEN`
+  (`os.environ`, with the same `st.secrets`→`os.environ` bridge pattern
+  `llm_client.py` already uses for Streamlit Cloud). On a 409 (a second
+  correction racing the same SHA) it re-fetches and retries up to twice.
+  If `GITHUB_TOKEN` is unset or every attempt still fails, it falls back
+  to the pre-existing local append so a correction is never dropped
+  outright — but since that fallback is exactly as non-durable on a
+  hosted container as the original bug, `app.py` now shows a visible,
+  non-blocking `st.warning` (reading a `log_status` dict `log_correction`
+  returns) whenever the fallback path was used, instead of the old
+  silent failure. Used the stdlib `urllib` rather than adding `requests`
+  as a new dependency — no requirements.txt change needed.
+- **Verified against the real repo, not just locally**, using a
+  temporary personal GitHub token (not the app's own `GITHUB_TOKEN`,
+  which the user still needs to create and add to Streamlit Cloud's
+  secrets — this session had no access to do that) to exercise the actual
+  code path end-to-end: (1) a test correction committed via the API
+  appeared as a new line in `data/corrections_log.jsonl` on GitHub,
+  confirmed via a direct, independent API read, while briefly absent from
+  the local checkout until `git pull` — concretely demonstrating the
+  durability the old local-only write lacked; (2) fired two corrections
+  concurrently from two threads and confirmed both landed as two distinct
+  commits (`cf32cfd`, `63c29ff`) with no lost update from the 409 race;
+  (3) confirmed the no-token/local-fallback path still degrades cleanly
+  (module imports and logs locally with no crash when `GITHUB_TOKEN` is
+  unset). All test entries were clearly marked (`"TEST ENTRY... safe to
+  delete"`) and removed from `data/corrections_log.jsonl` in a follow-up
+  commit before finishing, so no synthetic data is mixed into what Phase
+  5 will eventually train on.
+- Documented the required `GITHUB_TOKEN` setup (a fine-grained PAT scoped
+  only to this repo's contents) in `README.md`'s new "Correction logging"
+  section.
+- **Reclassified the Phase 6 gate's condition 2** in the "Agreed build
+  order" section above, and added the full write-up as Known gap 11 below
+  — condition 2 was never a traffic shortfall, it was this data-loss bug,
+  and it now has a concrete remaining requirement (some floor of real
+  corrections actually retained post-fix, since the pre-fix 21 entries
+  don't count).
+- **Still outstanding**: the app's own `GITHUB_TOKEN` secret still needs
+  to be created (by the user, scoped to this repo only) and added to the
+  Streamlit Cloud deployment's secrets before this fix takes effect on
+  the live hosted app — until then, the hosted app is still silently
+  using the local-fallback path (now at least visibly warned about in the
+  UI, but still not durable). And the original ask — what specifically
+  went wrong for the real user — is still unanswered and unrecoverable;
+  worth getting a fresh, deliberate read now that logging is fixed, since
+  there's no way to reconstruct their session after the fact.
 
 ## Current status (as of 2026-08-12 — 36-sentence adversarial eval, hand-scored, no code changes)
 
@@ -2213,7 +2290,52 @@ What happened in the 2026-07-27 session:
     Pure code change, no retrain, verified against both the exact repro
     sentence above (now correctly flagged at 0.904 confidence, previously
     invisible) and a clean sentence with no drop (no false positives).
-    Not yet committed.
+    Committed `0cf0fb1`.
+
+11. **Real-user corrections from the hosted Streamlit Cloud deployment were
+    silently discarded, not weak or rare — a persistence bug, not a data
+    gap.** Discovered 2026-08-16 while trying to act on the user's report
+    that a real person had used the app and the results were disappointing:
+    `data/corrections_log.jsonl` still showed only 21 entries, every one
+    traceable by timestamp/query text to solo-testing sessions already
+    documented in this file, despite other evidence (the `f8f2e08` commit
+    message describing "hosted app logs") confirming the app really had
+    been live and getting real traffic. Root cause: `correction_log.py`
+    wrote via plain `open(LOG_PATH, "a")` to a path relative to the app's
+    own directory. A Streamlit Community Cloud deployment runs in its own
+    container with its own ephemeral filesystem, entirely separate from
+    this git repo — every real hosted-user correction was appended to a
+    file inside that container, never committed, never pushed, and wiped
+    on the next redeploy/restart. `data/corrections_log.jsonl` was even
+    git-tracked locally, which made a cloud-to-repo sync structurally
+    impossible as originally built (no code path ever pushed a
+    container-local file back to GitHub). **Active window: 2026-08-04**
+    (first Streamlit Cloud deployment, per that day's status entry)
+    **through 2026-08-16** (this fix) — every real-user correction made in
+    that window, including whatever the user found disappointing, is
+    unrecoverable; nothing was retained to inspect after the fact.
+    **Fixed 2026-08-16**: `correction_log.py` now writes each correction
+    straight to `data/corrections_log.jsonl` in this repo via the GitHub
+    Contents API (GET current content+SHA, append one JSON line, PUT with
+    that SHA), authenticated via a fine-grained `GITHUB_TOKEN` scoped only
+    to this repo's contents (see `README.md`'s "Correction logging"
+    section for setup). On a 409 (two corrections landing within the same
+    few seconds racing on the same SHA) it re-fetches the latest SHA and
+    retries up to twice before falling back to a local append — verified
+    live: two corrections fired concurrently both landed as two distinct
+    commits (`cf32cfd`, `63c29ff`) with zero data loss. If `GITHUB_TOKEN`
+    is unset or every GitHub attempt fails, it falls back to the old local
+    append so nothing is lost mid-request — but since that fallback is
+    exactly as non-durable on a hosted container as the original bug, the
+    UI now shows a visible, non-blocking warning whenever it's used,
+    rather than logging silently. Verified end-to-end against the real
+    repo (not just locally): a test correction committed via the API
+    appeared as a new line in `data/corrections_log.jsonl` on GitHub
+    (confirmed via a direct API read) while absent from the local
+    checkout until pulled — demonstrating the exact durability the
+    ephemeral-container bug lacked. Also reclassifies the Phase 6 gate's
+    condition 2 (see "Agreed build order" above) — it was never a traffic
+    shortfall, it was this data-loss bug.
 
 Full detail and reasoning for all of the above lives in git history — see
 commit `db3e52e`'s message specifically.

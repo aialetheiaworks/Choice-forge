@@ -63,6 +63,28 @@ provider, clicking "Send to {Provider}" shows a clear error in the UI
 instead of a live answer — the rest of the app (extraction, master-prompt
 editing, confirm/reject logging) works the same either way.
 
+## Correction logging
+
+Every confirm/reject decision is appended to `data/corrections_log.jsonl` —
+this is the training data Phase 5 will eventually retrain the
+prompt-synthesis model on, so it needs to land durably in this repo, not in
+whatever server happens to be running the app. `correction_log.py` writes
+straight to that file in GitHub via the Contents API, authenticated with a
+`GITHUB_TOKEN`:
+
+```bash
+# .env (local) or Streamlit Cloud's Secrets UI (hosted)
+GITHUB_TOKEN=github_pat_...
+```
+
+Use a **fine-grained personal access token scoped only to this repo**, with
+**Contents: Read and write** permission and nothing else. Without a token
+set, corrections still get logged, but only to that process's local
+filesystem — fine for local dev, but on Streamlit Cloud that filesystem is
+wiped on every redeploy/restart, so nothing durable is recorded. When that
+fallback path is used, the UI shows a visible warning rather than logging
+silently.
+
 ## Run it from the command line
 
 ```bash
