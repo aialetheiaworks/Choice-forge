@@ -20,6 +20,7 @@ import statistics
 import streamlit as st
 
 import blank_suggestions
+import bucket_client
 import llm_client
 import master_prompt_llm
 from correction_log import log_correction
@@ -839,9 +840,47 @@ if result:
                 "AI assembly was unavailable, so this is the template version. "
                 f"({llm_prompt_error})"
             )
-        # Phase B (TOOLTIP_INTEGRATION_PLAN.md): POST `llm_prompt` to the
-        # Bucket Matching API here and render the returned "also consider…"
-        # tooltip lines as the reflection panel.
+
+        # Phase B (TOOLTIP_INTEGRATION_PLAN.md): the confirmed master prompt
+        # goes to the CHOICE Bucket Matching Engine, which returns business-
+        # thinking prompts the user may not have considered. Fetched once per
+        # run_id; the service is on a free tier that can cold-start slowly.
+        tip_key = f"tooltips_{run_id}"
+        if tip_key not in st.session_state:
+            with st.spinner(
+                "Finding what else to think about… "
+                "(first call can take up to a minute if the service was idle)"
+            ):
+                st.session_state[tip_key] = bucket_client.get_tooltips(llm_prompt)
+        ranked, tip_error = st.session_state[tip_key]
+
+        st.divider()
+        section_header(
+            "Before you go further — think about",
+            "Prompts drawn from an 80-topic business-thinking taxonomy, matched "
+            "to your objective. Not answers — things worth working through.",
+        )
+        if tip_error:
+            st.caption(f"Reflection prompts aren't available right now. ({tip_error})")
+            if st.button("Try again", key=f"retry_tips_{run_id}"):
+                st.session_state.pop(tip_key, None)
+                st.rerun()
+        elif not ranked:
+            st.caption("No specific prompts surfaced for this objective.")
+        else:
+            cards = "".join(
+                '<div class="cf-card">'
+                f'<div class="cf-card-label">🧭 {html.escape(str(b.get("name", "")))}</div>'
+                f'<div class="cf-value">{html.escape(str(b.get("prompt", "")))}</div>'
+                + (
+                    f'<div class="cf-source">matched: '
+                    f'<code>{html.escape(", ".join(b.get("matched_terms") or []))}</code></div>'
+                    if b.get("matched_terms") else ""
+                )
+                + "</div>"
+                for b in ranked
+            )
+            st.markdown(f'<div class="cf-grid">{cards}</div>', unsafe_allow_html=True)
 
 st.divider()
 with st.expander("About this model"):

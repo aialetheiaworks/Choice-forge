@@ -299,8 +299,8 @@ answer. Concrete pivot, written up in full in the new
   Engine** (`POST /tooltip`, the user's separate FastAPI service — 80-bucket
   business taxonomy, spaCy lemma matching, returns 5–7 "also consider
   thinking about X" nudges). Those nudges are the think-harder mechanism.
-  That's Phase B — **blocked until the user gives a reachable URL for the
-  bucket service** (still open as of this session).
+  That's Phase B — **built this session** once the user supplied the URL
+  (`https://choice-bucket-matching.onrender.com`, `POST /tooltip`).
 
 **The entire extraction pipeline is untouched** — no `pipeline.py`, no
 `prompt_synthesis.py` template changes, no retraining, models byte-identical
@@ -328,10 +328,29 @@ offline):**
   2-field query — assembled clean sentences, correctly omitted MISSING /
   NOT APPLICABLE fields, introduced no fabricated specifics; the bad-provider
   path returns `(None, error)` and the app falls back to the template.
-- **Not verified this session:** the live UI flow (the `review_prompt` gate,
-  the trimmed reject path) — browser was unavailable. First task next
-  session: `streamlit run app.py`, click through confirm-with-edits →
-  looks-right gate → confirmed, and a double-reject → rephrase-only.
+- **Not verified this session:** the live UI flow — browser extension was
+  offline. First task next session: `streamlit run app.py` and click
+  through (a) confirm-with-edits → looks-right gate → confirmed screen with
+  the bucket cards rendering, (b) "fix the fields" from the gate → edits
+  preserved, (c) double-reject → rephrase-only (no bypass button).
+
+**Phase B — built this session, also NOT click-tested:**
+- New `bucket_client.py` — stdlib `urllib` (no new dependency), 150s
+  timeout (the Render free tier cold-starts slowly), certifi-backed SSL
+  context (the local python.org macOS build ships no CA bundle, so a plain
+  `urlopen` over HTTPS fails `CERTIFICATE_VERIFY_FAILED` — a latent risk in
+  `correction_log.py` too, not fixed there this session).
+  `get_tooltips(master_prompt) -> (ranked, error)`, never raises.
+- `app.py` confirmed screen fetches tooltips once per `run_id` and renders
+  `ranked` as a card grid (bucket name + prompt + matched terms) under the
+  master prompt. Failure is a non-blocking caption + "Try again"; the
+  master prompt still shows.
+- `BUCKET_API_URL` optional env override (default baked in);
+  `.env.example` + `API_KEYS.md` documented; `certifi` added to
+  `requirements.txt`.
+- Verified: live `/health` and `/tooltip` calls succeed;
+  `bucket_client.get_tooltips()` returns correct `ranked` data against the
+  live service.
 
 **Phase C (token/prompt hardening) and Phase D (FastAPI-ify everything +
 new frontend) not started.** Local master-prompt generation (instead of an

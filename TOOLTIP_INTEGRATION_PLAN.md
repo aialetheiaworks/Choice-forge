@@ -79,13 +79,31 @@ may not want it).
 Left for the next session: live click-through of the full flow (browser
 extension was offline when Phase A was built).
 
-### Phase B — Bucket Matching API integration  (BLOCKED: need a reachable URL)
+### Phase B — Bucket Matching API integration  ← DONE (2026-08-30, not yet click-tested)
 
-- `bucket_client.py` (new) — `POST {BUCKET_API_URL}/tooltip`,
-  `{"master_prompt": ...}` → ranked buckets + tooltip lines, short timeout,
-  graceful degrade (show prompt without nudges if the service is down).
-- `app.py` — render tooltip lines under the confirmed master prompt.
-- `BUCKET_API_URL` in `.env` / Streamlit secrets; document in `API_KEYS.md`.
+Service: `https://choice-bucket-matching.onrender.com` — `POST /tooltip`
+`{"master_prompt": "..."}` → `{tooltip_lines, ranked}`. Free-tier Render,
+cold-starts slowly (~1 min after idle). No auth. `GET /health` →
+`{"status":"ok","buckets_loaded":80}`.
+
+- `bucket_client.py` (new) — stdlib `urllib` (no new dep), 150s timeout for
+  cold starts, certifi SSL context (the python.org macOS build ships no CA
+  bundle), `get_tooltips(master_prompt) -> (ranked, error)`, never raises.
+- `app.py` — on the confirmed screen, fetch once per `run_id` (spinner +
+  cold-start note) and render `ranked` as a card grid under the master
+  prompt: bucket name + its prompt + matched terms. Error → non-blocking
+  caption + "Try again" button. `[]` → "no prompts surfaced".
+- `BUCKET_API_URL` env override (optional — default is baked in),
+  `.env.example` + `API_KEYS.md` documented. `certifi` added to
+  `requirements.txt` (was already transitive).
+- Verified: `/health` + a real `/tooltip` call return correctly;
+  `bucket_client.get_tooltips()` tested directly against the live service
+  and the empty-input guard.
+- Not click-tested in the UI (browser offline this session).
+
+Not done in Phase B: logging which prompts the user saw for a given master
+prompt back to the correction log (the entry is already written at confirm,
+before the fetch) — a candidate for Phase C.
 
 ### Phase C — token & prompt hardening
 
@@ -105,9 +123,8 @@ extension was offline when Phase A was built).
 
 ## Open decisions
 
-1. **Bucket Matching API** — deployed + reachable (URL)? Or still local
-   code? Phase B blocked until callable.  ← STILL OPEN
-
+1. ~~Bucket Matching API URL~~ — **resolved** (2026-08-30):
+   `https://choice-bucket-matching.onrender.com`. Phase B built.
 2. ~~Raw-query bypass~~ — **removed** (2026-08-30).
 3. ~~Re-confirm the LLM master prompt~~ — **yes, "looks right?" gate added**
    (2026-08-30).

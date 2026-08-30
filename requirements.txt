@@ -11,3 +11,4 @@ anthropic
 google-genai
 ollama
 python-dotenv
+certifi

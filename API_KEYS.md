@@ -56,6 +56,23 @@ else in the code needs to move.
   env var itself — it only calls `llm_client.generate_output()`. All key
   handling stays inside `llm_providers/`.
 
+## CHOICE Bucket Matching Engine (not an LLM, no key)
+
+After a master prompt is confirmed, `bucket_client.py` POSTs it to the
+CHOICE Bucket Matching Engine (`POST /tooltip`) to get the "also consider
+thinking about…" reflection prompts shown on the confirmed screen. This is
+a separate REST service, not an LLM and not this repo.
+
+- **No key / no auth** (the endpoint is currently open).
+- **`BUCKET_API_URL`** — optional env var; overrides the hardcoded default
+  base URL (`https://choice-bucket-matching.onrender.com`). Set it only to
+  point at a different deployment or a local run of that service.
+- The service is on a free tier that spins down when idle, so the first
+  call after a lull can take up to a minute — `bucket_client.py` uses a
+  150s timeout and `app.py` shows a loading state. A failure here is
+  non-blocking: the confirmed master prompt still shows, just without the
+  prompts.
+
 ## Adding a new provider
 
 1. Create `llm_providers/<name>_provider.py` with one function:
