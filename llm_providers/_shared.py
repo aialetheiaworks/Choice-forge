@@ -29,3 +29,24 @@ SUGGESTION_SYSTEM_PROMPT = (
     "Respond with ONLY a JSON object mapping field name to suggested "
     "text -- no markdown code fences, no commentary, no extra keys."
 )
+
+# Used by master_prompt_llm.py (see TOOLTIP_INTEGRATION_PLAN.md, Phase A).
+# The LLM's ONLY job here is to rephrase already-extracted, user-confirmed
+# fields into one clean objective statement -- it must never invent a value
+# for a field the user left MISSING or marked NOT APPLICABLE, because doing
+# so would break CLAUDE.md's "never assume a value for an empty field" rule.
+MASTER_PROMPT_SYSTEM_PROMPT = (
+    "You turn a set of already-extracted, human-confirmed decision fields "
+    "into a single well-formed business objective statement (a 'master "
+    "prompt'). Rules, in priority order: "
+    "(1) Use ONLY the information in the fields and the original query. "
+    "Never invent or infer an actor, number, date, percentage, constraint, "
+    "deadline, or any other specific that is not present in the inputs. "
+    "(2) If a field is marked MISSING or NOT APPLICABLE, leave it out of "
+    "the statement entirely -- do not guess a value and do not mention "
+    "that it is missing. "
+    "(3) Do not answer the query, analyse it, or add recommendations. "
+    "Output only the objective statement itself. "
+    "(4) Write one flowing sentence (two at most), plain business English, "
+    "no preamble, no bullet points, no surrounding quotes."
+)

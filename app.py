@@ -21,6 +21,7 @@ import streamlit as st
 
 import blank_suggestions
 import llm_client
+import master_prompt_llm
 from correction_log import log_correction
 from pipeline import Pipeline, ROLES
 from prompt_synthesis import (
@@ -430,7 +431,7 @@ def _start_rephrase(decision_key, mode_key):
     already been instantiated earlier in that same pass; a callback runs
     before the next rerun's widgets exist at all."""
     st.session_state.query_text = st.session_state.last_query
-    for key in ("last_result", decision_key, mode_key, "llm_output", "llm_error"):
+    for key in ("last_result", decision_key, mode_key):
         st.session_state.pop(key, None)
 
 
@@ -479,8 +480,6 @@ if run and query.strip():
     st.session_state.last_query = query.strip()
     st.session_state.run_id += 1
     for key in (
-        "llm_output",
-        "llm_error",
         "blank_suggestions",
         "blank_suggestions_error",
         "blank_suggestions_run_id",
@@ -558,15 +557,43 @@ if result:
         )
         st.json(result)
 
-    def _log_and_finish(final_fields, log_fields, resolution_path, reject_reason_text=None):
+    pending_key = f"pending_review_{run_id}"
+
+    def _prepare_review(final_fields, log_fields, resolution_path):
+        """Confirm step 1 of 2: hand the confirmed field set to the LLM to
+        assemble a polished master prompt (TOOLTIP_INTEGRATION_PLAN.md,
+        Phase A), then park everything in `review_prompt` mode so the user
+        can approve that assembled sentence before it's logged and (Phase B)
+        sent to the Bucket Matching API. One LLM call, rephrasing only --
+        falls back to the template sentence on any failure."""
+        with st.spinner("Assembling your master prompt..."):
+            llm_text, llm_error = master_prompt_llm.generate_master_prompt(
+                st.session_state.last_query, final_fields
+            )
+        st.session_state[pending_key] = {
+            "final_fields": final_fields,
+            "log_fields": log_fields,
+            "resolution_path": resolution_path,
+            "master_prompt_final": render_sentence(final_fields),
+            "master_prompt_llm": llm_text,
+            "master_prompt_llm_error": llm_error,
+        }
+        st.session_state[mode_key] = "review_prompt"
+        st.rerun()
+
+    def _log_and_finish(final_fields, log_fields, resolution_path,
+                        reject_reason_text=None, llm_text=None, llm_error=None):
         master_prompt_final = render_sentence(final_fields)
+        confirmed = resolution_path.startswith("confirmed")
         entry = {
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "query": st.session_state.last_query,
             "fields": log_fields,
             "master_prompt_shown": synth["master_prompt"],
             "master_prompt_final": master_prompt_final,
-            "decision": "confirmed" if resolution_path.startswith("confirmed") else "rejected",
+            "master_prompt_llm": llm_text,
+            "master_prompt_llm_error": llm_error,
+            "decision": "confirmed" if confirmed else "rejected",
             "resolution_path": resolution_path,
             "reject_reason": reject_reason_text,
             "reject_streak_at_decision": st.session_state.reject_streak,
@@ -579,7 +606,10 @@ if result:
         st.session_state[f"log_status_{run_id}"] = log_correction(entry)
         st.session_state[decision_key] = entry["decision"]
         st.session_state[f"master_prompt_final_{run_id}"] = master_prompt_final
-        if entry["decision"] == "confirmed":
+        st.session_state[f"master_prompt_llm_{run_id}"] = llm_text or master_prompt_final
+        st.session_state[f"master_prompt_llm_error_{run_id}"] = llm_error
+        st.session_state.pop(pending_key, None)
+        if confirmed:
             st.session_state.reject_streak = 0
         else:
             st.session_state.reject_streak += 1
@@ -617,7 +647,7 @@ if result:
                         "ai_suggested": False,
                         "ai_suggestion_shown": None,
                     }
-                _log_and_finish(final_fields, log_fields, "confirmed_as_is")
+                _prepare_review(final_fields, log_fields, "confirmed_as_is")
             if no_col.button("✏️ Not quite — let me fix it", key=f"notquite_{run_id}"):
                 st.session_state[mode_key] = "editing"
                 st.rerun()
@@ -745,18 +775,50 @@ if result:
                 }
 
             if continue_clicked:
-                _log_and_finish(final_fields, log_fields, "confirmed_with_edits")
+                _prepare_review(final_fields, log_fields, "confirmed_with_edits")
             else:
                 _log_and_finish(
                     final_fields, log_fields, "rejected", reject_reason.strip() or None
                 )
 
+    elif decision is None and mode == "review_prompt":
+        pending = st.session_state.get(pending_key)
+        if not pending:  # session lost the stash (e.g. reload) -- send them back
+            st.session_state[mode_key] = "editing"
+            st.rerun()
+        llm_prompt = pending["master_prompt_llm"] or pending["master_prompt_final"]
+        section_header("Your master prompt")
+        st.caption(
+            "We assembled the fields you confirmed into one objective statement. "
+            "Check it reads right — it's what drives the reflection prompts next."
+        )
+        st.markdown(
+            f'<div class="cf-fieldnote">{html.escape(llm_prompt)}</div>',
+            unsafe_allow_html=True,
+        )
+        if pending["master_prompt_llm_error"]:
+            st.caption(
+                "AI assembly was unavailable, so this is the template version. "
+                f"({pending['master_prompt_llm_error']})"
+            )
+        ok_col, fix_col = st.columns(2)
+        if ok_col.button("✅ Looks right — continue", type="primary", key=f"approve_{run_id}"):
+            _log_and_finish(
+                pending["final_fields"],
+                pending["log_fields"],
+                pending["resolution_path"],
+                llm_text=pending["master_prompt_llm"],
+                llm_error=pending["master_prompt_llm_error"],
+            )
+        if fix_col.button("✏️ Not quite — fix the fields", key=f"fixfields_{run_id}"):
+            st.session_state.pop(pending_key, None)
+            st.session_state[mode_key] = "editing"
+            st.rerun()
+
     elif decision == "rejected":
         st.warning("Thanks — this helps us improve future results.")
-        streak = st.session_state.reject_streak
         st.markdown("**What would you like to do?**")
-        retry_col, bypass_col = st.columns(2)
-        retry_col.button(
+        st.button(
             "🔁 Rephrase and try again",
             key=f"retry_{run_id}",
             on_click=_start_rephrase,
@@ -764,47 +826,22 @@ if result:
         )
         st.caption("Tip: try naming who's responsible, a specific number, and a deadline.")
 
-        if streak >= 2:
-            if bypass_col.button("➡️ Just answer my original question directly", key=f"bypass_{run_id}"):
-                with st.spinner(f"Asking {provider_label} directly..."):
-                    try:
-                        st.session_state[f"bypass_output_{run_id}"] = llm_client.generate_output(
-                            st.session_state.last_query
-                        )
-                        st.session_state[f"bypass_error_{run_id}"] = None
-                    except Exception as e:
-                        st.session_state[f"bypass_output_{run_id}"] = None
-                        st.session_state[f"bypass_error_{run_id}"] = str(e)
-            bypass_col.caption("Skips CHOICE's structured understanding step.")
-
-        if st.session_state.get(f"bypass_error_{run_id}"):
-            st.error(f"{provider_label} call failed: {st.session_state[f'bypass_error_{run_id}']}")
-        elif st.session_state.get(f"bypass_output_{run_id}"):
-            st.info("Direct answer — structured understanding skipped.")
-            st.markdown(st.session_state[f"bypass_output_{run_id}"])
-
     if decision == "confirmed":
-        st.success(f"Got it:\n\n{st.session_state.get(f'master_prompt_final_{run_id}', '')}")
-        st.divider()
-        section_header("Answer")
-        if st.button(f"🚀 Send to {provider_label}", key=f"send_{run_id}"):
-            with st.spinner(f"Calling {provider_label}..."):
-                try:
-                    st.session_state.llm_output = llm_client.generate_output(
-                        st.session_state[f"master_prompt_final_{run_id}"]
-                    )
-                    st.session_state.llm_error = None
-                except Exception as e:
-                    st.session_state.llm_output = None
-                    st.session_state.llm_error = str(e)
-
-        if st.session_state.get("llm_error"):
-            st.error(
-                f"{provider_label} call failed: {st.session_state.llm_error}\n\n"
-                f"Check the `{active_provider}` provider's setup in `API_KEYS.md`."
+        llm_prompt = st.session_state.get(f"master_prompt_llm_{run_id}", "")
+        llm_prompt_error = st.session_state.get(f"master_prompt_llm_error_{run_id}")
+        st.success("Master prompt confirmed:")
+        st.markdown(
+            f'<div class="cf-fieldnote">{html.escape(llm_prompt)}</div>',
+            unsafe_allow_html=True,
+        )
+        if llm_prompt_error:
+            st.caption(
+                "AI assembly was unavailable, so this is the template version. "
+                f"({llm_prompt_error})"
             )
-        elif st.session_state.get("llm_output"):
-            st.markdown(st.session_state.llm_output)
+        # Phase B (TOOLTIP_INTEGRATION_PLAN.md): POST `llm_prompt` to the
+        # Bucket Matching API here and render the returned "also consider…"
+        # tooltip lines as the reflection panel.
 
 st.divider()
 with st.expander("About this model"):

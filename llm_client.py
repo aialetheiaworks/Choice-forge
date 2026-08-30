@@ -17,7 +17,7 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from llm_providers import anthropic_provider, gemini_provider, ollama_provider
-from llm_providers._shared import SUGGESTION_SYSTEM_PROMPT
+from llm_providers._shared import MASTER_PROMPT_SYSTEM_PROMPT, SUGGESTION_SYSTEM_PROMPT
 
 load_dotenv()  # local dev: reads .env if present, no-op otherwise
 
@@ -69,3 +69,12 @@ def generate_suggestions(prompt):
     blank_suggestions.py). Same raise/catch convention as generate_output.
     """
     return _provider_fn()(prompt, system_prompt=SUGGESTION_SYSTEM_PROMPT)
+
+
+def generate_master_prompt(prompt):
+    """Call the LLM_PROVIDER-configured provider with the master-prompt
+    assembly system prompt (see master_prompt_llm.py and
+    TOOLTIP_INTEGRATION_PLAN.md). Same raise/catch convention as
+    generate_output -- the caller catches and falls back to the template.
+    """
+    return _provider_fn()(prompt, system_prompt=MASTER_PROMPT_SYSTEM_PROMPT)

@@ -280,6 +280,67 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-08-30 — product pivot: LLM builds the master prompt, no more answer generation; Phase A of the tooltip-integration plan)
+
+**New session, user-driven product-direction change.** The user confirmed
+CHOICE should lean fully into its documented philosophy — it exists to make
+the user *think harder about their own decision*, not to hand them an
+answer. Concrete pivot, written up in full in the new
+`TOOLTIP_INTEGRATION_PLAN.md` (phases A–D):
+
+- The final "generate an answer" step (old Phase 4 / "Step 6") is gone. The
+  same LLM budget is repurposed to **assemble the master prompt**: on
+  confirm, (raw query + the user-confirmed 9 fields) go to the configured
+  LLM with a strict system prompt (`MASTER_PROMPT_SYSTEM_PROMPT` in
+  `llm_providers/_shared.py`) — rephrase only, never invent a value,
+  omit anything MISSING / NOT APPLICABLE. One call. Falls back to the
+  deterministic `render_sentence()` template on any provider error.
+- That master prompt will then be POSTed to the **CHOICE Bucket Matching
+  Engine** (`POST /tooltip`, the user's separate FastAPI service — 80-bucket
+  business taxonomy, spaCy lemma matching, returns 5–7 "also consider
+  thinking about X" nudges). Those nudges are the think-harder mechanism.
+  That's Phase B — **blocked until the user gives a reachable URL for the
+  bucket service** (still open as of this session).
+
+**The entire extraction pipeline is untouched** — no `pipeline.py`, no
+`prompt_synthesis.py` template changes, no retraining, models byte-identical
+to commit `042fa51`. Only the flow from confirm onward changed.
+
+**Phase A — built this session, NOT yet click-tested (browser extension was
+offline):**
+- New `master_prompt_llm.py`; new `MASTER_PROMPT_SYSTEM_PROMPT` +
+  `llm_client.generate_master_prompt()`.
+- `app.py` confirm is now 2-step: `_prepare_review()` makes the LLM call and
+  parks the flow in a new `review_prompt` mode → the user approves the
+  assembled sentence ("✅ Looks right — continue") → `_log_and_finish()`
+  logs it and (Phase B) will fetch the tooltips. "✏️ Not quite — fix the
+  fields" returns to the edit form with edits preserved.
+- **Removed** from `app.py`: the "Answer" / "Send to {provider}" block, and
+  the 2-reject raw-query bypass (per explicit user decision — the product
+  now generates no answer anywhere). Reject path offers only "🔁 Rephrase
+  and try again". `llm_client.generate_output()` is now unused (kept for
+  now).
+- Correction-log entries now also carry `master_prompt_llm` +
+  `master_prompt_llm_error` (extra Phase 5 signal). `correction_log.py`
+  itself unchanged.
+- Verified: all files compile; `master_prompt_llm.generate_master_prompt()`
+  tested with real provider calls on a full-9-field query and a sparse
+  2-field query — assembled clean sentences, correctly omitted MISSING /
+  NOT APPLICABLE fields, introduced no fabricated specifics; the bad-provider
+  path returns `(None, error)` and the app falls back to the template.
+- **Not verified this session:** the live UI flow (the `review_prompt` gate,
+  the trimmed reject path) — browser was unavailable. First task next
+  session: `streamlit run app.py`, click through confirm-with-edits →
+  looks-right gate → confirmed, and a double-reject → rephrase-only.
+
+**Phase C (token/prompt hardening) and Phase D (FastAPI-ify everything +
+new frontend) not started.** Local master-prompt generation (instead of an
+API LLM) is explicitly a Phase D concern for when the team grows — drops in
+as a provider swap, no flow change.
+
+Committed this session (see git log). Nothing pushed unless the git log
+shows otherwise.
+
 ## Current status (as of 2026-08-16 — found why real-usage correction data never arrives; CLAUDE.md sync-up)
 
 **New session.** User reported the app had genuinely been handed to a real
