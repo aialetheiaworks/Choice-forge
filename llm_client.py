@@ -71,10 +71,23 @@ def generate_suggestions(prompt):
     return _provider_fn()(prompt, system_prompt=SUGGESTION_SYSTEM_PROMPT)
 
 
+# The assembled master prompt is one or two sentences. The cap is a safety
+# ceiling (stop a misbehaving model running up a bill or stalling the
+# confirm step), not a tight budget -- it has to leave room for a
+# reasoning model's internal thinking tokens, which count against this
+# limit before any visible output is produced. 2k is still ~a fraction of
+# a cent on a flash-tier model.
+MASTER_PROMPT_MAX_TOKENS = 2048
+
+
 def generate_master_prompt(prompt):
     """Call the LLM_PROVIDER-configured provider with the master-prompt
     assembly system prompt (see master_prompt_llm.py and
     TOOLTIP_INTEGRATION_PLAN.md). Same raise/catch convention as
     generate_output -- the caller catches and falls back to the template.
     """
-    return _provider_fn()(prompt, system_prompt=MASTER_PROMPT_SYSTEM_PROMPT)
+    return _provider_fn()(
+        prompt,
+        system_prompt=MASTER_PROMPT_SYSTEM_PROMPT,
+        max_tokens=MASTER_PROMPT_MAX_TOKENS,
+    )

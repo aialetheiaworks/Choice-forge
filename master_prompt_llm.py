@@ -45,16 +45,24 @@ def build_user_message(query, final_fields):
     return "\n".join(lines)
 
 
+# One retry covers a transient network blip / rate-limit without making the
+# confirm step wait through a long back-off.
+_MAX_ATTEMPTS = 2
+
+
 def generate_master_prompt(query, final_fields):
     """Returns (master_prompt_text, error_or_None). On any failure returns
     (None, error_string) so the caller can fall back to the deterministic
     template sentence instead of losing the confirm action."""
     message = build_user_message(query, final_fields)
-    try:
-        text = llm_client.generate_master_prompt(message)
-        text = (text or "").strip().strip('"').strip()
-        if not text:
-            return None, "LLM returned an empty response"
-        return text, None
-    except Exception as e:  # network / auth / provider errors -- see API_KEYS.md
-        return None, str(e)
+    last_error = None
+    for attempt in range(_MAX_ATTEMPTS):
+        try:
+            text = llm_client.generate_master_prompt(message)
+            text = (text or "").strip().strip('"').strip()
+            if text:
+                return text, None
+            last_error = "LLM returned an empty response"
+        except Exception as e:  # network / auth / provider -- see API_KEYS.md
+            last_error = str(e)
+    return None, last_error

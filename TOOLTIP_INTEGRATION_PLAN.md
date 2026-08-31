@@ -105,21 +105,69 @@ Not done in Phase B: logging which prompts the user saw for a given master
 prompt back to the correction log (the entry is already written at confirm,
 before the fetch) — a candidate for Phase C.
 
-### Phase C — token & prompt hardening
+### Phase C — token & prompt hardening  ← DONE (2026-08-31)
 
-- Trim payload to essentials, pin `max_tokens`, cheap retry, cache
-  identical (query+fields) calls within a session so re-renders don't
-  re-bill.
-- Test the system prompt against ≥10 existing eval queries; confirm it
-  never introduces a specific (number / date / name / constraint) not
-  present in the inputs.
+- Payload was already lean (compact `role: value | MISSING | N/A` list) —
+  no trim needed.
+- `max_tokens` cap plumbed through all three providers
+  (`generate(..., max_tokens=None)`): anthropic `max_tokens`, gemini
+  `generation_config.max_output_tokens`, ollama `options.num_predict`.
+  `llm_client.MASTER_PROMPT_MAX_TOKENS = 2048` — a safety ceiling, not a
+  tight budget: it has to leave room for a reasoning model's thinking
+  tokens (256 truncated `gemini-3.6-flash` mid-sentence).
+- One retry in `master_prompt_llm.generate_master_prompt` (`_MAX_ATTEMPTS`).
+- The LLM call already happened exactly once per confirm (the
+  `review_prompt` refactor did that); added a `(query, resolved fields)`
+  signature cache in `_prepare_review` so bouncing gate↔edit-form without
+  changing anything doesn't re-bill.
+- `data/eval_master_prompt_faithfulness.py` (new) — runs 12 queries
+  (multi-field, sparse, compound, negation, dense-number holdout rows)
+  through pipeline → assemble, and flags any number / % / money / year in
+  the output that can't be traced to the query or a field value.
+  **First run: 5/12 completed clean (0 unbacked specifics); the other 7
+  hit the Gemini free-tier daily cap (20 req/day) — re-run next quota
+  window.** The 5 that landed introduced no fabricated specifics; one
+  ("Acme Corp… expand into three new markets") came back vague because
+  the pipeline extracted nothing for intent/object, not because the LLM
+  invented — correct "omit what's missing" behavior.
+- **Operational finding:** master-prompt assembly now fires on every
+  confirm. The Gemini free tier is **20 requests/day** — unusable for any
+  real traffic. A paid key or a different provider is a hard prerequisite
+  before the app is shared again.
 
-### Phase D — API-ify everything + new frontend  (large, later)
+Not done: logging which bucket prompts the user saw back to the correction
+log — the entry is written at confirm, before the (slow, cold-startable)
+tooltip fetch; a second durable write isn't worth it pre-real-users.
 
-- FastAPI backend: `POST /extract`, `POST /synthesize`, proxy `/tooltip`.
-- New frontend calls those; Streamlit retired to prototype status.
-- Local master-prompt generation drops in here as a provider swap when the
-  team grows — no flow change.
+### Phase D — API-ify everything + new frontend
+
+**Backend — DONE (2026-08-31), `api.py`:**
+- FastAPI, every endpoint a thin wrapper over an already-tested function:
+  - `POST /extract` — query → raw `fields` + `display_fields` + template
+    master prompt + blanks/needs_review + compound-query flag.
+  - `POST /assemble` — query + confirmed fields → LLM master prompt (with
+    `template_master_prompt` fallback, `used_llm`, `error`).
+  - `POST /tooltip` — proxy to `bucket_client.get_tooltips`.
+  - `POST /log` — `correction_log.log_correction` (returns github /
+    local_fallback).
+  - `GET /health`.
+- CORS open (`*`) — lock to the real frontend origin before anything
+  public.
+- `fastapi` + `uvicorn[standard]` added to `requirements.txt`. Run:
+  `uvicorn api:app --reload`.
+- `app.py` (Streamlit) untouched — parallel interface until the frontend
+  exists.
+- Verified: full `/extract → /assemble → /tooltip` flow via
+  `fastapi.testclient`; 422 on empty input.
+
+**Frontend — NOT STARTED, needs decisions:**
+- Stack (React/Next, Svelte, plain?), hosting, how the "field survey
+  instrument" design system ports over.
+- Then: retire Streamlit; `api.py` becomes the only backend.
+
+**Local master-prompt generation** (no API LLM) drops in here as a provider
+swap when the team grows — no flow change. Also relevant now given the
+Gemini free-tier cap found in Phase C.
 
 ## Open decisions
 

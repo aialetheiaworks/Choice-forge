@@ -566,11 +566,26 @@ if result:
         Phase A), then park everything in `review_prompt` mode so the user
         can approve that assembled sentence before it's logged and (Phase B)
         sent to the Bucket Matching API. One LLM call, rephrasing only --
-        falls back to the template sentence on any failure."""
-        with st.spinner("Assembling your master prompt..."):
-            llm_text, llm_error = master_prompt_llm.generate_master_prompt(
-                st.session_state.last_query, final_fields
-            )
+        falls back to the template sentence on any failure.
+
+        Cached on the exact (query, resolved fields) so bouncing between the
+        gate and the edit form without changing anything doesn't re-bill."""
+        cache_sig = json.dumps(
+            [st.session_state.last_query,
+             {r: (f["text"], f["blank"], f["not_applicable"]) for r, f in final_fields.items()}],
+            sort_keys=True,
+        )
+        cached = st.session_state.get(f"llm_cache_{run_id}")
+        if cached and cached["sig"] == cache_sig:
+            llm_text, llm_error = cached["text"], cached["error"]
+        else:
+            with st.spinner("Assembling your master prompt..."):
+                llm_text, llm_error = master_prompt_llm.generate_master_prompt(
+                    st.session_state.last_query, final_fields
+                )
+            st.session_state[f"llm_cache_{run_id}"] = {
+                "sig": cache_sig, "text": llm_text, "error": llm_error,
+            }
         st.session_state[pending_key] = {
             "final_fields": final_fields,
             "log_fields": log_fields,

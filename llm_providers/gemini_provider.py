@@ -13,13 +13,16 @@ from llm_providers._shared import SYSTEM_PROMPT
 MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
 
 
-def generate(prompt, system_prompt=SYSTEM_PROMPT):
+def generate(prompt, system_prompt=SYSTEM_PROMPT, max_tokens=None):
     """Raises whatever genai.Client().interactions.create() raises --
     llm_client.py's caller is responsible for catching it."""
     client = genai.Client()
-    interaction = client.interactions.create(
-        model=MODEL,
-        system_instruction=system_prompt,
-        input=prompt,
-    )
+    kwargs = {
+        "model": MODEL,
+        "system_instruction": system_prompt,
+        "input": prompt,
+    }
+    if max_tokens:
+        kwargs["generation_config"] = {"max_output_tokens": max_tokens}
+    interaction = client.interactions.create(**kwargs)
     return interaction.output_text

@@ -12,13 +12,13 @@ from llm_providers._shared import SYSTEM_PROMPT
 MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-opus-5")
 
 
-def generate(prompt, system_prompt=SYSTEM_PROMPT):
+def generate(prompt, system_prompt=SYSTEM_PROMPT, max_tokens=None):
     """Raises whatever anthropic.Anthropic().messages.create() raises --
     llm_client.py's caller is responsible for catching it."""
     client = anthropic.Anthropic()
     response = client.messages.create(
         model=MODEL,
-        max_tokens=4096,
+        max_tokens=max_tokens or 4096,
         system=system_prompt,
         messages=[{"role": "user", "content": prompt}],
     )

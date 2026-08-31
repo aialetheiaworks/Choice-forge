@@ -40,28 +40,46 @@ nothing is sent anywhere. To share with remote stakeholders you'd need to
 either run it on a shared machine they can reach, or tunnel it (e.g.
 `ngrok http 8501`); it isn't deployed anywhere by default.
 
-## Generate Output (Phase 4)
+## Master prompt + reflection prompts
 
 Below the field results, the UI shows a "Master Prompt" — an assembled
 objective statement with blanks for anything the pipeline didn't confidently
-extract. Fill in or mark blanks "not applicable", then Confirm. Once
-confirmed, a "Generate Output" section appears with a "Send to
-{Provider}" button that sends the confirmed prompt to whichever LLM
-provider is currently configured and shows its answer.
+extract. Fill in or mark blanks "not applicable", then Continue. The
+configured LLM assembles your confirmed fields into one polished objective
+statement (rephrasing only — it never invents a value for a blank field);
+you approve that sentence ("Looks right"), and it's sent to the **CHOICE
+Bucket Matching Engine**, which returns a handful of "if you're speaking
+about X, also consider Y" reflection prompts.
 
-**Which provider runs is a config change, not a code change** — see
-`API_KEYS.md` for the full reference (every provider's env vars, how to
-switch, how to add a new one). Quick version:
+**CHOICE does not generate an answer** — see `TOOLTIP_INTEGRATION_PLAN.md`
+for the reasoning. The LLM is only used to phrase the master prompt.
+
+**Which LLM provider runs is a config change, not a code change** — see
+`API_KEYS.md` for the full reference. Quick version:
 
 ```bash
 cp .env.example .env   # then fill in the one provider's key you're using
 ```
 
 `.env` is gitignored — never commit it, and never paste a real key
-anywhere (chat, docs, commits). Without a key set for the active
-provider, clicking "Send to {Provider}" shows a clear error in the UI
-instead of a live answer — the rest of the app (extraction, master-prompt
-editing, confirm/reject logging) works the same either way.
+anywhere (chat, docs, commits). Without a key set for the active provider,
+the master prompt falls back to a deterministic template sentence and the
+rest of the app works the same. **Note:** the Gemini free tier is 20
+requests/day — fine for local testing, not for real traffic.
+
+## JSON API (`api.py`)
+
+The same flow is available as a FastAPI service for a standalone frontend:
+
+```bash
+pip3 install fastapi "uvicorn[standard]"
+uvicorn api:app --reload   # http://localhost:8000/docs
+```
+
+`POST /extract` (query → fields + template prompt), `POST /assemble`
+(fields → LLM master prompt), `POST /tooltip` (→ reflection prompts),
+`POST /log` (→ correction log), `GET /health`. The Streamlit app is
+unaffected — this is a parallel interface.
 
 ## Correction logging
 

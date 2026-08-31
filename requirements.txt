@@ -12,3 +12,5 @@ google-genai
 ollama
 python-dotenv
 certifi
+fastapi
+uvicorn[standard]

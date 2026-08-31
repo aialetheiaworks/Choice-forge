@@ -36,10 +36,15 @@ the **Rules** section below stable and update it rarely; keep the
 | `prompt_synthesis.py` | Phase 1 of the Product vision below: deterministic-template master-prompt synthesis from a `Pipeline.run()` result. `render_sentence()` (the sentence-assembly core) is shared with `app.py`'s confirm/reject re-render step. |
 | `correction_log.py` | Phase 3: appends one JSON object per confirm/reject decision from `app.py` to `data/corrections_log.jsonl`. This is the training data Phase 5 will retrain the prompt-synthesis model on. |
 | `data/corrections_log.jsonl` | Append-only log of every confirm/reject decision (written by `correction_log.py`). Versioned like `data/seq2seq_pairs.jsonl` — not gitignored, not hand-edited. |
-| `llm_client.py` | Phase 4: provider-agnostic router. Reads `LLM_PROVIDER` and dispatches to the matching module in `llm_providers/`. `app.py`/`blank_suggestions.py` only ever call `llm_client.generate_output()` / `generate_suggestions()` -- never a provider SDK directly. |
+| `llm_client.py` | Provider-agnostic router. Reads `LLM_PROVIDER` and dispatches to the matching module in `llm_providers/`. Callers use `generate_master_prompt()` (tooltip plan Phase A — the live path) or `generate_suggestions()` (`blank_suggestions.py`); `generate_output()` is the old Phase-4 answer call, now **unused** (kept for now). Never a provider SDK directly. |
 | `llm_providers/` | One module per LLM provider (`anthropic_provider.py`, `gemini_provider.py`, `ollama_provider.py`), each a single `generate(prompt, system_prompt=SYSTEM_PROMPT) -> str` function reading its own key/model from the environment. Adding a provider = one new module + one registry line in `llm_client.py`. Never hardcode a key in any of these. |
 | `blank_suggestions.py` | Optional, explicitly opt-in extension to Phase 3: on request (`app.py`'s "Suggest values for blanks" button), asks the configured LLM for plausible-but-unverified values for currently-blank master-prompt fields, using `SUGGESTION_SYSTEM_PROMPT` (`llm_providers/_shared.py`) -- a different, stricter system prompt than Phase 4's answer-generation call. Never auto-applied: the user must tick a box per field to pull a suggestion into the form, same as typing it themselves. Exists specifically to answer 2026-08-06 stakeholder feedback that wanted invented actor/context/constraint text folded in as if it were extracted fact, without breaking the "never assume a value for an empty field" rule below -- see that day's Current-status entry for the full reasoning. |
-| `API_KEYS.md` | The one file to read to switch providers, see every env var per provider, or add a new one. Security rules for keys live here too. |
+| `master_prompt_llm.py` | Tooltip-integration plan, Phase A: on confirm, sends (query + the user-confirmed 9 fields) to the configured LLM via `llm_client.generate_master_prompt()` to assemble a polished master-prompt sentence — rephrase only, never invent, omit MISSING/NOT APPLICABLE. Returns `(text, error)`, never raises; `app.py` falls back to `prompt_synthesis.render_sentence()` on error. This **replaced** the old Phase 4 "generate an answer" step — the product no longer produces answers. |
+| `bucket_client.py` | Tooltip-integration plan, Phase B: `get_tooltips(master_prompt) -> (ranked, error)` — POSTs the confirmed master prompt to the external CHOICE Bucket Matching Engine (`BUCKET_API_URL`, default `https://choice-bucket-matching.onrender.com`), which returns up to ~7 "also consider thinking about X" reflection prompts. stdlib `urllib` + certifi SSL context, 150s timeout (free-tier cold start), never raises. |
+| `api.py` | Tooltip-integration plan, Phase D (backend): the whole flow as a FastAPI JSON API (`/extract`, `/assemble`, `/tooltip`, `/log`, `/health`) — thin wrappers over the functions above, no new logic. `uvicorn api:app`. `app.py` (Streamlit) is untouched and still works; `api.py` is the parallel interface a future standalone frontend will use. |
+| `data/eval_master_prompt_faithfulness.py` | Repeatable check for the tooltip plan's safety premise: runs queries through pipeline → `master_prompt_llm` and flags any number / % / money / year in the assembled prompt that can't be traced to the query or a field value (i.e. the LLM invented a specific). Makes one real LLM call per query. |
+| `TOOLTIP_INTEGRATION_PLAN.md` | The living plan for the 2026-08-30 product pivot (LLM builds the master prompt, Bucket Matching Engine drives reflection, no answer generation). Phases A–D, decisions, open items. |
+| `API_KEYS.md` | The one file to read to switch providers, see every env var per provider, or add a new one. Security rules for keys live here too. Also documents `BUCKET_API_URL`. |
 | `.env.example` | Template for `.env` (gitignored) — no real values, ever. |
 
 **Standing safety rules:**
@@ -352,13 +357,53 @@ offline):**
   `bucket_client.get_tooltips()` returns correct `ranked` data against the
   live service.
 
-**Phase C (token/prompt hardening) and Phase D (FastAPI-ify everything +
-new frontend) not started.** Local master-prompt generation (instead of an
-API LLM) is explicitly a Phase D concern for when the team grows — drops in
-as a provider swap, no flow change.
+**Phase C — token/prompt hardening, built this session:**
+- `max_tokens` plumbed through all three providers' `generate()`
+  (anthropic `max_tokens`, gemini `generation_config.max_output_tokens`,
+  ollama `options.num_predict`). `llm_client.MASTER_PROMPT_MAX_TOKENS =
+  2048` — a *safety ceiling*, not a tight budget: 256 truncated
+  `gemini-3.6-flash` mid-sentence because a reasoning model's thinking
+  tokens count against the limit before any visible output.
+- One retry in `master_prompt_llm.generate_master_prompt`
+  (`_MAX_ATTEMPTS = 2`).
+- Signature cache in `app.py`'s `_prepare_review` keyed on
+  `(query, resolved fields)` so bouncing gate↔edit-form without a change
+  doesn't re-bill. (The one-call-per-confirm guarantee already came from
+  the `review_prompt` refactor.)
+- `data/eval_master_prompt_faithfulness.py` (new, repeatable) — runs 12
+  queries through pipeline → assemble and flags any number / % / money /
+  year in the output not traceable to the query or a field value. **First
+  run: 5/12 clean (0 unbacked specifics); the other 7 hit the Gemini
+  free-tier daily cap.** Re-run next quota window to finish.
+- **Operational finding, important:** master-prompt assembly now fires on
+  *every* confirm, and the Gemini free tier is **20 requests/day**.
+  Unusable for real traffic — a paid key or a different provider is a hard
+  prerequisite before the app is shared again. This is separate from, and
+  on top of, the still-open `GITHUB_TOKEN` setup for correction logging.
+
+**Phase D — backend built this session (`api.py`), frontend not started:**
+- FastAPI, every endpoint a thin wrapper over an already-tested function:
+  `POST /extract` (query → raw `fields` + `display_fields` + template
+  master prompt + blanks/needs_review + compound flag), `POST /assemble`
+  (query + confirmed fields → LLM master prompt, template fallback),
+  `POST /tooltip` (proxy to `bucket_client`), `POST /log`
+  (`correction_log.log_correction`), `GET /health`.
+- CORS open (`*`) — lock before public. `fastapi` + `uvicorn[standard]`
+  added to `requirements.txt`. Run: `uvicorn api:app --reload`.
+- `app.py` (Streamlit) untouched — parallel interface until a real
+  frontend exists.
+- Verified: full `/extract → /assemble → /tooltip` via
+  `fastapi.testclient`; 422 on empty input.
+- **Frontend is the remaining Phase D work and needs decisions** — stack
+  (React/Next? Svelte? plain?), hosting, how the "field survey instrument"
+  design ports. Then Streamlit retires and `api.py` is the only backend.
+  Local (non-API) master-prompt generation also slots in here as a
+  provider swap — relevant now given the Gemini cap above.
 
 Committed this session (see git log). Nothing pushed unless the git log
-shows otherwise.
+shows otherwise. **Next session: click-test the Streamlit flow (browser
+was offline all session), finish the faithfulness eval, and get a
+decision on the Phase D frontend stack + a non-free LLM key.**
 
 ## Current status (as of 2026-08-16 — found why real-usage correction data never arrives; CLAUDE.md sync-up)
 
