@@ -376,10 +376,26 @@ offline):**
   run: 5/12 clean (0 unbacked specifics); the other 7 hit the Gemini
   free-tier daily cap.** Re-run next quota window to finish.
 - **Operational finding, important:** master-prompt assembly now fires on
-  *every* confirm, and the Gemini free tier is **20 requests/day**.
-  Unusable for real traffic — a paid key or a different provider is a hard
-  prerequisite before the app is shared again. This is separate from, and
-  on top of, the still-open `GITHUB_TOKEN` setup for correction logging.
+  *every* confirm, and the Gemini free tier is **20 requests/day** with
+  wildly variable latency (measured 6s / 14s / 68s on identical calls).
+  `thinking_level="minimal"` is now set for this call (gemini-3.x are
+  reasoning models — default thinking took ~37s for a one-sentence
+  rephrase; `generate(..., thinking_level=None)` was added to all three
+  providers, gemini uses it, anthropic/ollama accept+ignore). That fixes
+  the base case; the tail latency is a free-tier property. Unusable for
+  real traffic — a paid key or a different provider is a hard prerequisite
+  before the app is shared again. Separate from, and on top of, the still-
+  open `GITHUB_TOKEN` setup for correction logging.
+- **`prompt_synthesis.render_sentence()` hardened** (the template
+  fallback, and what the Streamlit "here's what we understood" line
+  shows): no longer stutters when `intent` already bundles the object
+  ("cut ticket backlog ticket backlog"), and omits a clause whose field
+  is blank-with-empty-text rather than emitting a dangling "because ."
+  Streamlit blanks carry a "[role — please fill in]" placeholder and
+  still render (so the user sees what's missing); only api.py's
+  `/assemble` with `{"blank": true}` and no text was affected. Verified
+  against 4 shapes (dedup, normal fuse, streamlit placeholders,
+  not-applicable drops).
 
 **Phase D — backend built this session (`api.py`), frontend not started:**
 - FastAPI, every endpoint a thin wrapper over an already-tested function:

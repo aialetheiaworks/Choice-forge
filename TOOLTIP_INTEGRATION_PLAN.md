@@ -131,9 +131,23 @@ before the fetch) — a candidate for Phase C.
   the pipeline extracted nothing for intent/object, not because the LLM
   invented — correct "omit what's missing" behavior.
 - **Operational finding:** master-prompt assembly now fires on every
-  confirm. The Gemini free tier is **20 requests/day** — unusable for any
-  real traffic. A paid key or a different provider is a hard prerequisite
-  before the app is shared again.
+  confirm. The Gemini free tier is **20 requests/day** AND highly variable
+  latency (measured 6s / 14s / 68s on identical calls — the 68s is
+  free-tier throttling/queueing, not our code). `thinking_level="minimal"`
+  is now set for this call (gemini-3.x are reasoning models; default
+  thinking took ~37s for a one-sentence rephrase) which fixes the base
+  case, but the tail latency is a free-tier property. A paid key or a
+  different provider is a hard prerequisite before the app is shared
+  again.
+- Latency-fix follow-up: `generate(..., thinking_level=None)` added to all
+  three providers (gemini maps it to
+  `generation_config.thinking_level`; anthropic/ollama accept + ignore).
+- `render_sentence()` (the template fallback) hardened: no longer stutters
+  when `intent` already contains the object ("cut ticket backlog ticket
+  backlog"), and drops a clause whose field is blank with empty text
+  instead of emitting a dangling "because ." (only bit api.py's
+  `/assemble` — Streamlit blanks carry a placeholder string and still
+  render so the user sees what's missing).
 
 Not done: logging which bucket prompts the user saw back to the correction
 log — the entry is written at confirm, before the (slow, cold-startable)

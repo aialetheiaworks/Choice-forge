@@ -184,6 +184,21 @@ def _not_applicable(field):
     return field.get("not_applicable", False)
 
 
+def _clause_text(field):
+    return str(field.get("text", "")).strip()
+
+
+def _omit_clause(field):
+    """Skip an optional clause entirely when the field doesn't apply, or
+    has no text at all to render. A genuine unfilled blank in the Streamlit
+    flow still carries its "[role -- please fill in]" placeholder text and
+    is NOT omitted -- that's how the user sees what's still missing. A
+    field that arrives blank with an empty string (e.g. via api.py's
+    /assemble with {"blank": true} and no text) has nothing to show and is
+    dropped rather than rendered as a dangling "because ." """
+    return _not_applicable(field) or not _clause_text(field)
+
+
 def render_sentence(fields):
     """Assemble the master-prompt sentence from a fields dict shaped like
     build_fields()'s output (role -> {"text":..., "blank":...}, at least).
@@ -194,32 +209,42 @@ def render_sentence(fields):
     clause entirely instead of rendering a blank placeholder -- e.g. a query
     with no stated constraint shouldn't force "while subject to this
     constraint: [constraints -- please fill in]" into the prompt."""
-    subject = _capitalize(fields["actor"]["text"])
-    intent_text = fields["intent"]["text"]
-    target_phrase = _target_phrase(fields)
+    subject = _capitalize(_clause_text(fields["actor"]))
+    intent_text = _clause_text(fields["intent"])
+    target_phrase = _target_phrase(fields).strip()
 
-    core = f"{subject} wants to {intent_text} {target_phrase}"
+    # The pipeline sometimes bundles the object straight into the intent
+    # value ("cut ticket backlog"), which then reads as a stutter once the
+    # object is appended again ("cut ticket backlog ticket backlog"). If
+    # the target is already contained in the intent, don't repeat it.
+    if target_phrase and target_phrase.lower() in intent_text.lower():
+        core = f"{subject} wants to {intent_text}"
+    elif target_phrase:
+        core = f"{subject} wants to {intent_text} {target_phrase}"
+    else:
+        core = f"{subject} wants to {intent_text}"
 
     lead_clauses = []
-    if not _not_applicable(fields["magnitude"]):
+    if not _omit_clause(fields["magnitude"]):
         lead_clauses.append(_prefixed_clause("by", fields["magnitude"], MAGNITUDE_SELF_PREPOSITIONS))
-    if not _not_applicable(fields["time"]):
+    if not _omit_clause(fields["time"]):
         lead_clauses.append(_prefixed_clause("within", fields["time"], TIME_SELF_PREPOSITIONS))
 
     trailing_clauses = []
-    if not _not_applicable(fields["scope"]):
-        trailing_clauses.append(f"by targeting {fields['scope']['text']}")
-    if not _not_applicable(fields["constraints"]):
-        trailing_clauses.append(f"while subject to this constraint: {fields['constraints']['text']}")
-    if not _not_applicable(fields["context"]):
-        trailing_clauses.append(f"because {fields['context']['text']}")
+    if not _omit_clause(fields["scope"]):
+        trailing_clauses.append(f"by targeting {_clause_text(fields['scope'])}")
+    if not _omit_clause(fields["constraints"]):
+        trailing_clauses.append(f"while subject to this constraint: {_clause_text(fields['constraints'])}")
+    if not _omit_clause(fields["context"]):
+        trailing_clauses.append(f"because {_clause_text(fields['context'])}")
 
     sentence = core
     if lead_clauses:
         sentence += " " + " ".join(lead_clauses)
     if trailing_clauses:
         sentence += " " + ", ".join(trailing_clauses)
-    return sentence + "."
+    sentence = " ".join(sentence.split()).rstrip(" ,")
+    return _capitalize(sentence) + "."
 
 
 # Roles whose multi_span co-occurrence actually signals a bundled query --

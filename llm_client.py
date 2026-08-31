@@ -90,4 +90,7 @@ def generate_master_prompt(prompt):
         prompt,
         system_prompt=MASTER_PROMPT_SYSTEM_PROMPT,
         max_tokens=MASTER_PROMPT_MAX_TOKENS,
+        # Assembling a sentence from given fields needs no reasoning -- skip
+        # the thinking budget so this doesn't add ~30s to the confirm step.
+        thinking_level="minimal",
     )
