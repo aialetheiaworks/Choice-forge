@@ -417,9 +417,44 @@ offline):**
   provider swap — relevant now given the Gemini cap above.
 
 Committed this session (see git log). Nothing pushed unless the git log
-shows otherwise. **Next session: click-test the Streamlit flow (browser
-was offline all session), finish the faithfulness eval, and get a
-decision on the Phase D frontend stack + a non-free LLM key.**
+shows otherwise.
+
+**2026-09-01 continuation — Streamlit flow click-tested end to end** (browser
+extension finally reconnected, on a separate Chrome profile). Drove the full
+UI with claude-in-chrome. All verified working:
+- Run → extraction → "Here's what we understood" + blank detection.
+- Blanks present → only "✏️ Fill in the blanks" offered (no premature
+  "Yes, this is right").
+- Edit form: ⚠️ markers on needs_review fields; "Not applicable" checkbox
+  on eligible blank fields; filled a `measure` blank and marked `context`
+  not-applicable.
+- "Continue with my corrections" → LLM assembles the master prompt (~10s
+  with `thinking_level=minimal`).
+- **`review_prompt` "✅ Looks right? / ✏️ Not quite — fix the fields" gate
+  renders** — the assembled prompt was clean and correctly dropped the
+  not-applicable `context` clause.
+- "Looks right — continue" → "Master prompt confirmed" (green).
+- **Bucket cards render** — a grid of {bucket name, prompt, matched-terms
+  chips} under "Before you go further — think about". Live call to the
+  Render service succeeded.
+- Reject path: first reject → only "🔁 Rephrase and try again". **Second
+  reject (streak 2) → STILL only Rephrase, no "just answer me directly"
+  bypass** — confirms the bypass removal.
+- **One sub-path not clicked:** "Not quite — fix the fields" from the gate
+  back to the edit form (edits-preserved). Low risk, left for next time.
+- **Pre-existing bug surfaced, NOT from this work:** on the example query
+  "Our field sales team needs to onboard 1,200 kirana stores..." the
+  template "Here's what we understood" sentence rendered
+  "...onboard onboard onboard onboard onboard onboard onboard kirana
+  stores..." — a T5 repetition-loop producing a garbage field value in
+  the pipeline. The LLM assembly step cleaned it up in the actual master
+  prompt ("The field sales team must onboard 1,200 kirana stores..."), so
+  it's cosmetic in the raw-extraction view only. Belongs on the Known
+  gaps list (T5 hallucination / gap 3) — a separate track.
+
+**Still needs a decision / credential from the user:** the Phase D frontend
+stack, a non-free LLM key (deferred — Gemini free tier stays for now),
+`GITHUB_TOKEN` on the hosted app, and pushing the (now 6) unpushed commits.
 
 ## Current status (as of 2026-08-16 — found why real-usage correction data never arrives; CLAUDE.md sync-up)
 
