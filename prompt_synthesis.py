@@ -6,12 +6,17 @@ fields) and assembles a deterministic-template master prompt -- the
 goes to an LLM.
 
 This is a template, not a trained model -- there's no (fields -> ideal
-master prompt) dataset to train on yet (see CLAUDE.md Phase 5). Blanking
-rules come directly from the Phase 2 calibration audit (2026-07-29):
-every field except `intent` is reliable whenever the pipeline commits to a
-non-missing value, so those are only blanked on `status == "missing"` or
-low confidence. `intent` alone is never trustworthy by confidence, so it's
-always marked as needing user review even when filled in.
+master prompt) dataset to train on yet (see CLAUDE.md Phase 5).
+
+Blanking rule (changed 2026-09-03): a field is only blanked when the
+pipeline extracted nothing for it (`status == "missing"`). A low-confidence
+prediction is now shown in its own field -- the user sees the model's
+actual guess, not a "[please fill in]" placeholder -- but the field is
+forced into `needs_review` and carries a `low_confidence` flag so the UI
+marks it distinctly. This reverses the original Phase 2 calibration-audit
+design; see `_is_blank` and CLAUDE.md for the full trade-off. `intent` is
+additionally always flagged for review regardless of confidence (T5
+hallucination gap).
 
 Run:
     python3 prompt_synthesis.py "Cut support ticket backlog by 40% for
@@ -37,15 +42,15 @@ ALWAYS_REVIEW_ROLES = {"intent"}
 NOT_APPLICABLE_ELIGIBLE_ROLES = {"scope", "magnitude", "time", "constraints", "context"}
 
 BLANK_PROMPTS = {
-    "actor": "[actor — who is responsible? please fill in]",
-    "object": "[object — what is being acted on? please fill in]",
-    "intent": "[intent — what needs to happen? please fill in]",
-    "scope": "[scope — please fill in]",
-    "measure": "[measure — what's being measured? please fill in]",
-    "magnitude": "[magnitude — target amount or percentage? please fill in]",
-    "time": "[time — by when? please fill in]",
-    "constraints": "[constraints — any limits? please fill in]",
-    "context": "[context — why does this matter? please fill in]",
+    "actor": "[actor — who is responsible?]",
+    "object": "[object — what is being acted on?]",
+    "intent": "[intent — what needs to happen?]",
+    "scope": "[scope]",
+    "measure": "[measure — what's being measured?]",
+    "magnitude": "[magnitude — target amount or percentage?]",
+    "time": "[time — by when?]",
+    "constraints": "[constraints — any limits?]",
+    "context": "[context — why does this matter?]",
 }
 
 
@@ -97,9 +102,27 @@ def humanize_value(value):
 
 
 def _is_blank(field_result):
+    """A field is a blank (shown as a "[role -- please fill in]" placeholder,
+    no value carried into the master prompt) ONLY when the pipeline extracted
+    nothing at all for it -- i.e. the CRF never opened a span.
+
+    NOTE (changed 2026-09-03, per explicit product-owner decision): a
+    low-confidence field is NO LONGER blanked. The model's predicted value
+    is shown in its own field regardless of score, so the user can see and
+    correct the actual guess instead of a placeholder. Low confidence still
+    forces the field into `needs_review` (see build_fields), so it is
+    flagged for the user to check -- it just isn't hidden. This reverses the
+    original Phase 1 item 4 / Phase 2-audit design ("never assume a value
+    for a low-confidence field"); the reasoning-integrity safeguard now
+    rests on the review flag + confidence gauge being visible, not on
+    withholding the value. See CLAUDE.md for the full trade-off."""
+    return field_result["status"] == "missing"
+
+
+def _is_low_confidence(field_result):
     return (
-        field_result["status"] == "missing"
-        or field_result["confidence"] < MIN_JOIN_OPEN_CONFIDENCE
+        field_result["status"] != "missing"
+        and field_result["confidence"] < MIN_JOIN_OPEN_CONFIDENCE
     )
 
 
@@ -114,6 +137,7 @@ def build_fields(result):
     for role in ROLES:
         r = result[role]
         blank = _is_blank(r)
+        low_confidence = _is_low_confidence(r)
         multi_span = r.get("multi_span", False)
         # pipeline.py can silently drop a real second (or third) span from a
         # multi-value join when it falls below MIN_JOIN_OPEN_CONFIDENCE --
@@ -136,7 +160,17 @@ def build_fields(result):
             # were one value, same reasoning as ALWAYS_REVIEW_ROLES.
             "multi_span": multi_span,
             "dropped_values": dropped_values,
-            "needs_review": blank or role in ALWAYS_REVIEW_ROLES or multi_span or dropped_values,
+            # low_confidence: value is shown (not blanked) but the pipeline
+            # was unsure -- always a review trigger, surfaced to the UI so it
+            # can mark the field distinctly from a confident one.
+            "low_confidence": low_confidence,
+            "needs_review": (
+                blank
+                or low_confidence
+                or role in ALWAYS_REVIEW_ROLES
+                or multi_span
+                or dropped_values
+            ),
             "confidence": r["confidence"],
             "status": r["status"],
             # never set by the pipeline -- only the user, at confirm time,
@@ -288,12 +322,14 @@ def synthesize_master_prompt(result):
     sentence = render_sentence(fields)
 
     blanks = [role for role in ROLES if fields[role]["blank"]]
+    low_confidence = [role for role in ROLES if fields[role]["low_confidence"]]
     mandatory_review = [role for role in ROLES if fields[role]["needs_review"]]
 
     return {
         "master_prompt": sentence,
         "fields": fields,
         "blanks": blanks,
+        "low_confidence": low_confidence,
         "mandatory_review": mandatory_review,
         "possible_compound_query": detect_possible_compound_query(fields),
     }

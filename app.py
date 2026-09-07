@@ -286,6 +286,28 @@ st.markdown(
         margin-bottom: 1rem;
     }
 
+    /* --- the user's own original query, echoed back for reference --- */
+    .cf-userquery {
+        background: var(--cf-ink);
+        border: 1px solid var(--cf-line);
+        border-left: 3px solid var(--cf-verdigris);
+        border-radius: 3px;
+        padding: 0.75rem 1rem;
+        font-family: 'Source Serif 4', serif;
+        font-size: 0.98rem;
+        line-height: 1.55;
+        color: var(--cf-paper-dim);
+        margin-bottom: 1rem;
+    }
+    .cf-userquery-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--cf-paper-dim);
+        margin-bottom: 0.3rem;
+    }
+
     /* --- confirm/reject form --- */
     [data-testid="stForm"] {
         background: var(--cf-panel) !important;
@@ -344,6 +366,16 @@ def section_header(title, caption_html=None):
     if caption_html:
         block += f'<div class="cf-section-caption">{caption_html}</div>'
     st.markdown(block, unsafe_allow_html=True)
+
+
+def user_query_block(query_text):
+    """Echo the user's own original query back on screen so they can see
+    what they typed while reviewing the extraction / filling in blanks."""
+    st.markdown(
+        '<div class="cf-userquery-label">Your query</div>'
+        f'<div class="cf-userquery">{html.escape(query_text)}</div>',
+        unsafe_allow_html=True,
+    )
 
 
 def _confidence_gauge(conf, tier):
@@ -511,6 +543,8 @@ if result:
                 icon="⚠️",
             )
 
+    user_query_block(st.session_state.last_query)
+
     section_header("Here's what we understood")
     st.markdown(
         f'<div class="cf-fieldnote">{html.escape(synth["master_prompt"])}</div>',
@@ -632,12 +666,21 @@ if result:
         st.rerun()
 
     if decision is None and mode == "initial":
-        if synth["blanks"]:
-            st.info(
-                f"{len(synth['blanks'])} field(s) still need your input: "
-                f"{', '.join(synth['blanks'])}."
-            )
-            if st.button("✏️ Fill in the blanks", type="primary", key=f"notquite_{run_id}"):
+        low_conf = synth.get("low_confidence", [])
+        if synth["blanks"] or low_conf:
+            if synth["blanks"]:
+                st.info(
+                    f"{len(synth['blanks'])} field(s) still need your input: "
+                    f"{', '.join(synth['blanks'])}."
+                )
+            if low_conf:
+                st.warning(
+                    f"{len(low_conf)} field(s) were extracted with low confidence — "
+                    f"please check {', '.join(low_conf)} before continuing. The model's "
+                    "best guess is pre-filled in the edit form."
+                )
+            btn_label = "✏️ Fill in the blanks" if synth["blanks"] else "✏️ Review the fields"
+            if st.button(btn_label, type="primary", key=f"notquite_{run_id}"):
                 st.session_state[mode_key] = "editing"
                 st.rerun()
         else:
@@ -719,14 +762,25 @@ if result:
                 f = synth["fields"][role]
                 icon = ROLE_ICONS.get(role, "🔹")
                 label = f"{icon} {role}" + (" ⚠️" if f["needs_review"] else "")
+                na_eligible = role in NOT_APPLICABLE_ELIGIBLE_ROLES
                 if f["blank"]:
-                    if role in NOT_APPLICABLE_ELIGIBLE_ROLES:
+                    if na_eligible:
                         st.checkbox(
                             f"Not applicable to this query — {role} was never stated",
                             key=f"na_{role}_{run_id}",
                         )
                     st.text_input(label, placeholder=f["text"], key=f"field_{role}_{run_id}")
                 else:
+                    if f.get("low_confidence"):
+                        st.caption(
+                            f"⚠️ low confidence ({f['confidence']:.2f}) — this is the model's "
+                            "best guess; check it, correct it, or clear it."
+                        )
+                        if na_eligible:
+                            st.checkbox(
+                                f"Not applicable to this query — {role} was never stated",
+                                key=f"na_{role}_{run_id}",
+                            )
                     st.text_input(label, value=f["text"], key=f"field_{role}_{run_id}")
 
             reject_reason = st.text_area(
@@ -752,10 +806,14 @@ if result:
                     and st.session_state.get(f"na_{role}_{run_id}", False)
                 )
                 submitted = st.session_state[f"field_{role}_{run_id}"].strip()
-                user_edited = (
-                    not not_applicable
-                    and bool(submitted)
-                    and (orig["blank"] or submitted != orig["text"])
+                # cleared a field that had a (possibly low-confidence) value
+                # pre-filled -> the user is rejecting that guess; blank it.
+                cleared = (
+                    not not_applicable and not orig["blank"] and submitted == ""
+                )
+                user_edited = not not_applicable and (
+                    (bool(submitted) and (orig["blank"] or submitted != orig["text"]))
+                    or cleared
                 )
                 suggestion_text = run_suggestions.get(role)
                 ai_suggested = (
@@ -765,7 +823,7 @@ if result:
                     and bool(suggestion_text)
                 )
 
-                if not_applicable:
+                if not_applicable or cleared:
                     resolved_text, resolved_blank = "", True
                 else:
                     resolved_text = submitted if user_edited else orig["text"]

@@ -98,6 +98,7 @@ def extract(req: ExtractRequest):
         "display_fields": synth["fields"],
         "template_master_prompt": synth["master_prompt"],
         "blanks": synth["blanks"],
+        "low_confidence": synth["low_confidence"],
         "needs_review": synth["mandatory_review"],
         "possible_compound_query": synth["possible_compound_query"],
     }
