@@ -1,0 +1,25 @@
+# Prettier only handles web-ish formats (md, json, yaml, html, css, js/ts).
+# This is mostly a Python repo, so scope it down to docs/config we actually
+# want auto-formatted and keep everything else out.
+
+# Dependencies / build output
+node_modules/
+frontend/
+graphify-out/
+value_synthesizer/
+seq2seq_ckpt/
+*.joblib
+
+# Data — large, generated, or hand-curated; never reformat
+data/
+*.jsonl
+choice_forge_dataset_*.json
+real_world_*.json
+
+# Python / env
+.venv/
+__pycache__/
+*.py
+
+# Docs that are binary or externally owned
+Doc/

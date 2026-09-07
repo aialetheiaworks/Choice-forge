@@ -4,3 +4,10 @@ __pycache__/
 .streamlit/secrets.toml
 seq2seq_ckpt/
 .env
+
+# Node tooling / frontend deps
+node_modules/
+
+# graphify knowledge-graph output — regenerable via `/graphify .`, cheap to
+# rebuild, not worth versioning
+graphify-out/

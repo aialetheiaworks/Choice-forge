@@ -1,0 +1,13 @@
+{
+  "name": "choiceforge-tooling",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Repo-level dev tooling (Prettier). Not an app package.",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.4.2"
+  }
+}
