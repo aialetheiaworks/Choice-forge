@@ -31,14 +31,21 @@ it, and never paste a real key into a chat, a doc, or a commit).
 |---|---|---|---|---|
 | `gemini` | `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) | `GEMINI_MODEL` | `gemini-3.6-flash` | Yes |
 | `anthropic` | `ANTHROPIC_API_KEY` | `ANTHROPIC_MODEL` | `claude-opus-5` | Yes |
-| `ollama` | — (local server, no key) | `OLLAMA_HOST`, `OLLAMA_MODEL` | `llama3.1` @ `http://localhost:11434` | No — but the model must already be pulled locally (`ollama pull llama3.1`) |
+| `ollama` | — (local server, no key) | `OLLAMA_HOST`, `OLLAMA_MODEL` | `qwen2.5:7b-instruct` @ `http://localhost:11434` | No — but the model must already be pulled locally (`ollama pull qwen2.5:7b-instruct`) |
 
 ### Current default
 
-**`LLM_PROVIDER=gemini`** — set this way temporarily for testing, since a
-Gemini key was already on hand. Swap to `anthropic` (or anything else)
-just by changing `LLM_PROVIDER` and setting that provider's key; nothing
-else in the code needs to move.
+**`LLM_PROVIDER=ollama`** (`OLLAMA_MODEL=qwen2.5:7b-instruct`) — switched
+2026-09-03 for a fully-local, always-available master-prompt assembler
+(the Gemini free tier's 20 req/day cap made it unusable for real traffic).
+`qwen2.5:7b-instruct` was chosen for strong constraint-following on a short
+rephrase task, non-reasoning (no wasted latency), and fitting an M4/16GB
+next to the extraction pipeline. Swap to `gemini` / `anthropic` (or another
+Ollama model) just by changing `LLM_PROVIDER` / `OLLAMA_MODEL` and setting
+that provider's key; nothing else in the code needs to move.
+
+**Previous default: `LLM_PROVIDER=gemini`** — set that way while a Gemini
+key was on hand for testing.
 
 ## Security
 
