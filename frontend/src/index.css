@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Ink-slate: background/surface/border/text scale */
+  --color-ink-950: #0b0f14;
+  --color-ink-900: #10151c;
+  --color-ink-800: #171e27;
+  --color-ink-700: #212a35;
+  --color-ink-600: #2c3744;
+  --color-ink-500: #445064;
+  --color-ink-400: #6b7686;
+  --color-ink-300: #97a1af;
+  --color-ink-200: #c4cad3;
+  --color-ink-100: #e4e7ec;
+  --color-parchment: #ede6d6;
+
+  /* Brass: primary / action */
+  --color-brass-900: #4a3a0e;
+  --color-brass-800: #6b551a;
+  --color-brass-700: #8a6f1e;
+  --color-brass-600: #a6841f;
+  --color-brass-500: #c9a227;
+  --color-brass-400: #ddba4a;
+  --color-brass-300: #e8cc74;
+  --color-brass-200: #f1dfa3;
+  --color-brass-100: #f8efcb;
+
+  /* Verdigris: confirmed / high-confidence */
+  --color-verdigris-900: #163b34;
+  --color-verdigris-800: #1f544a;
+  --color-verdigris-700: #2a6b5e;
+  --color-verdigris-600: #34816f;
+  --color-verdigris-500: #4e9e8e;
+  --color-verdigris-400: #6fb6a7;
+  --color-verdigris-300: #97ccc0;
+  --color-verdigris-200: #c1e1d9;
+  --color-verdigris-100: #e0f1ec;
+
+  /* Rust: flagged / missing / low-confidence */
+  --color-rust-900: #4a1f12;
+  --color-rust-800: #6b2e1a;
+  --color-rust-700: #8c3d22;
+  --color-rust-600: #a9492a;
+  --color-rust-500: #c1502e;
+  --color-rust-400: #d97952;
+  --color-rust-300: #e8a17f;
+  --color-rust-200: #f1c4ac;
+  --color-rust-100: #f9e2d4;
+
+  /* Bucket-match accent rotation, distinct from the semantic trio above */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Plain custom properties, deliberately outside @theme: they're only ever
+   referenced dynamically via inline styles (lib/highlight.ts), so Tailwind's
+   utility-scanner can't see the usage and would tree-shake them if they
+   lived in @theme (that's what happened the first time — computed color
+   silently fell back to inherited text color with no error). */
+:root {
+  --color-bucket-1: #c9a227; /* brass */
+  --color-bucket-2: #4e9e8e; /* verdigris */
+  --color-bucket-3: #7b93db; /* periwinkle */
+  --color-bucket-4: #da8c6f; /* clay */
+  --color-bucket-5: #a389c9; /* violet */
+  --color-bucket-6: #6fb6a7; /* sage */
+  --color-bucket-7: #d9a5c0; /* rose */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-ink-950);
+  color: var(--color-parchment);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-brass-700);
+  color: var(--color-ink-950);
+}
+
+/* Tick-mark confidence gauge */
+.gauge {
+  display: inline-flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 14px;
+}
+.gauge span {
+  width: 3px;
+  border-radius: 1px;
+  background-color: var(--color-ink-600);
+  transition: background-color 200ms var(--ease-out-strong);
+}
+
+/* Bucket-match highlight underlines in the master prompt */
+mark.bucket-match {
+  background: transparent;
+  color: inherit;
+  padding: 0 1px;
+  border-radius: 2px;
+  cursor: default;
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  transition: background-color 150ms ease;
+}
+mark.bucket-match:hover {
+  background-color: color-mix(in srgb, currentColor 16%, transparent);
+}
