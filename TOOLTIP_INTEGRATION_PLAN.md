@@ -199,3 +199,51 @@ is instructed to omit anything MISSING / NOT APPLICABLE, and is tested in
 Phase C against that exact failure mode. If Phase C testing shows it
 inventing specifics, the fix is a stricter system prompt or reverting to
 the deterministic template — not shipping it.
+
+## Known issue (found 2026-09-10, self-hosted deployment click-testing):
+## LLM silently DROPS confirmed content, doesn't just invent it
+
+Phase C's faithfulness check (`data/eval_master_prompt_faithfulness.py`)
+only catches the LLM *inventing* an unbacked number/%/date. Live testing
+against `llama3.2:3b` (the local Ollama model chosen for the self-hosted
+deployment's master-prompt-assembly step — see `CLAUDE.md`'s deployment
+status entries) found the opposite failure mode, twice in a row:
+
+1. Query with a magnitude range ("from 45 days to 30 days") → assembled
+   prompt kept only "to 30 days," silently dropping the 45-day starting
+   point. A completeness loss, not an invented fact — but it changes what
+   the master prompt communicates (reads as "get to 30 days" instead of
+   "improve from 45 to 30 days").
+2. Query with a real negation-cue constraint ("without changing the core
+   product roadmap") → the entire constraint clause vanished from the
+   assembled prompt. Worse than #1: a confirmed hard limit disappeared
+   entirely, not just a supporting number.
+
+Both are on `llama3.2:3b` specifically — the earlier Mac-based dev session
+(CLAUDE.md, 2026-09-03) validated `qwen2.5:7b-instruct` cleanly on this
+exact task (0/12 unbacked specifics in the faithfulness eval), so this may
+be a small-model (3B) capacity issue on multi-clause inputs rather than a
+prompt-design issue. Not yet root-caused or fixed — tracked here for the
+next session.
+
+**Proposed fix, two parts, not mutually exclusive:**
+1. Extend `data/eval_master_prompt_faithfulness.py` (or a new check next to
+   it) to also flag *omissions* — for each confirmed non-blank field, verify
+   its content (or a close paraphrase) actually appears in the assembled
+   prompt, not just that no new specifics were invented. This is the
+   detection half; it would have caught both misses above automatically.
+2. A/B test `qwen2.5:7b-instruct` against `llama3.2:3b` on the deployment
+   server for this specific step, using the new completeness check as the
+   scoring harness — if 7B is meaningfully more faithful, it may be worth
+   the extra latency (measured ~8s warm for llama3.2:3b on this hardware;
+   7B would be slower, needs remeasuring on THIS server, not assumed from
+   the Mac numbers).
+
+## Stale reference, corrected in passing (2026-09-10)
+
+"Open decisions" item 1 above says the Bucket Matching API URL is
+`https://choice-bucket-matching.onrender.com` — that's now only the
+*default* fallback. The self-hosted deployment overrides it via
+`BUCKET_API_URL=http://127.0.0.1:8001` (see `CLAUDE.md`'s deployment status
+entry), running the same `choice-bucket-matching` codebase locally instead
+of on Render, specifically to avoid the free tier's cold-start latency.

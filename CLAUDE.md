@@ -297,6 +297,68 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-09-10, continued — full stack deployed to self-hosted server; dropped-content bug found in LLM assembly)
+
+**Deployed the whole stack to a self-hosted Ubuntu server** (not the
+choiceforgev1 repo's own git history — this is infra, tracked here since
+there's no other place for it). Hardware: Intel i7-4500U, 2 cores/4
+threads, 8GB RAM, no usable GPU — a real capacity ceiling, already hit
+once this session (an OOM-killed T5 training run, unrelated repo, see
+below). SSH: `alethiaworks@192.168.1.70` (LAN) / `100.66.166.101`
+(Tailscale), key-based auth (`~/.ssh/id_ed25519_alethiaworks_new` locally),
+password auth still enabled for sudo only.
+
+- **`/opt/choiceforge`**: this repo (minus `.git`/`node_modules`/dev
+  artifacts), Python venv with CPU-only torch (`--index-url
+  .../whl/cpu`, not the default CUDA-bundled wheel) + a trimmed
+  `requirements-prod.txt` (no `streamlit`/`ollama` — not used by `api.py`).
+  Frontend built (`npm run build`) and served by nginx at `/`, with `/api/`
+  proxied (stripped) to `uvicorn api:app` on `127.0.0.1:8000`, managed by
+  systemd (`choiceforge-api.service`).
+- **LLM provider: local Ollama, `llama3.2:3b`** (not a hosted API — a
+  deliberate override of this deployment's own earlier-stated decision to
+  use a hosted API; see the dropped-content bug below for why that
+  decision may need revisiting). Measured on this hardware: ~1.6s
+  extraction (CRF+T5, no LLM), ~8s warm / ~25s cold master-prompt LLM call.
+- **`~/choice-bucket-matching`**: the separate `choice-bucket-matching`
+  repo (`/Users/amaansaify/Desktop/alethiaworks.org/tooltip` locally),
+  deployed the same way (its own venv, `requirements-api.txt`, no torch),
+  running as `choice-bucket-matching.service` on `127.0.0.1:8001`. Brought
+  the pre-built `bucket_index_cache.pkl` along so it doesn't pay the ~14s
+  (or much worse on this CPU) re-lemmatization cost on every restart —
+  confirmed reused (1s load, 80 buckets). `choiceforge`'s `.env` now sets
+  `BUCKET_API_URL=http://127.0.0.1:8001`, overriding the Render default —
+  this replaces the Render free-tier dependency (150s cold-start timeout)
+  entirely; everything now runs on one box. Verified end-to-end through
+  `choiceforge-api`'s own `/tooltip` proxy: 0.53s, real bucket matches.
+- **Real bug found and fixed along the way**: `llm_client.py` hard-imported
+  `streamlit` at module level even though its only use (`st.secrets` for
+  Streamlit Cloud) was already defensively wrapped in a try/except — broke
+  `api.py` (FastAPI, no streamlit dependency) entirely on the trimmed prod
+  install. Fixed by moving the import inside the try block. Committed.
+- **Verified visually, not just via curl**: opened the deployed frontend in
+  a real browser (`http://192.168.1.70/`), connected via
+  `http://192.168.1.70/api` (note: the frontend's connect screen needs the
+  full `/api` path, not just the bare origin, since nginx strips that
+  prefix when proxying and `api.py`'s own routes aren't prefixed), ran a
+  real query through the actual UI, confirmed no console errors.
+- **New known issue, found via live click-testing, documented in full in
+  `TOOLTIP_INTEGRATION_PLAN.md`'s new "Known issue" section**: the LLM
+  master-prompt-assembly step silently *drops* confirmed content instead of
+  just risking invented content — twice in a row on `llama3.2:3b` (a
+  magnitude range's start value, then an entire negation-cue constraint
+  clause). `data/eval_master_prompt_faithfulness.py` only checks for
+  invented specifics, not omitted ones — doesn't currently catch this.
+  Proposed fix (not yet built): extend that eval to check completeness too,
+  and A/B test `qwen2.5:7b-instruct` (validated clean on this exact task in
+  the 2026-09-03 Mac-based session) against `llama3.2:3b` on this server's
+  actual hardware before deciding which model to keep. **Not yet fixed —
+  explicitly deferred by the user ("we will work on it later").**
+- **Not done yet**: ONNX+INT8 quantization for T5 (the deployment spec's
+  own "worth doing" latency note — not attempted this session), Cloudflare
+  Tunnel + domain for public access (still LAN/Tailscale-only, matches the
+  user's "server is under construction" framing from earlier this session).
+
 ## Current status (as of 2026-09-10, continued — regression gate built and proven; `time` data sourced but not yet promotable)
 
 **Built `data/gate_retrain.py`**, a per-row/per-field regression gate:

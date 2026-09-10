@@ -13,7 +13,6 @@ and the environment.
 
 import os
 
-import streamlit as st
 from dotenv import load_dotenv
 
 from llm_providers import anthropic_provider, gemini_provider, ollama_provider
@@ -26,8 +25,12 @@ try:
     # Secrets UI and only exposed through st.secrets, not as real env vars.
     # Mirror them into os.environ so every provider module can keep reading
     # via os.environ.get(...) unchanged, whether run locally or deployed.
-    # Raises StreamlitSecretNotFoundError locally when no secrets.toml
-    # exists anywhere -- expected and fine, .env/shell env vars still work.
+    # streamlit itself is optional -- this module is also imported by
+    # api.py (FastAPI), which has no reason to carry the streamlit
+    # dependency. ImportError (streamlit not installed) and
+    # StreamlitSecretNotFoundError (installed but no secrets.toml) are
+    # both expected and fine -- .env/shell env vars still work either way.
+    import streamlit as st
     for _key, _value in st.secrets.items():
         os.environ.setdefault(_key, str(_value))
 except Exception:
