@@ -868,7 +868,82 @@ rows = [
         ),
 ]
 
-rows += SCOPE_BATCH
+# 2026-09-10 sourcing pass, continued: targeting `time`, currently the
+# worst status_acc field (62.50% on the frozen holdout) via Known gap 7 --
+# a bare ordinal-quarter adjective directly before an object/measure noun
+# ("third quarter dividend") with no leading preposition, which the CRF
+# under-detects. Only 2 real examples of this exact shape existed before
+# (rw_055 Imperial Oil, rw_056 Employers Holdings, both from the 2026-08-10
+# pass). This batch adds 5 more across 4 NEW companies -- ConocoPhillips,
+# Blue Owl Capital (x2, different quarters), Pfizer, Algonquin Power -- to
+# get the pattern past the "one example teaches nothing" threshold this
+# project has hit before (see gap 2's negation-cue history). Pfizer's row
+# is deliberately a different word order (amount BEFORE the quarter-adjective
+# clause, not after) so the CRF doesn't just learn one fixed token order.
+COP_URL = "https://www.conocophillips.com/news-media/story/conocophillips-announces-second-quarter-2026-results-and-quarterly-dividend/"
+BLUE_OWL_Q3_URL = "https://www.sec.gov/Archives/edgar/data/0001655888/000165588826000055/exhibit991-obdcxpressrelea.htm"
+BLUE_OWL_Q1_URL = "https://www.sec.gov/Archives/edgar/data/1655888/000165588826000009/exhibit991-obdcxpressrelea.htm"
+PFIZER_URL = "https://www.pfizer.com/news/press-release/press-release-detail/pfizer-declares-second-quarter-2026-dividend"
+ALGONQUIN_URL = "https://www.sec.gov/Archives/edgar/data/0001174169/000117416926000020/a2026q1-exhibit992xmda.htm"
+
+TIME_BATCH = [
+    row("rw_072",
+        "ConocoPhillips declared a third-quarter ordinary dividend of $0.84 per share.",
+        COP_URL, "verbatim -- bare ordinal-quarter adjective (hyphenated) directly before "
+             "'ordinary dividend', same shape as rw_016/rw_055/rw_056 but a new company",
+        actor=field("ConocoPhillips", "explicit", 0.9, "ConocoPhillips"),
+        intent=field("declare a dividend", "explicit", 0.75, "declared"),
+        object=field("ordinary dividend", "explicit", 0.8, "ordinary dividend"),
+        time=field("third-quarter", "explicit", 0.75, "third-quarter"),
+        magnitude=field("$0.84 per share", "explicit", 0.9, "$0.84 per share"),
+        ),
+    row("rw_073",
+        "Blue Owl Capital Corp's Board declared a third quarter 2026 base dividend of $0.31 per share.",
+        BLUE_OWL_Q3_URL, "rephrased to prepend company name for actor grounding (source: 'the Board "
+             "declared...') -- same bare-adjective shape, 'base dividend' variant",
+        actor=field("Blue Owl Capital Corp", "explicit", 0.85, "Blue Owl Capital Corp"),
+        intent=field("declare a dividend", "explicit", 0.75, "declared"),
+        object=field("base dividend", "explicit", 0.8, "base dividend"),
+        time=field("third quarter 2026", "explicit", 0.75, "third quarter 2026"),
+        magnitude=field("$0.31 per share", "explicit", 0.9, "$0.31 per share"),
+        ),
+    row("rw_074",
+        "Blue Owl Capital Corp's Board declared a first quarter 2026 regular dividend of $0.37 per share.",
+        BLUE_OWL_Q1_URL, "rephrased to prepend company name -- second Blue Owl example, different "
+             "quarter/exhibit, 'regular dividend' variant",
+        actor=field("Blue Owl Capital Corp", "explicit", 0.85, "Blue Owl Capital Corp"),
+        intent=field("declare a dividend", "explicit", 0.75, "declared"),
+        object=field("regular dividend", "explicit", 0.8, "regular dividend"),
+        time=field("first quarter 2026", "explicit", 0.75, "first quarter 2026"),
+        magnitude=field("$0.37 per share", "explicit", 0.9, "$0.37 per share"),
+        ),
+    row("rw_075",
+        "Pfizer's board of directors declared a $0.43 second-quarter 2026 dividend on the company's common stock.",
+        PFIZER_URL, "rephrased to possessive-subject form -- deliberately different word order than "
+             "rw_072-rw_074 (amount BEFORE the quarter-adjective clause: '$0.43 second-quarter 2026 "
+             "dividend', not 'dividend of $0.43'), so the CRF doesn't just learn one fixed token order",
+        actor=field("Pfizer", "explicit", 0.9, "Pfizer"),
+        intent=field("declare a dividend", "explicit", 0.75, "declared"),
+        object=field("dividend on the company's common stock", "explicit", 0.75,
+                      "dividend on the company's common stock"),
+        time=field("second-quarter 2026", "explicit", 0.75, "second-quarter 2026"),
+        magnitude=field("$0.43", "explicit", 0.9, "$0.43"),
+        ),
+    row("rw_076",
+        "Algonquin Power & Utilities Corp's Board declared a second quarter 2026 dividend of $0.0650 per common share.",
+        ALGONQUIN_URL, "rephrased to prepend company name -- 4-decimal-precision magnitude "
+             "(also a Known gap 8 data point); a good eval-holdout candidate but left in training "
+             "for this pass, same as the whole scope batch, pending explicit sign-off to grow the "
+             "frozen holdout (see CLAUDE.md's standing rule on that file)",
+        actor=field("Algonquin Power & Utilities Corp", "explicit", 0.85, "Algonquin Power & Utilities Corp"),
+        intent=field("declare a dividend", "explicit", 0.75, "declared"),
+        object=field("dividend", "explicit", 0.8, "dividend"),
+        time=field("second quarter 2026", "explicit", 0.75, "second quarter 2026"),
+        magnitude=field("$0.0650 per common share", "explicit", 0.9, "$0.0650 per common share"),
+        ),
+]
+
+rows += SCOPE_BATCH + TIME_BATCH
 
 if __name__ == "__main__":
     with open("data/real_world_pilot_batch.json", "w", encoding="utf-8") as f:

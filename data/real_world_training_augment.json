@@ -3654,5 +3654,325 @@
     "required_followups": [],
     "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/13/atlassian-team-q4-2026-earnings-call-transcript/",
     "_source_note": "James Chuong (CFO), rephrased -- scope defined by user-role composition rather than geography/vertical/tier, the least conventional scope shape in this batch"
+  },
+  {
+    "id": "rw_072",
+    "input_query": "ConocoPhillips declared a third-quarter ordinary dividend of $0.84 per share.",
+    "choice": {
+      "actor": {
+        "value": "ConocoPhillips",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "ConocoPhillips"
+      },
+      "object": {
+        "value": "ordinary dividend",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "ordinary dividend"
+      },
+      "intent": {
+        "value": "declare a dividend",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "declared"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "$0.84 per share",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "$0.84 per share"
+      },
+      "time": {
+        "value": "third-quarter",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "third-quarter"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.conocophillips.com/news-media/story/conocophillips-announces-second-quarter-2026-results-and-quarterly-dividend/",
+    "_source_note": "verbatim -- bare ordinal-quarter adjective (hyphenated) directly before 'ordinary dividend', same shape as rw_016/rw_055/rw_056 but a new company"
+  },
+  {
+    "id": "rw_073",
+    "input_query": "Blue Owl Capital Corp's Board declared a third quarter 2026 base dividend of $0.31 per share.",
+    "choice": {
+      "actor": {
+        "value": "Blue Owl Capital Corp",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Blue Owl Capital Corp"
+      },
+      "object": {
+        "value": "base dividend",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "base dividend"
+      },
+      "intent": {
+        "value": "declare a dividend",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "declared"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "$0.31 per share",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "$0.31 per share"
+      },
+      "time": {
+        "value": "third quarter 2026",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "third quarter 2026"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.sec.gov/Archives/edgar/data/0001655888/000165588826000055/exhibit991-obdcxpressrelea.htm",
+    "_source_note": "rephrased to prepend company name for actor grounding (source: 'the Board declared...') -- same bare-adjective shape, 'base dividend' variant"
+  },
+  {
+    "id": "rw_074",
+    "input_query": "Blue Owl Capital Corp's Board declared a first quarter 2026 regular dividend of $0.37 per share.",
+    "choice": {
+      "actor": {
+        "value": "Blue Owl Capital Corp",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Blue Owl Capital Corp"
+      },
+      "object": {
+        "value": "regular dividend",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "regular dividend"
+      },
+      "intent": {
+        "value": "declare a dividend",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "declared"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "$0.37 per share",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "$0.37 per share"
+      },
+      "time": {
+        "value": "first quarter 2026",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "first quarter 2026"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.sec.gov/Archives/edgar/data/1655888/000165588826000009/exhibit991-obdcxpressrelea.htm",
+    "_source_note": "rephrased to prepend company name -- second Blue Owl example, different quarter/exhibit, 'regular dividend' variant"
+  },
+  {
+    "id": "rw_075",
+    "input_query": "Pfizer's board of directors declared a $0.43 second-quarter 2026 dividend on the company's common stock.",
+    "choice": {
+      "actor": {
+        "value": "Pfizer",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Pfizer"
+      },
+      "object": {
+        "value": "dividend on the company's common stock",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "dividend on the company's common stock"
+      },
+      "intent": {
+        "value": "declare a dividend",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "declared"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "$0.43",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "$0.43"
+      },
+      "time": {
+        "value": "second-quarter 2026",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "second-quarter 2026"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.pfizer.com/news/press-release/press-release-detail/pfizer-declares-second-quarter-2026-dividend",
+    "_source_note": "rephrased to possessive-subject form -- deliberately different word order than rw_072-rw_074 (amount BEFORE the quarter-adjective clause: '$0.43 second-quarter 2026 dividend', not 'dividend of $0.43'), so the CRF doesn't just learn one fixed token order"
+  },
+  {
+    "id": "rw_076",
+    "input_query": "Algonquin Power & Utilities Corp's Board declared a second quarter 2026 dividend of $0.0650 per common share.",
+    "choice": {
+      "actor": {
+        "value": "Algonquin Power & Utilities Corp",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "Algonquin Power & Utilities Corp"
+      },
+      "object": {
+        "value": "dividend",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "dividend"
+      },
+      "intent": {
+        "value": "declare a dividend",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "declared"
+      },
+      "scope": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "$0.0650 per common share",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "$0.0650 per common share"
+      },
+      "time": {
+        "value": "second quarter 2026",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "second quarter 2026"
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.sec.gov/Archives/edgar/data/0001174169/000117416926000020/a2026q1-exhibit992xmda.htm",
+    "_source_note": "rephrased to prepend company name -- 4-decimal-precision magnitude (also a Known gap 8 data point); a good eval-holdout candidate but left in training for this pass, same as the whole scope batch, pending explicit sign-off to grow the frozen holdout (see CLAUDE.md's standing rule on that file)"
   }
 ]
