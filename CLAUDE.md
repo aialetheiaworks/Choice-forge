@@ -359,6 +359,20 @@ password auth still enabled for sudo only.
   Tunnel + domain for public access (still LAN/Tailscale-only, matches the
   user's "server is under construction" framing from earlier this session).
 
+**Session paused here (2026-09-10 end) — exact open decision to resume
+on:** the user wants a person in Mumbai to access the deployment.
+Tailscale device-sharing (admin console, private, requires the other
+person to install Tailscale) vs. Tailscale Funnel (`tailscale funnel --bg
+80`, CLI-only, gives a real public HTTPS link
+`https://amaanalethia.<tailnet>.ts.net`, no install needed on their end,
+but genuinely reachable by anyone with the URL — no auth on the app).
+Funnel command was prepared but **not run** — blocked by the permission
+classifier (publishing to the public internet), correctly deferred for
+the user's explicit go-ahead given there's no auth layer on the app yet.
+Next session: get that decision, then either run the funnel command or
+set up device-sharing instead. No code changes pending — repo is clean,
+all committed through `e9d3635`.
+
 ## Current status (as of 2026-09-10, continued — regression gate built and proven; `time` data sourced but not yet promotable)
 
 **Built `data/gate_retrain.py`**, a per-row/per-field regression gate:
