@@ -297,6 +297,42 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-09-10, continued — regression gate built and proven; `time` data sourced but not yet promotable)
+
+**Built `data/gate_retrain.py`**, a per-row/per-field regression gate:
+compares a just-produced `data/real_world_eval_report.json` against the
+same file at a baseline git ref (default `HEAD`) and fails if *anything*
+previously correct flips to wrong, regardless of what the aggregate score
+does. Exists because CRF (`sklearn-crfsuite`) has no warm-start/
+incremental-fit mode — every CRF retrain starts from scratch, so unlike
+T5's `--continual` (above), there's no way to protect an already-working
+role during a CRF retrain.
+
+**Proved its worth immediately.** Sourced 5 more real rows targeting
+`time` (Known gap 7's bare "third quarter dividend" pattern — Conoco-
+Phillips, Blue Owl Capital x2, Pfizer, Algonquin Power; validated,
+committed in `d178a05`). Retraining the CRF on the expanded 160-row set
+fixed the exact target bug (`rw_016`'s "third quarter" now detects
+correctly) — **but the aggregate status_acc went UP to 83.33%** despite
+the gate catching 12 regressions across `measure`/`object`/`context`/
+`constraints`/`scope`. Without the gate, the aggregate number alone would
+have looked like a promotable improvement. Reverted. A follow-up
+`--continual` T5-only retrain on the same data (CRF left at baseline)
+caught 1 smaller regression (`rw_044` time value) and was also reverted.
+**Net result: the 5 sourced `time` rows are committed and validated, but
+no model currently trained on them passes the gate.** Next session should
+either try a smaller/isolated batch of this data, tune CRF regularization,
+or accept this is CRF's 5th documented instance of the same
+shared-capacity fragility (Known gaps 1, 7, 9, plus the two `scope`/`time`
+attempts this session) and treat every CRF retrain as gated-by-default
+from now on, never promoted on aggregate score alone.
+
+**Also confirmed:** the pooled-CRF architecture question the user raised
+(split into per-role models?) was answered from evidence, not guesswork —
+see the note below in the 2026-09-10 (first) entry. Nothing about that
+answer changed this round; the gate result above simply confirms the
+diagnosis a fifth time.
+
 ## Current status (as of 2026-09-10 — sourced real `scope` data, fixed T5 retrain regression via warm-start continual fine-tuning)
 
 **Checked the Phase 6 gate's condition 2 (real correction-log volume).**
