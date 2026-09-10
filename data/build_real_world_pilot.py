@@ -144,6 +144,134 @@ EIG_URL = "https://www.theglobeandmail.com/investing/markets/stocks/EIG-N/pressr
 TAKEDA_URL = "https://www.takeda.com/newsroom/newsreleases/2026/changes-to-organizational-structure-and-executive-leadership-team-for-fy2026/"
 BP_URL = "https://www.oilandgasonline.com/doc/bp-p-l-c-announces-leadership-transition-0001"
 
+# 2026-09-10 sourcing pass: targeting `scope`, the most data-starved role in
+# the dataset (only 4 real examples existed before this batch) and one whose
+# existing coverage was almost entirely geography-shaped (rw_027, rw_051).
+# This batch deliberately spans 5 distinct SCOPE TYPES so the CRF learns the
+# role isn't just "a region name": geography (rw_062), customer/account-tier
+# (rw_063, rw_064 -- same "Fortune 500" phrase, two different companies, so
+# the model can't just memorize one company+phrase pairing), 4 industry
+# verticals (rw_065-068, a type with zero prior coverage), product
+# edition/tier (rw_070), and user-role composition (rw_071, the least
+# conventional scope shape in the set). 3 new companies (Zscaler, Atlassian,
+# CDW), none previously in this dataset, sourced from their most recent
+# earnings calls. Also touches `context` opportunistically (rw_065, rw_067)
+# since it's a second known-thin role and these quotes carried a natural
+# causal clause anyway.
+ZS_URL = "https://www.fool.com/earnings/call-transcripts/2026/09/09/zscaler-zs-q4-2026-earnings-call-transcript/"
+TEAM_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/13/atlassian-team-q4-2026-earnings-call-transcript/"
+CDW_URL = "https://www.fool.com/earnings/call-transcripts/2026/08/12/cdw-cdw-q2-2026-earnings-call-transcript/"
+
+SCOPE_BATCH = [
+    row("rw_062",
+        "Zscaler's EMEA region accounted for 27% of revenue and grew approximately 17% year-over-year.",
+        ZS_URL, "Kevin Rubin (CFO), rephrased to third person with company name prepended for actor "
+             "grounding -- geography-shaped scope, same type as existing rw_027/rw_051 but a new company",
+        actor=field("Zscaler", "explicit", 0.9, "Zscaler"),
+        scope=field("EMEA region", "explicit", 0.85, "EMEA region"),
+        measure=field("revenue", "explicit", 0.8, "revenue"),
+        magnitude=field(["27%", "approximately 17% year-over-year"], "explicit", 0.85,
+                         ["27%", "approximately 17% year-over-year"]),
+        ),
+    row("rw_063",
+        "Zscaler reached 50% penetration of the Fortune 500, up from 45% in previous periods.",
+        ZS_URL, "Jay Chaudhry (CEO), rephrased to third person -- customer/account-tier scope "
+             "('Fortune 500'), a scope type the dataset had zero coverage of before this batch",
+        actor=field("Zscaler", "explicit", 0.9, "Zscaler"),
+        scope=field("Fortune 500", "explicit", 0.8, "Fortune 500"),
+        intent=field("increase penetration", "explicit", 0.7, "reached"),
+        magnitude=field(["50%", "up from 45%"], "explicit", 0.85, ["50%", "up from 45%"]),
+        ),
+    row("rw_064",
+        "85% of the Fortune 500 have adopted Rovo, Atlassian's AI product.",
+        TEAM_URL, "James Chuong (CFO), rephrased -- second real 'Fortune 500' scope example, "
+             "deliberately a different company than rw_063 so the CRF learns the phrase as a scope "
+             "pattern, not a Zscaler-specific memorized string",
+        actor=field("Atlassian", "explicit", 0.8, "Atlassian"),
+        scope=field("Fortune 500", "explicit", 0.8, "Fortune 500"),
+        object=field("Rovo", "explicit", 0.8, "Rovo"),
+        intent=field("increase adoption", "explicit", 0.65, "have adopted"),
+        magnitude=field("85%", "explicit", 0.85, "85%"),
+        ),
+    row("rw_065",
+        "CDW's healthcare segment grew 9%, driven by demand for AI-enabled claims management and clinical documentation.",
+        CDW_URL, "Christine Leahy (CEO), rephrased to possessive-subject form -- industry-vertical "
+             "scope ('healthcare'), a scope type entirely missing before this batch; also a real "
+             "causal context clause (second known-thin role)",
+        actor=field("CDW", "explicit", 0.9, "CDW"),
+        scope=field("healthcare segment", "explicit", 0.85, "healthcare segment"),
+        magnitude=field("9%", "explicit", 0.85, "9%"),
+        context=field("driven by demand for AI-enabled claims management and clinical documentation",
+                       "explicit", 0.75,
+                       "driven by demand for AI-enabled claims management and clinical documentation"),
+        ),
+    row("rw_066",
+        "CDW's financial services segment increased 2% with continued healthy customer demand.",
+        CDW_URL, "Christine Leahy (CEO), rephrased -- second industry-vertical scope example, "
+             "different vertical than rw_065",
+        actor=field("CDW", "explicit", 0.9, "CDW"),
+        scope=field("financial services segment", "explicit", 0.85, "financial services segment"),
+        magnitude=field("2%", "explicit", 0.85, "2%"),
+        ),
+    row("rw_067",
+        "CDW's government segment net sales increased approximately 14%, driven by improving federal "
+        "demand and continued momentum across state and local customers.",
+        CDW_URL, "Christine Leahy (CEO), rephrased -- third industry-vertical scope example "
+             "(government), plus a second causal context clause",
+        actor=field("CDW", "explicit", 0.9, "CDW"),
+        scope=field("government segment", "explicit", 0.85, "government segment"),
+        object=field("net sales", "explicit", 0.75, "net sales"),
+        magnitude=field("approximately 14%", "explicit", 0.85, "approximately 14%"),
+        context=field("driven by improving federal demand and continued momentum across state and local customers",
+                       "explicit", 0.7,
+                       "driven by improving federal demand and continued momentum across state and local customers"),
+        ),
+    row("rw_068",
+        "CDW's education segment net sales increased by approximately 1%, with strong K-12 demand for "
+        "software services and life cycle offerings.",
+        CDW_URL, "Christine Leahy (CEO), rephrased -- fourth industry-vertical scope example "
+             "(education), held out for eval as the vertical-scope generalization test",
+        actor=field("CDW", "explicit", 0.9, "CDW"),
+        scope=field("education segment", "explicit", 0.85, "education segment"),
+        object=field("net sales", "explicit", 0.75, "net sales"),
+        magnitude=field("approximately 1%", "explicit", 0.85, "approximately 1%"),
+        ),
+    row("rw_069",
+        "CDW's international segment net sales increased approximately 23%, led by a record quarter "
+        "in Canada and continued strong momentum in the U.K.",
+        CDW_URL, "Christine Leahy (CEO), rephrased -- multi-span geography scope (two countries), "
+             "held out for eval as the multi-span-scope generalization test",
+        actor=field("CDW", "explicit", 0.9, "CDW"),
+        scope=field(["Canada", "U.K."], "explicit", 0.8, ["Canada", "U.K."]),
+        object=field("net sales", "explicit", 0.75, "net sales"),
+        magnitude=field("approximately 23%", "explicit", 0.85, "approximately 23%"),
+        ),
+    row("rw_070",
+        "Atlassian's Data Center revenue is predicted to decline approximately 17% as migrations to "
+        "cloud continue.",
+        TEAM_URL, "guidance summary, rephrased -- product edition/tier scope ('Data Center'), a fifth "
+             "distinct scope type covered by this batch",
+        actor=field("Atlassian", "explicit", 0.8, "Atlassian"),
+        scope=field("Data Center", "explicit", 0.75, "Data Center"),
+        measure=field("revenue", "explicit", 0.8, "revenue"),
+        magnitude=field("approximately 17%", "explicit", 0.8, "approximately 17%"),
+        context=field("driven by continued cloud migrations", "explicit", 0.6,
+                       "as migrations to cloud continue"),
+        ),
+    row("rw_071",
+        "Roughly two-thirds of Atlassian's users across Jira and Confluence are knowledge workers "
+        "outside software development roles.",
+        TEAM_URL, "James Chuong (CFO), rephrased -- scope defined by user-role composition rather than "
+             "geography/vertical/tier, the least conventional scope shape in this batch",
+        actor=field("Atlassian", "explicit", 0.8, "Atlassian"),
+        scope=field("knowledge workers outside software development roles", "explicit", 0.7,
+                     "knowledge workers outside software development roles"),
+        object=field("users across Jira and Confluence", "explicit", 0.75,
+                      "users across Jira and Confluence"),
+        magnitude=field("Roughly two-thirds", "explicit", 0.8, "Roughly two-thirds"),
+        ),
+]
+
 rows = [
     row("rw_001",
         "Target is on track to open over thirty stores in 2026.",
@@ -739,6 +867,8 @@ rows = [
         object=field("Meg O'Neill", "explicit", 0.8, "Meg O'Neill"),
         ),
 ]
+
+rows += SCOPE_BATCH
 
 if __name__ == "__main__":
     with open("data/real_world_pilot_batch.json", "w", encoding="utf-8") as f:

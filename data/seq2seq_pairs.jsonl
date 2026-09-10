@@ -815,3 +815,45 @@
 {"id": "rw_059", "role": "object", "input": "normalize object: Global Supply & Quality", "target": "Global Supply & Quality", "gold_status": "explicit"}
 {"id": "rw_060", "role": "actor", "input": "normalize actor: Natalie Furney", "target": "Natalie Furney", "gold_status": "explicit"}
 {"id": "rw_060", "role": "object", "input": "normalize object: Global Legal, Ethics & Compliance", "target": "Global Legal, Ethics & Compliance", "gold_status": "explicit"}
+{"id": "rw_062", "role": "actor", "input": "normalize actor: Zscaler", "target": "Zscaler", "gold_status": "explicit"}
+{"id": "rw_062", "role": "scope", "input": "normalize scope: EMEA region", "target": "EMEA region", "gold_status": "explicit"}
+{"id": "rw_062", "role": "measure", "input": "normalize measure: revenue", "target": "revenue", "gold_status": "explicit"}
+{"id": "rw_062", "role": "magnitude", "input": "normalize magnitude: 27%; approximately 17% year-over-year", "target": "['27%', 'approximately 17% year-over-year']", "gold_status": "explicit"}
+{"id": "rw_063", "role": "actor", "input": "normalize actor: Zscaler", "target": "Zscaler", "gold_status": "explicit"}
+{"id": "rw_063", "role": "intent", "input": "normalize intent: reached", "target": "increase penetration", "gold_status": "explicit"}
+{"id": "rw_063", "role": "scope", "input": "normalize scope: Fortune 500", "target": "Fortune 500", "gold_status": "explicit"}
+{"id": "rw_063", "role": "magnitude", "input": "normalize magnitude: 50%; up from 45%", "target": "['50%', 'up from 45%']", "gold_status": "explicit"}
+{"id": "rw_064", "role": "actor", "input": "normalize actor: Atlassian", "target": "Atlassian", "gold_status": "explicit"}
+{"id": "rw_064", "role": "object", "input": "normalize object: Rovo", "target": "Rovo", "gold_status": "explicit"}
+{"id": "rw_064", "role": "intent", "input": "normalize intent: have adopted", "target": "increase adoption", "gold_status": "explicit"}
+{"id": "rw_064", "role": "scope", "input": "normalize scope: Fortune 500", "target": "Fortune 500", "gold_status": "explicit"}
+{"id": "rw_064", "role": "magnitude", "input": "normalize magnitude: 85%", "target": "85%", "gold_status": "explicit"}
+{"id": "rw_065", "role": "actor", "input": "normalize actor: CDW", "target": "CDW", "gold_status": "explicit"}
+{"id": "rw_065", "role": "scope", "input": "normalize scope: healthcare segment", "target": "healthcare segment", "gold_status": "explicit"}
+{"id": "rw_065", "role": "magnitude", "input": "normalize magnitude: 9%", "target": "9%", "gold_status": "explicit"}
+{"id": "rw_065", "role": "context", "input": "normalize context: driven by demand for AI-enabled claims management and clinical documentation", "target": "driven by demand for AI-enabled claims management and clinical documentation", "gold_status": "explicit"}
+{"id": "rw_066", "role": "actor", "input": "normalize actor: CDW", "target": "CDW", "gold_status": "explicit"}
+{"id": "rw_066", "role": "scope", "input": "normalize scope: financial services segment", "target": "financial services segment", "gold_status": "explicit"}
+{"id": "rw_066", "role": "magnitude", "input": "normalize magnitude: 2%", "target": "2%", "gold_status": "explicit"}
+{"id": "rw_067", "role": "actor", "input": "normalize actor: CDW", "target": "CDW", "gold_status": "explicit"}
+{"id": "rw_067", "role": "object", "input": "normalize object: net sales", "target": "net sales", "gold_status": "explicit"}
+{"id": "rw_067", "role": "scope", "input": "normalize scope: government segment", "target": "government segment", "gold_status": "explicit"}
+{"id": "rw_067", "role": "magnitude", "input": "normalize magnitude: approximately 14%", "target": "approximately 14%", "gold_status": "explicit"}
+{"id": "rw_067", "role": "context", "input": "normalize context: driven by improving federal demand and continued momentum across state and local customers", "target": "driven by improving federal demand and continued momentum across state and local customers", "gold_status": "explicit"}
+{"id": "rw_068", "role": "actor", "input": "normalize actor: CDW", "target": "CDW", "gold_status": "explicit"}
+{"id": "rw_068", "role": "object", "input": "normalize object: net sales", "target": "net sales", "gold_status": "explicit"}
+{"id": "rw_068", "role": "scope", "input": "normalize scope: education segment", "target": "education segment", "gold_status": "explicit"}
+{"id": "rw_068", "role": "magnitude", "input": "normalize magnitude: approximately 1%", "target": "approximately 1%", "gold_status": "explicit"}
+{"id": "rw_069", "role": "actor", "input": "normalize actor: CDW", "target": "CDW", "gold_status": "explicit"}
+{"id": "rw_069", "role": "object", "input": "normalize object: net sales", "target": "net sales", "gold_status": "explicit"}
+{"id": "rw_069", "role": "scope", "input": "normalize scope: Canada; U.K.", "target": "['Canada', 'U.K.']", "gold_status": "explicit"}
+{"id": "rw_069", "role": "magnitude", "input": "normalize magnitude: approximately 23%", "target": "approximately 23%", "gold_status": "explicit"}
+{"id": "rw_070", "role": "actor", "input": "normalize actor: Atlassian", "target": "Atlassian", "gold_status": "explicit"}
+{"id": "rw_070", "role": "scope", "input": "normalize scope: Data Center", "target": "Data Center", "gold_status": "explicit"}
+{"id": "rw_070", "role": "measure", "input": "normalize measure: revenue", "target": "revenue", "gold_status": "explicit"}
+{"id": "rw_070", "role": "magnitude", "input": "normalize magnitude: approximately 17%", "target": "approximately 17%", "gold_status": "explicit"}
+{"id": "rw_070", "role": "context", "input": "normalize context: as migrations to cloud continue", "target": "driven by continued cloud migrations", "gold_status": "explicit"}
+{"id": "rw_071", "role": "actor", "input": "normalize actor: Atlassian", "target": "Atlassian", "gold_status": "explicit"}
+{"id": "rw_071", "role": "object", "input": "normalize object: users across Jira and Confluence", "target": "users across Jira and Confluence", "gold_status": "explicit"}
+{"id": "rw_071", "role": "scope", "input": "normalize scope: knowledge workers outside software development roles", "target": "knowledge workers outside software development roles", "gold_status": "explicit"}
+{"id": "rw_071", "role": "magnitude", "input": "normalize magnitude: Roughly two-thirds", "target": "Roughly two-thirds", "gold_status": "explicit"}

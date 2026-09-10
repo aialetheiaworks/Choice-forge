@@ -2996,5 +2996,663 @@
     "required_followups": [],
     "_source_url": "https://www.takeda.com/newsroom/newsreleases/2026/changes-to-organizational-structure-and-executive-leadership-team-for-fy2026/",
     "_source_note": "Takeda FY2026 org-structure release, verbatim -- same gap-9 shape"
+  },
+  {
+    "id": "rw_062",
+    "input_query": "Zscaler's EMEA region accounted for 27% of revenue and grew approximately 17% year-over-year.",
+    "choice": {
+      "actor": {
+        "value": "Zscaler",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Zscaler"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "EMEA region",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "EMEA region"
+      },
+      "measure": {
+        "value": "revenue",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "revenue"
+      },
+      "magnitude": {
+        "value": [
+          "27%",
+          "approximately 17% year-over-year"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "27%",
+          "approximately 17% year-over-year"
+        ]
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/09/09/zscaler-zs-q4-2026-earnings-call-transcript/",
+    "_source_note": "Kevin Rubin (CFO), rephrased to third person with company name prepended for actor grounding -- geography-shaped scope, same type as existing rw_027/rw_051 but a new company"
+  },
+  {
+    "id": "rw_063",
+    "input_query": "Zscaler reached 50% penetration of the Fortune 500, up from 45% in previous periods.",
+    "choice": {
+      "actor": {
+        "value": "Zscaler",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "Zscaler"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": "increase penetration",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "reached"
+      },
+      "scope": {
+        "value": "Fortune 500",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Fortune 500"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": [
+          "50%",
+          "up from 45%"
+        ],
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": [
+          "50%",
+          "up from 45%"
+        ]
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/09/09/zscaler-zs-q4-2026-earnings-call-transcript/",
+    "_source_note": "Jay Chaudhry (CEO), rephrased to third person -- customer/account-tier scope ('Fortune 500'), a scope type the dataset had zero coverage of before this batch"
+  },
+  {
+    "id": "rw_064",
+    "input_query": "85% of the Fortune 500 have adopted Rovo, Atlassian's AI product.",
+    "choice": {
+      "actor": {
+        "value": "Atlassian",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Atlassian"
+      },
+      "object": {
+        "value": "Rovo",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Rovo"
+      },
+      "intent": {
+        "value": "increase adoption",
+        "status": "explicit",
+        "confidence": 0.65,
+        "source_text": "have adopted"
+      },
+      "scope": {
+        "value": "Fortune 500",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Fortune 500"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "85%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "85%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/13/atlassian-team-q4-2026-earnings-call-transcript/",
+    "_source_note": "James Chuong (CFO), rephrased -- second real 'Fortune 500' scope example, deliberately a different company than rw_063 so the CRF learns the phrase as a scope pattern, not a Zscaler-specific memorized string"
+  },
+  {
+    "id": "rw_065",
+    "input_query": "CDW's healthcare segment grew 9%, driven by demand for AI-enabled claims management and clinical documentation.",
+    "choice": {
+      "actor": {
+        "value": "CDW",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "CDW"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "healthcare segment",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "healthcare segment"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "9%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "9%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": "driven by demand for AI-enabled claims management and clinical documentation",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "driven by demand for AI-enabled claims management and clinical documentation"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/12/cdw-cdw-q2-2026-earnings-call-transcript/",
+    "_source_note": "Christine Leahy (CEO), rephrased to possessive-subject form -- industry-vertical scope ('healthcare'), a scope type entirely missing before this batch; also a real causal context clause (second known-thin role)"
+  },
+  {
+    "id": "rw_066",
+    "input_query": "CDW's financial services segment increased 2% with continued healthy customer demand.",
+    "choice": {
+      "actor": {
+        "value": "CDW",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "CDW"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "financial services segment",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "financial services segment"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "2%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "2%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/12/cdw-cdw-q2-2026-earnings-call-transcript/",
+    "_source_note": "Christine Leahy (CEO), rephrased -- second industry-vertical scope example, different vertical than rw_065"
+  },
+  {
+    "id": "rw_067",
+    "input_query": "CDW's government segment net sales increased approximately 14%, driven by improving federal demand and continued momentum across state and local customers.",
+    "choice": {
+      "actor": {
+        "value": "CDW",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "CDW"
+      },
+      "object": {
+        "value": "net sales",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "net sales"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "government segment",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "government segment"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "approximately 14%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "approximately 14%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": "driven by improving federal demand and continued momentum across state and local customers",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "driven by improving federal demand and continued momentum across state and local customers"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/12/cdw-cdw-q2-2026-earnings-call-transcript/",
+    "_source_note": "Christine Leahy (CEO), rephrased -- third industry-vertical scope example (government), plus a second causal context clause"
+  },
+  {
+    "id": "rw_068",
+    "input_query": "CDW's education segment net sales increased by approximately 1%, with strong K-12 demand for software services and life cycle offerings.",
+    "choice": {
+      "actor": {
+        "value": "CDW",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "CDW"
+      },
+      "object": {
+        "value": "net sales",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "net sales"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "education segment",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "education segment"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "approximately 1%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "approximately 1%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/12/cdw-cdw-q2-2026-earnings-call-transcript/",
+    "_source_note": "Christine Leahy (CEO), rephrased -- fourth industry-vertical scope example (education), held out for eval as the vertical-scope generalization test"
+  },
+  {
+    "id": "rw_069",
+    "input_query": "CDW's international segment net sales increased approximately 23%, led by a record quarter in Canada and continued strong momentum in the U.K.",
+    "choice": {
+      "actor": {
+        "value": "CDW",
+        "status": "explicit",
+        "confidence": 0.9,
+        "source_text": "CDW"
+      },
+      "object": {
+        "value": "net sales",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "net sales"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": [
+          "Canada",
+          "U.K."
+        ],
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": [
+          "Canada",
+          "U.K."
+        ]
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "approximately 23%",
+        "status": "explicit",
+        "confidence": 0.85,
+        "source_text": "approximately 23%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/12/cdw-cdw-q2-2026-earnings-call-transcript/",
+    "_source_note": "Christine Leahy (CEO), rephrased -- multi-span geography scope (two countries), held out for eval as the multi-span-scope generalization test"
+  },
+  {
+    "id": "rw_070",
+    "input_query": "Atlassian's Data Center revenue is predicted to decline approximately 17% as migrations to cloud continue.",
+    "choice": {
+      "actor": {
+        "value": "Atlassian",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Atlassian"
+      },
+      "object": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "Data Center",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "Data Center"
+      },
+      "measure": {
+        "value": "revenue",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "revenue"
+      },
+      "magnitude": {
+        "value": "approximately 17%",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "approximately 17%"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": "driven by continued cloud migrations",
+        "status": "explicit",
+        "confidence": 0.6,
+        "source_text": "as migrations to cloud continue"
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/13/atlassian-team-q4-2026-earnings-call-transcript/",
+    "_source_note": "guidance summary, rephrased -- product edition/tier scope ('Data Center'), a fifth distinct scope type covered by this batch"
+  },
+  {
+    "id": "rw_071",
+    "input_query": "Roughly two-thirds of Atlassian's users across Jira and Confluence are knowledge workers outside software development roles.",
+    "choice": {
+      "actor": {
+        "value": "Atlassian",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Atlassian"
+      },
+      "object": {
+        "value": "users across Jira and Confluence",
+        "status": "explicit",
+        "confidence": 0.75,
+        "source_text": "users across Jira and Confluence"
+      },
+      "intent": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "scope": {
+        "value": "knowledge workers outside software development roles",
+        "status": "explicit",
+        "confidence": 0.7,
+        "source_text": "knowledge workers outside software development roles"
+      },
+      "measure": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "magnitude": {
+        "value": "Roughly two-thirds",
+        "status": "explicit",
+        "confidence": 0.8,
+        "source_text": "Roughly two-thirds"
+      },
+      "time": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "constraints": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      },
+      "context": {
+        "value": null,
+        "status": "missing",
+        "confidence": 0.0,
+        "source_text": null
+      }
+    },
+    "objective_status": "sufficient",
+    "required_followups": [],
+    "_source_url": "https://www.fool.com/earnings/call-transcripts/2026/08/13/atlassian-team-q4-2026-earnings-call-transcript/",
+    "_source_note": "James Chuong (CFO), rephrased -- scope defined by user-role composition rather than geography/vertical/tier, the least conventional scope shape in this batch"
   }
 ]

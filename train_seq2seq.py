@@ -29,7 +29,9 @@ Run:
 """
 
 import json
+import os
 import random
+import sys
 
 from transformers import (
     T5Tokenizer, T5ForConditionalGeneration,
@@ -43,6 +45,18 @@ from polarity_guard import has_negation
 MODEL_NAME = "t5-small"
 PAIRS_PATH = "data/seq2seq_pairs.jsonl"
 MODEL_OUT = "value_synthesizer"
+
+# 2026-09-10: default retrain always restarts from base t5-small, so every
+# retrain has to re-learn every role's normalization behavior from zero --
+# including roles that already worked -- which is exactly the "fixing one
+# role breaks another" pattern seen repeatedly in this project's history
+# (adding 10 real `scope` rows this session, retrained from scratch,
+# regressed magnitude/constraints/context that the new data never touched).
+# --continual warm-starts from the CURRENT value_synthesizer/ checkpoint
+# instead of t5-small, with a lower LR and fewer epochs -- nudging the
+# already-good weights toward the new examples rather than re-deriving
+# everything from the pretrained base each time.
+WARM_START = "--continual" in sys.argv
 
 # Only 23/655 role instances (3.5%) contain a negation cue, concentrated
 # almost entirely in `constraints`. T5-small never saw enough of them to
@@ -84,8 +98,10 @@ def main():
     print(f"train: {len(train_pairs)} pairs ({len(negation_pairs)} negation examples oversampled "
           f"{NEGATION_OVERSAMPLE_FACTOR}x) | val: {len(val_pairs)} pairs (unmodified)")
 
-    tokenizer = T5Tokenizer.from_pretrained(MODEL_NAME)
-    model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
+    base = MODEL_OUT if (WARM_START and os.path.isdir(MODEL_OUT)) else MODEL_NAME
+    print(f"{'warm-starting from' if base == MODEL_OUT else 'training fresh from'} {base!r}")
+    tokenizer = T5Tokenizer.from_pretrained(base)
+    model = T5ForConditionalGeneration.from_pretrained(base)
 
     def to_hf_dataset(items):
         return Dataset.from_dict({
@@ -112,8 +128,11 @@ def main():
         output_dir="seq2seq_ckpt",
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
-        num_train_epochs=20,           # small dataset -> more epochs, watch eval loss for overfitting
-        learning_rate=3e-4,
+        # warm-start: fewer epochs + lower LR -- nudge toward new examples
+        # without drifting far enough from the good checkpoint to forget
+        # roles it already handled well.
+        num_train_epochs=6 if WARM_START else 20,
+        learning_rate=5e-5 if WARM_START else 3e-4,
         eval_strategy="epoch",
         save_strategy="epoch",
         save_total_limit=2,             # keep best + latest only -- unbounded before, 40 checkpoints hit 27GB
