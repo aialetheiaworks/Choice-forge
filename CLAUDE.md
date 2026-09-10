@@ -297,6 +297,76 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-09-10 — sourced real `scope` data, fixed T5 retrain regression via warm-start continual fine-tuning)
+
+**Checked the Phase 6 gate's condition 2 (real correction-log volume).**
+`data/corrections_log.jsonl` has 38 total entries, 17 post-2026-08-16 (the
+persistence fix). That numerically clears the 15-20 floor, but the content
+is all traceable to the documented solo click-testing sessions (same
+queries repeated across near-identical timestamps, matching commit
+`48d92e8`'s "click-tests" log), not real external usage — so by the same
+logic that disqualified the pre-fix 21 entries, **condition 2 is still not
+honestly satisfied.** Needs actual non-solo usage, not more click-testing.
+
+**Sourced 10 real, source-verified rows targeting `scope`** (`rw_062`-
+`rw_071` in `data/build_real_world_pilot.py`), the most data-starved role
+(only 4 real examples existed before this). Sourced from 3 companies new to
+the dataset (Zscaler, Atlassian, CDW, all Q2/Q4 2026 earnings calls),
+deliberately spanning 5 scope types the dataset had zero or thin coverage
+of: geography, customer/account-tier ("Fortune 500", 2 companies), 4
+industry verticals (healthcare/financial-services/government/education),
+product edition, and user-role composition. Validated clean via
+`data/validate_real_world_pilot.py`. All 10 went to
+`data/real_world_training_augment.json` (55 rows now) — **the frozen
+`data/real_world_eval_holdout.json` was deliberately left untouched** (still
+16 rows) since growing it needs a separate, explicit decision per this
+file's standing rule, not a side effect of a sourcing pass.
+
+**Retraining from scratch on the expanded 155-row combined dataset
+regressed the real-world eval** (82.64%/60.87% → 80.56%/55.07%) —
+`magnitude`, `constraints`, `context`, and even `scope` itself got worse,
+despite the new data only targeting `scope`. This is the same
+shared-pooled-model fragility already logged in Known gaps 1/7/9, now
+observed a 4th time. Root-caused this session: `train_seq2seq.py` always
+restarted T5 fine-tuning from the pretrained `t5-small` base, discarding
+everything the model had already learned each time, rather than building
+on the last good checkpoint.
+
+**Fix: added `--continual` to `train_seq2seq.py`** — warm-starts from the
+current `value_synthesizer/` checkpoint instead of `t5-small`, with a lower
+LR (5e-5 vs 3e-4) and fewer epochs (6 vs 20). Retrained this way (CRF left
+untouched at the committed baseline, to isolate the T5-side effect) and got
+a **clean improvement with zero regressions**: 82.64%/**62.32%** on the
+frozen holdout. Only two things changed: one `intent` hallucination gone
+(rw_012, "double occupancy" → correctly "double"), one `scope` multi-span
+join fixed (rw_034, was garbled with cross-role bleed, now clean). Nothing
+else moved. Committed in `870e702`.
+
+**Known remaining gap, stated plainly:** this only fixes the T5 half of the
+pipeline. `role_tagger.joblib` (CRF) has no equivalent warm-start/
+incremental-fit mode — `sklearn-crfsuite` always trains from scratch — so
+retraining the CRF to actually pick up the new `scope` rows' *span
+detection* (not just value synthesis, which is all this session's fix
+touched) still carries the original regression risk. Next session should
+either find/build an incremental-training path for the CRF, or accept that
+CRF retrains stay a gated gamble and keep batches small + always compare
+against the frozen holdout before promoting (already this project's
+practice, just not a solved problem).
+
+Also (unrelated architecture tangent explored and rejected this session,
+in case it comes up again): the user asked whether splitting into
+per-role models (up to 9, instead of 1 pooled CRF + 1 pooled T5) would
+fix the cross-role regression problem, and separately whether a larger
+base model (t5-base/t5-large) would help. Both declined, and for
+recorded reasons: per-role splitting would starve the already-thinnest
+roles further (this dataset is ~155 rows total, some roles under 20
+real examples — matches `ABOUT.md`'s own stated reason for pooling in
+the first place). A bigger base model wasn't attempted — most
+documented failures are CRF/data-volume-limited, not T5-capacity-limited,
+and this machine (16GB RAM) already OOM-killed a `t5-small` training run
+once this session under normal background load (Chrome/Spotify/WhatsApp),
+making `t5-base`+ a real hardware risk, not just an unproven idea.
+
 ## Current status (as of 2026-09-03, continued — low-confidence fields now shown, not blanked; both servers running locally)
 
 **Product-owner decision, implemented this session: stop blanking
