@@ -15,7 +15,7 @@ import os
 
 from dotenv import load_dotenv
 
-from llm_providers import anthropic_provider, gemini_provider, ollama_provider
+from llm_providers import anthropic_provider, gemini_provider, llamacpp_provider, ollama_provider
 from llm_providers._shared import MASTER_PROMPT_SYSTEM_PROMPT, SUGGESTION_SYSTEM_PROMPT
 
 load_dotenv()  # local dev: reads .env if present, no-op otherwise
@@ -40,6 +40,7 @@ PROVIDERS = {
     "anthropic": anthropic_provider.generate,
     "gemini": gemini_provider.generate,
     "ollama": ollama_provider.generate,
+    "llamacpp": llamacpp_provider.generate,
 }
 
 # Temporary for testing -- see API_KEYS.md "Current default" before changing.
