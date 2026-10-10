@@ -350,11 +350,11 @@
           "$0.50 per share"
         ],
         "gold_status": "explicit",
-        "pred_value": "['11%', '$50 per share']",
+        "pred_value": "['11%', '$0.50 per share']",
         "pred_status": "explicit",
         "pred_conf": 0.474,
         "status_correct": true,
-        "value_correct": false,
+        "value_correct": true,
         "flagged": false
       },
       "time": {
@@ -850,11 +850,11 @@
           "5.0%"
         ],
         "gold_status": "explicit",
-        "pred_value": "['7.20%', '10.10%', '5.0%']",
+        "pred_value": "['7.0%', '10.0%', '5.0%']",
         "pred_status": "explicit",
         "pred_conf": 0.758,
         "status_correct": true,
-        "value_correct": false,
+        "value_correct": true,
         "flagged": false
       },
       "time": {

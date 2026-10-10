@@ -297,6 +297,24 @@ user's own name, mobile number, and email are mandatory.
   per-correction workable — this applies to the extraction layer today and
   will apply to the prompt-synthesis model in Phase 5 too.
 
+## Current status (as of 2026-10-08 — dropped-content bug fixed; figures kept verbatim)
+
+Found in a full CHOICE audit (case `c_33ecaedd`, a Jaipur saree brand), fixed the same day. Uncommitted at time of writing.
+
+- **Master prompt dropped confirmed fields** (the 2026-09-10 known issue below, now on the CHOICE llama.cpp
+  model): an owner-typed `constraints` and `context` vanished entirely. Fix in `master_prompt_llm.py`: after
+  generation, `omitted_fields()` checks each filled field is carried (all its figures + half its content
+  words); one corrective retry names what was dropped; owner-stated fields (`confirmed: true`, new optional
+  `FieldValue` key, set by CHOICE's gateway for edited fields) still missing are appended in the owner's
+  words. System prompt rule 3 now requires every field and allows up to three sentences. Faithfulness eval:
+  0/12 unbacked specifics, same as before.
+- **T5 normalizer cut and altered figures**: `max_new_tokens=32` truncated multi-span joins mid-item
+  (`['…', 'about`), and T5 dropped `₹` (not in its vocab) and turned "two" into "only 2". Fix in
+  `pipeline.py`: generation budget scales with input; `changes_figures()` falls back to the user's own spans
+  when the value adds a number or loses a currency symbol. Real-world eval: magnitude value_acc 75.0% ->
+  91.7%, overall 62.3% -> 65.2%, no field worse.
+- Still open (needs training data, not code): constraints like "₹1.2 crore to invest" aren't tagged.
+
 ## Current status (as of 2026-09-10, continued — full stack deployed to self-hosted server; dropped-content bug found in LLM assembly)
 
 **Deployed the whole stack to a self-hosted Ubuntu server** (not the

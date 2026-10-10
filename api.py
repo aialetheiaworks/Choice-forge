@@ -59,6 +59,7 @@ class FieldValue(BaseModel):
     text: str = ""
     blank: bool = False
     not_applicable: bool = False
+    confirmed: bool = False  # typed or edited by the owner -- never dropped from the master prompt
 
 
 class AssembleRequest(BaseModel):

@@ -22,6 +22,7 @@ Run:
     accounts within the next sprint."
 """
 
+import re
 import sys
 
 import spacy
@@ -40,6 +41,26 @@ T5_MODEL_PATH = "value_synthesizer"
 MIN_JOIN_OPEN_CONFIDENCE = 0.4
 
 nlp = spacy.load("en_core_web_sm")
+
+# T5's normalized value may not change a figure the user wrote. Its
+# vocabulary has no "₹", so it silently drops the currency, and on long
+# multi-span joins it has turned "two" into "only 2" (copied from a
+# neighbouring "only 18%"). Found 2026-10-08 in a CHOICE audit.
+_NUMBER = re.compile(r"\d[\d,]*(?:\.\d+)?")
+_CURRENCY = "₹$€£"
+
+
+def _numbers(text):
+    return {n.replace(",", "").rstrip(".") for n in _NUMBER.findall(text or "")}
+
+
+def changes_figures(source, value):
+    """True when the normalized value carries a number the source span
+    doesn't, or loses a currency symbol the source span has."""
+    value = str(value or "")
+    if not _numbers(value) <= _numbers(source):
+        return True
+    return any(c in source and c not in value for c in _CURRENCY)
 
 
 def decode_bio_multi(doc, tags, marginals):
@@ -89,8 +110,12 @@ class Pipeline:
         tag = "[NEGATED] " if has_negation(span_text) else ""
         prompt = f"normalize {tag}{role}: {span_text}"
         inputs = self.tokenizer(prompt, return_tensors="pt")
+        # A fixed 32-token budget cut multi-span joins mid-item, leaving an
+        # unclosed "['…', 'about" that no display code can parse. Short
+        # outputs end at EOS well before this, so they are unchanged.
+        budget = max(32, min(128, inputs["input_ids"].shape[1] + 16))
         out = self.t5.generate(
-            **inputs, max_new_tokens=32,
+            **inputs, max_new_tokens=budget,
             output_scores=True, return_dict_in_generate=True,
         )
         value = self.tokenizer.decode(out.sequences[0], skip_special_tokens=True)
@@ -155,6 +180,12 @@ class Pipeline:
             value, flagged, guard_note = apply_polarity_guard(
                 joined_span, value, full_text=text
             )
+            if changes_figures(joined_span, value):
+                # keep the user's own words rather than a value with altered figures
+                spans = [s["text"] for s in found]
+                value = str(spans) if len(spans) > 1 else spans[0]
+                note = "kept the question's wording: normalizer changed a figure or currency"
+                guard_note = f"{guard_note}; {note}" if guard_note else note
             confidence = round(extraction_conf * synth_conf, 3)
             if flagged:
                 confidence = min(confidence, 0.3)
